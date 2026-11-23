@@ -2,7 +2,7 @@
 
 MSEBench provides bilingual TextQA and 20 materials-science agent tasks. Task inputs, scoring code, test labels, reference solutions, evaluation snapshots and verifier/sidecar images are published for evaluation on your own computer.
 
-This candidate requires Linux Docker end-to-end validation before publication.
+This is a public candidate. Linux Docker end-to-end and rebuilt-image equivalence validation remain pending. The matching dataset is currently being uploaded; a fixed dataset commit will be recorded when the upload finishes.
 
 Use Python 3.12 and a Linux amd64 Docker Engine host with Compose v2. Container paths, host networking and the Docker socket follow the supplied Linux deployment. Scientific task resources vary. Task 01 recommends 16 CPU cores and 32 GB RAM, Task 02 recommends 32 cores and 32 GB RAM. Download sizes are recorded per file in `data_manifest.json`.
 
@@ -14,7 +14,7 @@ Install the source checkout and host Harbor dependency.
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install '.[local]'
-python scripts/prepare_local.py --repo OWNER/DATASET --revision FULL_DATASET_COMMIT_SHA \
+python scripts/prepare_local.py --repo gengqiane/MSEBench --revision FULL_DATASET_COMMIT_SHA \
   --images --output ../msebench-workspace
 cd ../msebench-workspace
 PYTHON=python bash verify_package.sh
