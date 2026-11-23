@@ -2,7 +2,7 @@
 
 MSEBench provides bilingual TextQA and 20 materials-science agent tasks. Task inputs, scoring code, test labels, reference solutions, evaluation snapshots and verifier/sidecar images are published for evaluation on your own computer.
 
-This is a public candidate. Linux Docker end-to-end and rebuilt-image equivalence validation remain pending. The matching dataset is currently being uploaded; a fixed dataset commit will be recorded when the upload finishes.
+This is a public candidate. Linux Docker end-to-end and rebuilt-image equivalence validation remain pending.
 
 Use Python 3.12 and a Linux amd64 Docker Engine host with Compose v2. Container paths, host networking and the Docker socket follow the supplied Linux deployment. Scientific task resources vary. Task 01 recommends 16 CPU cores and 32 GB RAM, Task 02 recommends 32 cores and 32 GB RAM. Download sizes are recorded per file in `data_manifest.json`.
 
@@ -14,7 +14,7 @@ Install the source checkout and host Harbor dependency.
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install '.[local]'
-python scripts/prepare_local.py --repo gengqiane/MSEBench --revision FULL_DATASET_COMMIT_SHA \
+python scripts/prepare_local.py --repo gengqiane/MSEBench --revision 6cbc9843b6735c0590d3580e777a01ea32221e4b \
   --images --output ../msebench-workspace
 cd ../msebench-workspace
 PYTHON=python bash verify_package.sh
@@ -69,3 +69,5 @@ Upstream names such as Matbench identify the original data sources. Versioned sc
 The answer and reference data are public. Scores reproduce the published local protocol and users should record the code version, dataset commit, image IDs, model configuration and budgets with results.
 
 For host-side scientific regression checks, install `.[test]` and run each task's regression suite in its own Python process. Task-private modules use their original import names. Tests that reference `/tests` directly run inside the supplied verifier container. The release checklist records target-host validation separately from host-side checks.
+
+Pinned data candidate: https://huggingface.co/datasets/gengqiane/MSEBench/tree/6cbc9843b6735c0590d3580e777a01ea32221e4b
