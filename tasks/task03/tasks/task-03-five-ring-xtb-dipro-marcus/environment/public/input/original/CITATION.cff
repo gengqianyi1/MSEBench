@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: Five-Ring xTB-DIPRO Marcus Hole-Rate Tool-Calling Benchmark
+message: Please cite the benchmark release and the underlying xTB, RDKit, and Marcus-theory methods.
+type: software
+version: 1.3
+date-released: 2026-08-24
+authors:
+  - name: Benchmark authors
+license: MIT
+references:
+  - type: article
+    title: GFN2-xTB—An Accurate and Broadly Parametrized Self-Consistent Tight-Binding Quantum Chemical Method
+    authors:
+      - family-names: Bannwarth
+        given-names: Christoph
+      - family-names: Ehlert
+        given-names: Sebastian
+      - family-names: Grimme
+        given-names: Stefan
+    year: 2019
+    doi: 10.1021/acs.jctc.8b01176
+  - type: article
+    title: On the Theory of Oxidation-Reduction Reactions Involving Electron Transfer. I
+    authors:
+      - family-names: Marcus
+        given-names: Rudolph A.
+    year: 1956
+    doi: 10.1063/1.1742723

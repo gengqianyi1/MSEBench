@@ -1,0 +1,15 @@
+name: chembench
+channels:
+- conda-forge
+dependencies:
+- python=3.12.13
+- numpy=2.5.1
+- rdkit=2025.03.5
+- xtb=6.7.1
+- pip
+- pip:
+  - openai==2.46.0
+  - pydantic==2.13.4
+  - python-dotenv==1.2.2
+  - PyYAML==6.0.3
+  - pytest==9.1.1

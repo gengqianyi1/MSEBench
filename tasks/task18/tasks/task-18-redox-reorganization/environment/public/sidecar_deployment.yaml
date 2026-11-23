@@ -1,0 +1,34 @@
+schema_version: chembench-hidden-suite/1.0
+endpoint:
+  url_env: CHEMBENCH_TASK18_SIDECAR_URL
+limits:
+  case_count: 1
+ownership:
+  framework_immutable:
+  - session_order
+  - quota_accounting
+  - evidence_ids
+  - response_allowlists
+  author_editable:
+  - public_tool_contracts
+  - private_scientific_grader
+  - oracle_fixtures
+  author_required_before_release:
+  - private_image_digest
+  - evidence_volume_mount
+  - deployment_record
+release:
+  private_image_digest: sha256:4bf27e6fd34c212686aa28c23370b58d08ab6f2316a4f66ab663606d2cdbdd0e
+  runtime_environment_image_digest: sha256:020c971fe04641686df2a845679eb61b21398fc3b790ec0a7cc277a2747d8595
+  evidence_volume_mount: /organizer_evidence
+  deployment_record: validation/PARTICIPANT_ACCEPTANCE.json
+  harbor_version: 0.21.0
+  release_ready: true
+  status: offline_contract_participant_verified
+  acceptance_summary: ACCEPTANCE_SUMMARY.json
+  distribution: offline_docker_archive
+  registry_published: false
+  live_model_harbor_lifecycle_complete: true
+  archive_sha256: 38bd21e778954c1331e403578988442adac0e5c6eca7c190e3eb7cfccf738418
+  image_release_manifest: validation/IMAGE_RELEASE.json
+  image_lock: deploy/task18/images.lock.json

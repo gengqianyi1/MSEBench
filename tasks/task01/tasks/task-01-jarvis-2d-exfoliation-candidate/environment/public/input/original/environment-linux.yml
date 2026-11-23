@@ -1,0 +1,26 @@
+name: jarvis_2d_exfoliation_benchmark
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.15
+  - numpy=2.4.6
+  - pandas=2.3.3
+  - scipy=1.17.1
+  - scikit-learn=1.9.0
+  - pymatgen=2026.5.4
+  - matminer=0.10.1
+  - jarvis-tools=2026.4.2
+  - spglib=2.7.0
+  - pyyaml=6.0.3
+  - jsonschema=4.26.0
+  - joblib=1.5.3
+  - pyarrow=25.0.0
+  - openai=2.46.0
+  - pytest=9.1.1
+  - pip=26.1.2
+  - setuptools=80.10.2
+  - pip:
+      - --index-url https://download.pytorch.org/whl/cpu
+      - --extra-index-url https://pypi.org/simple
+      - torch==2.13.0+cpu
+      - chgnet==0.4.2

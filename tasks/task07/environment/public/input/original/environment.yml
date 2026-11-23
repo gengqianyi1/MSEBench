@@ -1,0 +1,11 @@
+name: qed-agent-benchmark
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.7
+  - rdkit=2025.03.5
+  - pyyaml=6.0.1
+  - pip=24.3.1
+  - pip:
+      - openai==2.46.0
+      - pytest==7.4.4

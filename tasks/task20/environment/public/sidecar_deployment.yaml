@@ -1,0 +1,25 @@
+schema_version: chembench-hidden-suite/1.0
+endpoint:
+  url_env: CHEMBENCH_TASK20_SIDECAR_URL
+limits:
+  case_count: 1
+ownership:
+  framework_immutable: [session_order, quota_accounting, response_allowlists]
+  author_editable: [public_case, diagnostic_menu, scientific_responses, evaluator]
+  author_required_before_release: [private_image_digest, oracle_approval, parity_evidence]
+release:
+  private_image_digest: null
+  verifier_image_digest: null
+  historical_local_sidecar_image_id: sha256:540c07fc4a7bd91ba71fcdf14064a3824996aa0fd2441c914c4c2ce6a53d525c
+  historical_local_verifier_image_id: sha256:87aad304640a7f542108796214e0bf91456fc660340558f97ab6e67e2f417679
+  target_platform: null
+  registry_repository: null
+  private_build_context_digest: null
+  historical_build_context_digest: sha256:64a91b2818c20d4a3c322a8eb09c1d5bff3b26d84876b98dc3360a7fa827dc4d
+  release_ready: false
+  blocking_reason: Target-platform image distribution, Task20 Harbor no-network E2E and current three-model runs remain unverified.
+  build_command: docker build -t matbench/task20-sidecar:20260905 -f tests/sidecar/Dockerfile .
+  run_command: python scripts/isolated_sidecar.py --task 20 --image <registry/repository@sha256:manifest> --platform <linux/amd64-or-linux/arm64> --evidence-dir <organizer-private-directory>
+  network_policy: none
+  transport: organizer-loopback-HTTP-to-fixed-docker-exec
+  runtime_isolation_verified: false

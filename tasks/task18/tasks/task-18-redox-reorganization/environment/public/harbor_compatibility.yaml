@@ -1,0 +1,13 @@
+schema_version: chembench-harbor-compatibility/1.0
+harbor_version: 0.21.0
+task_version: 4.1.0
+grader_version: 4.2.0
+protocol_mode: workspace_sidecar_case
+agent_import_path: agents.workspace_sidecar_agent:WorkspaceSidecarAgent
+verifier_import_path: verifiers.workspace_sidecar_verifier:WorkspaceSidecarVerifier
+dependency_lock: environment/environment.lock.yml
+launch_command: python scripts/run_workspace_harbor.py --task 18 --mode valid --common-agent
+framework_package_version: 0.1.0
+framework_source_identity: four-task-author-release-20260912
+participant_network_mode: no-network
+private_evidence_mount: /organizer_evidence

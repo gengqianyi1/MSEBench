@@ -1,0 +1,36 @@
+schema: msebench.task-images/1.0
+task: '17'
+family: chembench
+images:
+- role: environment
+  tag: chembench/task17-environment:2.1.0-r10
+  image_id: sha256:948bdd575668bb082a9cc978cb34d7d26507a0a5bb40e4beb3aba1ee7a20b622
+  tar: images/task17/task17-environment.tar
+  bytes: 178610176
+  tar_sha256: c29d30039e12202f9e04c7bd61e9952c5c06c4f6a7e1d16d00a68adbab9bb61f
+  build:
+    context: tasks/task17/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench/task17-verifier:2.1.0-r10
+  image_id: sha256:b1bc7098015a783bfd7200233279b90818de03a9c7eb5f101e36c321d440eeb4
+  tar: images/task17/task17-verifier.tar
+  bytes: 182675968
+  tar_sha256: b7d4642903a6154c4d91ced62e984b8d9eb663d0106ccc53467d32bbd271f213
+  build:
+    context: tasks/task17/tests
+    dockerfile: Dockerfile
+- role: sidecar
+  tag: chembench/task17-sidecar:2.1.0-r10
+  image_id: sha256:17c53ca0fb366a615a36856d2d226d83ba43197e162126805ecca87eb8ec1f28
+  tar: images/task17/task17-sidecar.tar
+  bytes: 182667776
+  tar_sha256: c49014491896dfc63dced05229de5a191d43cdad9c2e94a62d97c3d34589e56a
+  build:
+    context: frameworks/14-17/docker_build
+    dockerfile: dockerfiles/sidecar.Dockerfile
+    compose: frameworks/14-17/docker_build/docker-compose.build.yaml
+    service: task17-sidecar
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

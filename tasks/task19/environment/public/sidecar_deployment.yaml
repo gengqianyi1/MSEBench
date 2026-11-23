@@ -1,0 +1,25 @@
+schema_version: chembench-hidden-suite/1.0
+endpoint:
+  url_env: CHEMBENCH_TASK19_SIDECAR_URL
+limits:
+  case_count: 1
+ownership:
+  framework_immutable: [session_order, quota_accounting, response_allowlists]
+  author_editable: [public_case, experiment_menu, scientific_responses, evaluator]
+  author_required_before_release: [private_image_digest, oracle_approval, parity_evidence]
+release:
+  private_image_digest: null
+  verifier_image_digest: null
+  historical_local_sidecar_image_id: sha256:adcf020cf3a0cf693e65b8e5b49803e3edd922c670a1cf4f38728b0db914d684
+  historical_local_verifier_image_id: sha256:9ad3d8b887db9c67c184069ccf5dca0a721fab0ca5b606203f47abea8b86c376
+  target_platform: null
+  registry_repository: null
+  private_build_context_digest: null
+  historical_build_context_digest: sha256:30da3a9cfba919a480792b40a28ccb9e66534212aadf597db6cecc52497ad813
+  release_ready: false
+  blocking_reason: Formal registry RepoDigest and target platform are not confirmed; native Linux Harbor no-network E2E remains pending. Historical local image IDs are not release addresses.
+  build_command: docker build -t matbench/task19-sidecar:20260905 -f tests/sidecar/Dockerfile .
+  run_command: python scripts/isolated_sidecar.py --task 19 --image <registry/repository@sha256:manifest> --platform <linux/amd64-or-linux/arm64> --evidence-dir <organizer-private-directory>
+  network_policy: none
+  transport: organizer-loopback-HTTP-to-fixed-docker-exec
+  runtime_isolation_verified: false

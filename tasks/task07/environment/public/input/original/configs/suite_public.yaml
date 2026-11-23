@@ -1,0 +1,11 @@
+schema_version: "qed_suite/4.0"
+benchmark_id: "qed_molecular_design_v4"
+public_case: "configs/task.yaml"
+official_case_count: 5
+public_case_count: 1
+organizer_private_case_count: 4
+aggregation:
+  macro_case_points: 90.0
+  cross_case_stability_points: 10.0
+  blocked_runs_enter_capability_mean: false
+

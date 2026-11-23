@@ -1,0 +1,18 @@
+schema_version: chembench-sidecar-deployment/1.0
+task_id: task-03-five-ring-xtb-dipro-marcus
+release_ready: false
+endpoint_env: CHEMBENCH_TASK03_SIDECAR_URL
+endpoint_default: http://127.0.0.1:8712
+private_snapshot_path: /task (embedded in verifier image; no host snapshot mount)
+network_mode: host
+port_publish: "not_used (sidecar is reached at host loopback)"
+deployment:
+  image_tag: harbor-migration/task03:verifier
+  private_image_digest: sha256:3bbba0933b85f890252697522f750e2d6156289bf72d715385eadded8049c471
+  image_id_type: docker_image_id_not_registry_repo_digest
+  image_archive: release_evidence/docker_archives/task03-verifier.tar
+  image_archive_sha256: 88aebd216acca6b5b90d28a56ebcd0174228bfaac43912da77c1e4cc58492de9
+entrypoint: python /tests/task03_private_sidecar.py --snapshot /task --host 0.0.0.0 --port 8712
+release_blockers:
+  - Obtain an authorized registry RepoDigest (the recorded local image ID is not a registry digest).
+  - Run and archive no-network Oracle, invalid-submission, and legacy-versus-Harbor parity evidence using this image.

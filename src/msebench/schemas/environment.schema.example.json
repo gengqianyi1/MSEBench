@@ -1,0 +1,13 @@
+{
+  "schema_version": "chembench-env/1.0",
+  "description": "Author-facing normalized environment manifest generated from legacy environment.yml. Runtime source of truth is generated Harbor environment/Dockerfile + task.toml.",
+  "required": [
+    "schema_version",
+    "runtime_backend",
+    "build_base",
+    "normalized_lock_file",
+    "workdir",
+    "network_mode",
+    "resources"
+  ]
+}

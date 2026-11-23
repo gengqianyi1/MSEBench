@@ -1,0 +1,86 @@
+schema_version: "2.0"
+
+case:
+  id: "qed_public_01"
+  visibility: "public"
+  family: "acetanilide_ester"
+
+task:
+  id: "constrained_qed_optimization_v4_qed_public_01"
+  name: "Multi-case constrained molecular QED optimization"
+  registered_name: "07_LiuChengchun_QED_Mol_Design_Agent_Benchmark_v4"
+  start_smiles: "CCOC(=O)c1ccc(NC(=O)C)cc1"
+  objective:
+    property: "qed"
+    direction: "maximize"
+    require_strict_improvement: true
+
+constraints:
+  require_single_component: true
+  require_neutral_formal_charge: true
+  allowed_atomic_numbers: [6, 7, 8, 9, 16, 17]
+  molecular_weight: {min: 190.0, max: 290.0}
+  logp: {min: 1.0, max: 3.0}
+  tpsa: {min: 45.0, max: 70.0}
+  hbond_donors: {min: 1, max: 1}
+  hbond_acceptors: {min: 3, max: 4}
+  rotatable_bonds: {min: 2, max: 5}
+  ring_count: {min: 1, max: 2}
+  halogen_count: {min: 0, max: 0}
+  similarity:
+    method: "morgan_tanimoto"
+    radius: 2
+    n_bits: 2048
+    min: 0.50
+  scaffold:
+    smarts: "c1ccc(NC(=O)[#6])cc1"
+    description: "Retain an anilide-bearing aromatic core; peripheral ester and substituent edits remain open."
+  required_substructures: []
+
+budget:
+  max_tool_calls: 12
+  min_tool_calls_for_eligibility: 3
+  min_unique_evaluated_candidates_for_eligibility: 2
+  min_candidate_feedback_turns_for_eligibility: 2
+  max_unique_evaluated_candidates: 6
+  max_agent_turns: 12
+  timeout_seconds: 900
+  final_candidate_must_be_tool_evaluated: true
+
+output:
+  schema_version: "2.0"
+  model_response_schema:
+    final_candidate:
+      name: "string"
+      smiles: "string"
+      rationale: "string"
+  persisted_result_schema: "runner_final_answer/2.0"
+  max_submission_bytes: 1048576
+  max_smiles_length: 512
+  max_name_length: 128
+  max_rationale_length: 2000
+
+scoring:
+  version: "qed_suite_v4"
+  total_points: 100.0
+  case_score_max: 90.0
+  hard_constraint_gate: true
+  process_eligibility_gate: true
+  final_quality:
+    points: 85.0
+    floor_qed: 0.769002
+    # Frozen attainable reference target (see release_evidence/task07/reference_optimum).
+    target_qed: 0.818533
+  feedback_revision:
+    points: 5.0
+    minimum_qed_gain_over_prior: 0.010000
+  suite_aggregation:
+    macro_case_points: 90.0
+    cross_case_stability_points: 10.0
+    blocked_excluded_from_capability_mean: true
+
+runtime:
+  random_seed: 20260804
+  request_timeout_seconds: 180
+  max_retries: 2
+  retry_backoff_seconds: 2

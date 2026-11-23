@@ -1,0 +1,14 @@
+{
+  "default_profile": "default",
+  "profiles": {
+    "default": {
+      "api_base": "",
+      "api_key_env": "MSEBENCH_API_KEY",
+      "api_format": "openai",
+      "model": "",
+      "temperature": 0.0,
+      "max_tokens": 4096,
+      "stream": true
+    }
+  }
+}

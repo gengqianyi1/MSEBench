@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '3'
+family: harbor
+images:
+- role: environment
+  tag: harbor-migration/task03:environment
+  image_id: sha256:a38be5ea0f40d38d245b50c32eb8a2c2f798979ed36466a65f2c31780bf610ab
+  tar: images/task03/task03-environment.tar
+  bytes: 334743040
+  tar_sha256: 484c667be6e11edbba52029ac8ed4f9c5df5738e95f920d357651860fce4bd28
+  build:
+    context: tasks/task03/tasks/task-03-five-ring-xtb-dipro-marcus/environment
+    dockerfile: Dockerfile.rebuild
+- role: verifier
+  tag: harbor-migration/task03:verifier
+  image_id: sha256:3bbba0933b85f890252697522f750e2d6156289bf72d715385eadded8049c471
+  tar: images/task03/task03-verifier.tar
+  bytes: 334807552
+  tar_sha256: 88aebd216acca6b5b90d28a56ebcd0174228bfaac43912da77c1e4cc58492de9
+  build:
+    context: tasks/task03/tasks/task-03-five-ring-xtb-dipro-marcus/tests
+    dockerfile: Dockerfile.rebuild
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

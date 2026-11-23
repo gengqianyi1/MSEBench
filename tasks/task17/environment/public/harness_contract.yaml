@@ -1,0 +1,52 @@
+schema_version: chembench-harness-contract/1.0
+task_id: task-17-spherical-agglomeration
+protocol:
+  type: multi_round
+  implementation_status: implemented
+  state_file: /workspace/protocol_state.json
+  max_rounds: 5
+budgets:
+  actions: 5
+  measurements: 5
+  tool_calls_per_round: 8
+  tool_messages_per_round: 2
+ownership:
+  immutable:
+  - schema_version
+  - protocol.state_file
+  - ownership
+  - release_gates
+  - chembench_harness core
+  author_editable:
+  - protocol.type
+  - protocol.max_rounds
+  - budgets
+  - task-local plugin
+  - public feedback fields
+  - private grader scientific implementation
+  author_required:
+  - Declare the exact original action/observation sequence.
+  - Declare tool budgets, retry accounting, timeouts, and failure behavior.
+  - Identify every public and private field/file.
+  - Provide one valid Oracle and at least three invalid submissions.
+  - Define same-model legacy-versus-Harbor parity tolerances.
+  - Confirm private agglomeration/response-model public feedback boundary.
+  - Provide a scientifically valid Oracle.
+author_confirmations:
+  protocol_equivalent: confirmed
+  scoring_equivalent: confirmed
+  private_boundary_correct: confirmed
+  oracle_scientifically_valid: confirmed
+  oracle_is_optimal_solution: confirmed
+  invalid_submissions_provided: confirmed
+  budgets_match_legacy_source: confirmed
+  same_model_legacy_vs_harbor_parity: pending
+  docker_build_and_deployment_evidence: pending
+release_gates:
+  schema: false
+  build: false
+  oracle: true
+  protocol_decoupled: true
+  parity: false
+  leakage: false
+  release_eligible: true

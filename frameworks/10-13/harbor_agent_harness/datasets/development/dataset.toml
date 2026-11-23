@@ -1,0 +1,22 @@
+schema_version = "1.0"
+
+[dataset]
+name = "chembench/chembench-development"
+version = "0.2.0"
+description = "Canonical development tasks; local execution uses ./chembench run-development."
+
+[[tasks]]
+name = "chembench/task-10-matbench-bandgap-pipeline"
+digest = "sha256:a0691b6db35fabfe8b13c75b02c750dc4cb5f311dae31f7afb020abd2a58c447"
+
+[[tasks]]
+name = "chembench/task-11-lithium-electrolyte-design"
+digest = "sha256:52c61c78ad2bd222964a7f7f3a02253efc199c47aad2d44409954140e0774ce6"
+
+[[tasks]]
+name = "chembench/task-12-pybamm-fast-charge"
+digest = "sha256:7633d47f6ddea6ad54b0c0960197a038044bad018ef2ff3df8a7275286ab3280"
+
+[[tasks]]
+name = "chembench/task-13-retrosynthesis-route"
+digest = "sha256:abd1ed0092aade24ac8ab3282354e19b89b93b53f7fbe8c53202be445dcfb522"

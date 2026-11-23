@@ -1,0 +1,80 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+multi_step_reward_strategy = "final"
+
+[task]
+name = "chembench/task-09-adaptive-xtb-torsion-profile"
+version = "2.2.0"
+description = "Adaptive xTB Torsion Profile Agent Benchmark v3"
+authors = [{ name = "Liu Chengjun" }]
+keywords = ["computational_chemistry", "chembench", "harbor"]
+
+[metadata]
+source_task_id = "task_09_adaptive_xtb_torsion_profile"
+source_version = "3.1.0-chembench2"
+domain = "computational_chemistry"
+legacy_execution_mode = "native_runner"
+legacy_grader_version = "adaptive-torsion-suite-v3-replay-1.0"
+migration_status = "harbor-ready-candidate"
+parity_validated = true
+required_artifacts = ["final_answer.json", "benchmark_result.json", "benchmark_run/campaign_summary.json", "benchmark_run/*/suite_evaluation.json"]
+protocol_decoupled = true
+task_owned_llm = false
+protocol_validated = true
+scoring_validated = true
+private_boundary_validated = true
+oracle_scientifically_validated = true
+schema_validated = true
+build_validated = true
+leakage_validated = true
+release_eligible = true
+oracle_status = "verified_harbor"
+reference_optimum_status = "verified_100_private_replay"
+
+[agent]
+timeout_sec = 7500.0
+
+[verifier]
+timeout_sec = 7500.0
+environment_mode = "separate"
+
+[environment]
+docker_image = "matbench/task09-environment:20260910-sixth-review"
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import numpy, rdkit' && xtb --version"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+
+[[steps]]
+name = "case-1"
+description = "Solve protected adaptive torsion case 1"
+
+[[steps]]
+name = "case-2"
+description = "Solve protected adaptive torsion case 2"
+
+[[steps]]
+name = "case-3"
+description = "Solve protected adaptive torsion case 3"
+
+[[steps]]
+name = "case-4"
+description = "Solve protected adaptive torsion case 4 and run the final private verifier"

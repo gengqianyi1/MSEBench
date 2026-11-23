@@ -1,0 +1,97 @@
+protocol_version: 2.1
+external_access:
+  required_module: benchmark_tools.py
+  direct_pyscf_import: forbidden
+  direct_psi4_import: forbidden
+  direct_xtb_or_psi4_subprocess: forbidden
+formal_single_point:
+  program: PySCF
+  method: M05-2X
+  basis: 6-31G*
+  reference: RKS
+  solvation_model: SMD
+  charge: 0
+  multiplicity: 1
+  geometry_optimization: false
+  geometry_unit: angstrom
+  scf:
+    conv_tol: 1.0e-09
+    max_cycle: 100
+    init_guess: minao
+    diis_space: 8
+    level_shift: 0.0
+  dft_grid:
+    level: 4
+    pruning: nwchem
+  resources:
+    threads: 4
+    memory_mb: 8000
+  timeout_class: pyscf_production
+gas_conformer_search:
+  program: xTB
+  method: GFN2-xTB
+  charge: 0
+  uhf: 0
+  optimization_level: tight
+  max_iterations: 300
+  electronic_temperature_kelvin: 300
+  resources:
+    threads_per_job: 4
+    max_parallel_jobs: 3
+  timeout_class: xtb_production
+endpoint_conformational_probe:
+  program: xTB
+  method: GFN2-xTB
+  solvent_model: ALPB
+  optimization_level: tight
+  charge: 0
+  uhf: 0
+  endpoints:
+  - n-hexane
+  - water
+  max_common_starting_conformers: 3
+  resources:
+    threads_per_job: 4
+    max_parallel_jobs: 3
+  timeout_class: xtb_production
+explicit_complex:
+  program: xTB
+  method: GFN2-xTB
+  phase: gas
+  optimization_level: tight
+  arrangements_per_endpoint: 3
+  endpoints:
+  - n-hexane
+  - water
+  resources:
+    threads_per_job: 4
+    max_parallel_jobs: 3
+  timeout_class: xtb_production
+sapt:
+  program: Psi4
+  method: SAPT0
+  basis: jun-cc-pVDZ
+  reference: RHF
+  scf_type: df
+  freeze_core: true
+  e_convergence: 1.0e-08
+  d_convergence: 1.0e-08
+  maxiter: 100
+  charge: 0
+  multiplicity: 1
+  fragment_separator: --
+  resources:
+    threads: 8
+    memory_mb: 16000
+  timeout_class: psi4_production
+  endpoints:
+  - n-hexane
+  - water
+timeouts:
+  pure_python_floor_seconds: 60
+  microtest_floor_seconds: 300
+  xtb_production_floor_seconds: 1800
+  pyscf_production_floor_seconds: 7200
+  psi4_production_floor_seconds: 7200
+  mixed_production_floor_seconds: 7200
+  maximum_script_seconds: 7200

@@ -1,0 +1,12 @@
+name: chembench
+channels:
+- conda-forge
+dependencies:
+- python=3.9.23
+- numpy=1.26.4
+- scipy=1.13.1
+- casadi=3.6.7
+- pyyaml=6.0.2
+- pip
+- pip:
+  - pybamm==25.4.2

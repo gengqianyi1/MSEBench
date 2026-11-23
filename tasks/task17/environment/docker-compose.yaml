@@ -1,0 +1,67 @@
+# Harbor 把本文件作为 `environment/docker-compose.yaml` 层叠在它自己的 build/prebuilt compose 之后，
+# 所以 `main` 仍然是 environment/Dockerfile 构建出的 agent 镜像，本文件只**新增**私有 response
+# sidecar，并把端点地址注入给 agent。
+#
+# 为什么必须有 sidecar
+# --------------------
+# environment/public/.chembench_agent.json 声明 protocol_mode = private_response_round，
+# ChemBenchAgent 的该分支每轮都要 POST /session 与 /evaluate 取测量值，且**没有回退**：
+# 端点不存在就直接抛异常。因此在本文件出现之前，题 17 只有 Oracle 路径（重放固定 candidate、
+# 从不调用 sidecar）能跑，真实模型评测无法开始。
+#
+# 网络
+# ----
+# network_mode: "service:main" 让 sidecar 进入 agent 容器的网络命名空间，端点因此就是
+# .chembench_agent.json 里已经写好的 127.0.0.1:8717，且两种配置下都成立：
+#   * 开启 Harbor egress control 时（Linux 主机、network_mode="no-network"），main 本身运行在
+#     egress sidecar 的命名空间里，本服务跟随进入；
+#   * 未开启时，main 是普通命名空间，本服务加入它。
+# sidecar 因此继承 main 的出网策略，no-network 下同样出不了网。
+# 若改成独立 networks，则需把上面那个环境变量改成 http://task17-sidecar:8717。
+#
+# 镜像
+# ----
+# 该镜像含 tests/task_snapshot/private_data/（枚举参考最优解与分档阈值）。
+# **绝不可推送到公开 registry，绝不可作为 agent 环境的基础镜像。**
+# 镜像随包离线提供（docker/，./chembench load-images），pull_policy: never 保证不访问任何 registry；
+# build: 段保留为构建配方：镜像缺失且主机能联网时 compose 会就地构建。
+# 冻结 digest 之后，应把 image: 换成 digest 形式并删掉 build: 段。见 sidecar/README.md。
+services:
+  main:
+    environment:
+      CHEMBENCH_TASK17_SIDECAR_URL: "http://127.0.0.1:8717"
+
+  task17-sidecar:
+    image: chembench/task17-sidecar:2.1.0-r10
+    # never pull. The tag is a LOCAL name: the image ships in docker/ (./chembench load-images)
+    # and exists in no registry. With pull_policy: never compose uses the loaded image and never
+    # contacts a registry -- the organizer host has no route to Docker Hub (2026-09-14:
+    # `Get https://registry-1.docker.io/v2/: context deadline exceeded`). If the image is absent,
+    # compose falls back to the build: block below (measured 2026-09-14), which needs network.
+    # Harbor's teardown (`down --rmi local`) keeps images that have an image: name, so a loaded
+    # image survives every trial.
+    pull_policy: never
+    build:
+      # 构建上下文只能是包根：server 模板是框架资产、快照是题目资产，两者不在同一子树。
+      # 注意 build.context 的相对路径以 **project directory** 为基准，不是以本文件所在目录为基准。
+      # Harbor 传的是 --project-directory <task>/environment，因此 ../../.. 正是包根。
+      # 手工 docker compose 时若不传该参数，会解析到别处并报
+      #   lstat .../sidecar: no such file or directory
+      # scripts/task16_17_sidecar_wiring_check.py 复现的就是 Harbor 那一套调用。
+      context: ../../../frameworks/14-17
+      dockerfile: sidecar/Dockerfile
+      args:
+        TASK_DIR: tasks/task-17-spherical-agglomeration
+        TASK_NUMBER: "17"
+        PORT: "8717"
+    network_mode: "service:main"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8717/health',timeout=2).status==200 else 1)"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s

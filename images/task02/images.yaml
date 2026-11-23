@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '2'
+family: harbor
+images:
+- role: environment
+  tag: harbor-migration/task02:environment
+  image_id: sha256:402d8946feec64505a62d1f290ea0f293d6ce5a0373052ed388f84fca9b4c174
+  tar: images/task02/task02-environment.tar
+  bytes: 1451036672
+  tar_sha256: 3800410ebfe45937c765d834d0f3af34521a9ff76411245559140a9ce28307e5
+  build:
+    context: tasks/task02/tasks/task-02-oligothiophene-smd-sapt/environment
+    dockerfile: Dockerfile.rebuild
+- role: verifier
+  tag: harbor-migration/task02:verifier
+  image_id: sha256:9754f9f4418c05c47b733bb7d4b3b90015fa0752fc5318561ed858c2e0ae125a
+  tar: images/task02/task02-verifier.tar
+  bytes: 1451123200
+  tar_sha256: 159320b0f6ce37bababb45aa519b5e99f455787420bc87c1e485ade8b3cf5b60
+  build:
+    context: tasks/task02/tasks/task-02-oligothiophene-smd-sapt/tests
+    dockerfile: Dockerfile.rebuild
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

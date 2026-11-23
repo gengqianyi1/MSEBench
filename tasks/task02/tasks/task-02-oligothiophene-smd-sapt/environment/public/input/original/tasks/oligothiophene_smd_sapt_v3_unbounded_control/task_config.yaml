@@ -1,0 +1,101 @@
+task_name: oligothiophene_smd_sapt_evidence_audited_v3_0
+preferred_tool_call_budget: 10000
+fixed_tool_call_budget: 10000
+tool_call_penalties: {}
+molecule:
+  repeat_unit_smiles: '[1*]C1=CC=C([2*])S1'
+  repeat_unit_connection_rule: next repeat unit 2* connects to previous repeat unit
+    1*
+  oligomer_length: 2
+  charge: 0
+  multiplicity: 1
+solvents:
+  n-hexane:
+    smiles: CCCCCC
+    smd_name: n-hexane
+    xtb_alpb_name: hexane
+    role: apolar_endpoint
+  1,4-dioxane:
+    smiles: O1CCOCC1
+    smd_name: 1,4-dioxane
+    xtb_alpb_name: dioxane
+  chloroform:
+    smiles: ClC(Cl)Cl
+    smd_name: chloroform
+    xtb_alpb_name: chcl3
+  water:
+    smiles: O
+    smd_name: water
+    xtb_alpb_name: water
+    role: polar_endpoint
+methods:
+  formal_single_point:
+    program: PySCF
+    functional: M05-2X
+    basis: 6-31G*
+    reference: RKS
+    solvation_model: SMD
+  gas_conformer_search:
+    method: GFN2-xTB
+    initial_conformers: 6
+    unique_rmsd_threshold_angstrom: 0.5
+    retained_energy_window_kcal_mol: 3.0
+  conformational_probe:
+    method: GFN2-xTB/ALPB
+    endpoints:
+    - n-hexane
+    - water
+    max_common_starting_conformers: 3
+  explicit_complex:
+    search_method: gas-phase GFN2-xTB
+    arrangements_per_endpoint: 3
+    endpoints:
+    - n-hexane
+    - water
+    decomposition: SAPT0/jun-cc-pVDZ
+constants:
+  hartree_to_kcal_mol: 627.509474
+  hartree_to_ev: 27.211386245988
+  coordinate_round_digits: 10
+  near_tie_threshold_kcal_mol: 0.6
+sensitivity_options:
+- second_retained_conformer
+- tighter_integration_grid
+- alternate_scf_initial_guess
+- repeated_single_point_from_saved_density
+requirements:
+  stages:
+  - stage_A_audit.json
+  - stage_B_bulk.json
+  - stage_C_local.json
+  - result.json
+  - revisions.json
+  stage_B_schema: stage_B_schema.json
+  result_schema: result_schema.json
+  protocol: protocol.yaml
+  external_tool_module: benchmark_tools.py
+  stage_A_schema: stage_A_schema.json
+  stage_C_schema: stage_C_schema.json
+  scoring_reference: null  # evaluator-private; never read by the public Agent runner
+resource_guidance:
+  target_wall_time_minutes: 120
+  hard_wall_time_minutes: 180
+  max_parallel_xtb_jobs: 3
+  threads_per_xtb_job: 4
+  max_parallel_pyscf_jobs: 2
+  psi4_threads: 8
+  recommended_memory_gb: 32
+scoring:
+  total_points: 100
+  deterministic_points: 90
+  independent_llm_points: 10
+  sections:
+    input_audit_and_identity: 16
+    conformer_search_and_design: 12
+    fixed_geometry_smd: 30
+    endpoint_geometry_and_lineage: 10
+    sapt_evidence_and_dominance: 14
+    workflow_integrity_and_reproducibility: 8
+    scientific_scope_and_uncertainty: 10
+  benchmark_version: '1.3'
+scoring_policy_id: oligothiophene-v3-hidden-multi-anomaly-deduplicated

@@ -1,0 +1,35 @@
+task_id: task_18_redox_reorganization
+task_version: 4.1.0
+grader_version: 4.2.0
+physical_settings:
+  xtb_version: 6.7.1
+  method: GFN2-xTB
+  phase: gas
+  neutral_charge: 0
+  neutral_uhf: 0
+  oxidized_charge: 1
+  oxidized_uhf: 1
+  single_threaded: true
+budgets:
+  compute_credits: 56
+  max_xtb_jobs: 32
+  scientific_turns: 90
+  finalization_turns: 8
+  tool_calls: 360
+  wall_time_seconds: 10800
+operation_costs:
+  sp: 1
+  opt: 1
+  hess: 4
+  opt_hess: 5
+scan_allowed: false
+required_outputs:
+- final_answer.json
+- report.md
+schemas:
+  final_answer: schema/final_answer.schema.json
+runtime:
+  xtb_executable: xtb
+  timeout_seconds: 900
+instance_id: task-18-redox-reorganization
+scientific_problem_id: task_18_redox_reorganization

@@ -1,0 +1,25 @@
+task_id: jarvis_2d_exfoliation_prediction_and_candidate_generation
+task_dir: tasks/jarvis_2d_exfoliation
+llm:
+  api_config_file: configs/api_config_qwen.json
+run:
+  output_root: runs
+  run_prefix: jarvis_2d_exfoliation_vendor3-qwen3.5-plus
+  max_llm_turns: null
+  max_tool_calls: null
+  stop_when_result_json_exists: true
+  public_validation_repair_attempts: 2
+  reserved_repair_tool_calls: 0
+execution:
+  max_script_runtime_seconds: 900
+  default_script_runtime_seconds: 600
+  stdout_stderr_tail_chars: 16000
+  max_script_size_bytes: 300000
+  python_executable: python
+logging:
+  trajectory_filename: trajectory.jsonl
+  tool_calls_filename: tool_calls.jsonl
+  llm_debug_filename: llm_api_debug.jsonl
+  conversation_markdown_filename: conversation.md
+  final_answer_filename: final_answer.json
+  final_report_filename: final_report.json

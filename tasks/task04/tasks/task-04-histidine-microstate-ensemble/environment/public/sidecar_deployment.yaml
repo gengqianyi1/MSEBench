@@ -1,0 +1,33 @@
+schema_version: chembench-hidden-suite/1.0
+endpoint:
+  url_env: CHEMBENCH_TASK04_SIDECAR_URL
+limits:
+  case_count: 1
+ownership:
+  framework_immutable:
+  - session_order
+  - quota_accounting
+  - evidence_ids
+  - response_allowlists
+  author_editable:
+  - public_tool_contracts
+  - private_geometry_grader
+  - oracle_fixtures
+  author_required_before_release:
+  - private_image_digest
+  - evidence_volume_mount
+  - parity_evidence
+release:
+  private_image_digest: sha256:0f6255d9deb2cead2152500d60730b40578fc9255b3b0024708b92744ed2ff28
+  runtime_environment_image_digest: sha256:dad6f9af3dfee6fd2b03d5e009eedf75fa0f89fd1dc483709e1866f7a88366ab
+  evidence_volume_mount: /organizer_evidence
+  parity_evidence: validation/PARTICIPANT_ACCEPTANCE.json
+  harbor_version: 0.21.0
+  release_ready: true
+  digest_kind: oci_image_index_sha256
+  distribution: offline_docker_archive
+  image_lock: deploy/task04/images.lock.json
+  image_release_manifest: validation/IMAGE_RELEASE.json
+  archive_sha256: e5a2926c2847f3f8cedf0834070a94310f96a23901255a451ca6215bcfa0da69
+  registry_published: false
+  live_llm_regression_performed: false

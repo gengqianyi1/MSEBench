@@ -1,0 +1,24 @@
+schema_version: chembench-hidden-suite/1.0
+endpoint: {url_env: CHEMBENCH_TASK01_SIDECAR_URL}
+limits: {case_count: 1}
+ownership:
+  framework_immutable: [session_order, quota_accounting, evidence_ids, response_allowlists]
+  author_editable: [run_python_policy, chgnet_tool_policy, evaluator]
+  author_required_before_release: [private_image_digest, evidence_volume_mount, parity_evidence]
+deployment:
+  image_tag: harbor-migration/task01:verifier
+  evidence_volume_mount: /organizer_evidence
+  task_snapshot_path: /task (embedded in verifier image; no host snapshot mount)
+  container_user: "0:0"
+  network_mode: host
+  port_publish: not_used (sidecar is reached at host loopback)
+  host_bind: 127.0.0.1:8710
+  entrypoint: [micromamba, run, -n, chembench, python, /tests/sidecar.py, --adapter, /tests/private_suite_adapter.py, --snapshot, /task, --evidence-dir, /organizer_evidence, --host, 0.0.0.0, --port, "8710"]
+release:
+  private_image_digest: sha256:ea61a7a0c112acc80c2fc32581a61a37d5daa896a6c763ae9e42b1d6b7d807af
+  image_id_type: docker_image_id_not_registry_repo_digest
+  image_archive: images/task01/task01-verifier.tar
+  image_archive_sha256: d57f2601277d0ed5264ad0031531ddca0659ea8db762fc1e470841b85eff8d3b
+  parity_evidence: tests/private_data/oracle_bundle/verifier/details.json
+  author_review: pending_author_signature
+  release_ready: false

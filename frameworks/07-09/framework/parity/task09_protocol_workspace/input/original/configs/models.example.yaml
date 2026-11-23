@@ -1,0 +1,23 @@
+schema_version: "2.0"
+provider_defaults:
+  provider: siliconflow
+  transport: openai_compatible
+  base_url: https://api.siliconflow.cn/v1
+  api_key_env: GJLD_API_KEY
+  temperature: 0
+  max_tokens: 384
+  timeout_seconds: 180
+  maximum_total_attempts_per_turn: 4
+  maximum_cumulative_retry_delay_seconds: 60
+  sdk_max_retries: 0
+preflight:
+  max_output_tokens: 24
+  provider_turns: 1
+  native_xtb_calls: 0
+models:
+  kimi:
+    model: Pro/moonshotai/Kimi-K2.6
+  deepseek:
+    model: deepseek-ai/DeepSeek-V4-Pro
+  glm:
+    model: zai-org/GLM-5.2

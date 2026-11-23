@@ -1,0 +1,30 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-06-terpyridine-coupled-torsion-landscape
+source:
+  path: scientific-delivery/revised_tasks/task_06
+  version: 1.16.0
+  sha256: fabfec1889af56920303690d888e614facf5c57c158252fd3335c8e54eaa31da
+files:
+  - source: tasks/task_06/public/question.md
+    destination: environment/public/question.md
+    handling: copied
+    source_sha256: 75c3c9b33e247e486b0406c9de02fbf331bcc5320be5bc6ccbe502085c7d53eb
+    destination_sha256: 75c3c9b33e247e486b0406c9de02fbf331bcc5320be5bc6ccbe502085c7d53eb
+    reason: Preserve the already route-neutral single-seed public task exactly.
+  - source: tasks/task_06/private/grader.py
+    destination: tests/task_snapshot/source_package/tasks/task_06/private/grader.py
+    handling: private-only
+    source_sha256: a3a635b775def66f78b69c0ba3d673ce6f5f99248dab856aea7b8d143357265a
+    destination_sha256: a3a635b775def66f78b69c0ba3d673ce6f5f99248dab856aea7b8d143357265a
+    reason: Unchanged geometry-derived private scientific grader.
+  - source: internal_golden/task_06
+    destination: tests/task_snapshot/organizer_private and private_reference
+    handling: organizer-only
+    source_sha256: 31fbd2e0fd19518be9ae1b5957006c7c994a44eec2e3845a2e024a80653d0f35
+    destination_sha256: e3643bab023dc3ba28b37a4c4d5f77b3e57e5e86993aa5f13316a5a24e5797da
+    reason: Raw Golden jobs and private reference remain verifier-only.
+author_approval:
+  name: Wei Chengrui
+  date: 2026-08-29
+  protocol_equivalent: confirmed_offline
+  scoring_equivalent: confirmed_offline

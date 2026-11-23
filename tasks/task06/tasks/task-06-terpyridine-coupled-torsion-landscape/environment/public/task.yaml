@@ -1,0 +1,35 @@
+task_id: task_06
+task_version: 1.16.0
+grader_version: 1.22.0
+physical_settings:
+  xtb_version: 6.7.1
+  method: GFN2-xTB
+  charge: 0
+  uhf: 0
+  environment: gas
+  single_threaded: true
+main_compute_credits: 12
+recovery_compute_credits: 0
+max_scan_points: 72
+max_agent_turns: 55
+finalization_turns: 8
+max_tool_calls: 240
+# Audit 2026-09-27: corrected the key name wall_seconds -> wall_time_seconds
+# (the engine budget key) and made the finalization wall clock explicit at
+# 1800 seconds; new xTB jobs are rejected during finalization.
+wall_time_seconds: 10800
+finalization_wall_time_seconds: 1800
+scan_allowed: true
+costs:
+  sp: 1
+  opt: 1
+  hessian: 1
+  scan: 1
+required_outputs:
+  - final_answer.json
+  - report.md
+schemas:
+  final_answer: schema/final_answer.schema.json
+runtime:
+  xtb_executable: xtb
+  timeout_seconds: 1800

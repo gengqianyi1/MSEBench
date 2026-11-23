@@ -1,0 +1,515 @@
+schema: msebench.task-images/1.0
+generated_from: images/manifest.json + images/taskNN/images.lock.json
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'
+families:
+  chembench:
+    '4':
+    - role: environment
+      tag: chembench/task04-environment:coordinate-2.1.1-20260912
+      image_id: sha256:131390466764a1024df1d5594011205b2ddc28997600d9558da70ee3fb18433a
+      tar: images/task04/task04-environment.tar
+      bytes: 226609152
+      tar_sha256: 54dd0f10ba54e69f97edd7a2ae25e0d0b5d8052a200fcfa6290decf52b518a7c
+      build:
+        context: tasks/task04/environment
+        dockerfile: Dockerfile.rebuild
+    - role: sidecar
+      tag: chembench/task04-sidecar:coordinate-2.1.1-20260912
+      image_id: sha256:9164f82f8d4d3a19b56f558ee05055b627425e04950cae5609cfa4c7a24e2aa5
+      tar: images/task04/task04-sidecar.tar
+      bytes: 250361344
+      tar_sha256: 0645a8f576fa51b7b31ee31c0abbe50a2c99c9bc8262d5292c5740a931ed2011
+      build:
+        context: .
+        dockerfile: tasks/task04/environment/Dockerfile.sidecar
+    - role: verifier
+      tag: chembench/task04-verifier:coordinate-2.1.1-20260912
+      image_id: sha256:45a1c8fd57c104cd1db55c60ae465a750746638e1c9184b22d25f964e9c1244b
+      tar: images/task04/task04-verifier.tar
+      bytes: 250315776
+      tar_sha256: 74800413b99844c57ad162a3bb7e2fdd6128be4fcba0b4f0a2c389eff31a3d40
+      build:
+        context: tasks/task04/tasks/task-04-histidine-microstate-ensemble/tests
+        dockerfile: Dockerfile
+    '5':
+    - role: environment
+      tag: chembench/task05-environment:participant-20260905
+      image_id: sha256:f6ab005fa0005ba26053c77cf279987b73dda2487cfa03dcebd5b11a48058447
+      tar: images/task05/task05-environment.tar
+      bytes: 226630144
+      tar_sha256: f707201221507ca444376034df15283b6492304cf33ccb04fa3e140dc63f86a5
+      build:
+        context: tasks/task05/environment
+        dockerfile: Dockerfile.rebuild
+    - role: sidecar
+      tag: chembench/task05-sidecar:participant-20260905
+      image_id: sha256:63a223accea0380900a6f82912fb5500fa1e35be2dba8d10fa84910cbb1165d2
+      tar: images/task05/task05-sidecar.tar
+      bytes: 231448064
+      tar_sha256: c568295c144ac8bc7aa21a12ff5efc5ddb71a8b210346b934d365e5b64b19045
+      build:
+        context: .
+        dockerfile: tasks/task05/environment/Dockerfile.sidecar
+    - role: verifier
+      tag: chembench/task05-verifier:participant-20260905
+      image_id: sha256:777064b17876aba80b57be1866f9a3da1511fea6b9832cff943463705af23302
+      tar: images/task05/task05-verifier.tar
+      bytes: 231403008
+      tar_sha256: a209883f702d29cdabc156d27450be8ede4746080f7e5237d2d13b83c7e5f7ec
+      build:
+        context: tasks/task05/tasks/task-05-caffeine-water-binding-decomposition/tests
+        dockerfile: Dockerfile
+    '6':
+    - role: environment
+      tag: chembench/task06-environment:participant-20260905
+      image_id: sha256:d6a6498861de859a40232188972386091600c5da214e9084d96bf95f3c5b02d3
+      tar: images/task06/task06-environment.tar
+      bytes: 226610688
+      tar_sha256: 2680ba1a18277d9b8f9c51942442fbe808cf1fc2e005839812b41cf441159a07
+      build:
+        context: tasks/task06/environment
+        dockerfile: Dockerfile.rebuild
+    - role: sidecar
+      tag: chembench/task06-sidecar:participant-20260905
+      image_id: sha256:e5b1b1289a9b9e975ba4807ca4248ea2c0e49dfa5fa61be84dc7cb5184f2d722
+      tar: images/task06/task06-sidecar.tar
+      bytes: 229637632
+      tar_sha256: 3082e4a8d81cad3092b2cf25d41ab1600cbc024566d6e5fd9057fb89e72c25f4
+      build:
+        context: .
+        dockerfile: tasks/task06/environment/Dockerfile.sidecar
+    - role: verifier
+      tag: chembench/task06-verifier:participant-20260905
+      image_id: sha256:7161a35fb9030481c36647e670daef619ae688f3336002700bbb27cf62b444e3
+      tar: images/task06/task06-verifier.tar
+      bytes: 229592576
+      tar_sha256: cc39ee8bf8589453f252b294c176f6fba736c134bd1ff1e833f94649042d568c
+      build:
+        context: tasks/task06/tasks/task-06-terpyridine-coupled-torsion-landscape/tests
+        dockerfile: Dockerfile
+    '18':
+    - role: environment
+      tag: chembench/task18-environment:participant-20260905
+      image_id: sha256:98daa729a677fdfbcacf84fe3078e62ec29d9238fc065953cc9f52b9171a162f
+      tar: images/task18/task18-environment.tar
+      bytes: 226614272
+      tar_sha256: 4a8c89b3e8e59f3800da48bfe4aed7f1a69ba7346d84e51034c254c8e2a42905
+      build:
+        context: tasks/task18/environment
+        dockerfile: Dockerfile.rebuild
+    - role: sidecar
+      tag: chembench/task18-sidecar:participant-20260905
+      image_id: sha256:2eea473bedc1b544c2110789643955f88aa539fd17cbf83bb9c22f27adada4d2
+      tar: images/task18/task18-sidecar.tar
+      bytes: 241059328
+      tar_sha256: 4688779ab9abc8e044cda56cadec2e5b8398276977874eb5d4aac73159a82e19
+      build:
+        context: .
+        dockerfile: tasks/task18/environment/Dockerfile.sidecar
+    - role: verifier
+      tag: chembench/task18-verifier:participant-20260905
+      image_id: sha256:4fe522a8741ce3f8b6e6542dc576f3802b90b151bb4f19cb5757599470f26b36
+      tar: images/task18/task18-verifier.tar
+      bytes: 241014272
+      tar_sha256: b30b2d277a1ac07140919f9239216af7dca04d57b8cb2fe43347cb93a0eb79f1
+      build:
+        context: tasks/task18/tasks/task-18-redox-reorganization/tests
+        dockerfile: Dockerfile
+    '14':
+    - role: environment
+      tag: chembench/task14-environment:2.1.0-r10
+      image_id: sha256:47915ddbeb6ceeafde2b24413ea09b57638376f7b1ce64bb87d78fb0adb8779c
+      tar: images/task14/task14-environment.tar
+      bytes: 313474048
+      tar_sha256: de1b43db49f55649743d722b5799a43fbbb123875f1bd6f60909e02aa0d60d92
+      build:
+        context: tasks/task14/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench/task14-verifier:2.1.0-r10
+      image_id: sha256:e87720835f95b3a17f69a93fe5cfe987f5436b8c2ab2e10f4c7fbe656773eb8d
+      tar: images/task14/task14-verifier.tar
+      bytes: 313590272
+      tar_sha256: 82d504df02f881c01be6045391f0d4fd00706bbd0d115922753633729e31a00c
+      build:
+        context: tasks/task14/tests
+        dockerfile: Dockerfile
+    '15':
+    - role: environment
+      tag: chembench/task15-environment:2.1.0-r10
+      image_id: sha256:0c62d95e08e325bf3c4edf8e06f3f427a3a82cc12930f6444f2b500557e23350
+      tar: images/task15/task15-environment.tar
+      bytes: 313485824
+      tar_sha256: 73ec1536c24eb40f8baf0862190d1d314768786dbe5411e567731321483b6b83
+      build:
+        context: tasks/task15/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench/task15-verifier:2.1.0-r10
+      image_id: sha256:85de19e2b8eff82fff36226d9b2672eea5669b4ced60514d749ecd51d51c70a1
+      tar: images/task15/task15-verifier.tar
+      bytes: 313593856
+      tar_sha256: 673a53aa2578b0d0a8970ad624a5a2cb4eaf8e568328541de877b28fcaa5b7f3
+      build:
+        context: tasks/task15/tests
+        dockerfile: Dockerfile
+    '16':
+    - role: environment
+      tag: chembench/task16-environment:2.1.0-r10
+      image_id: sha256:eafb358e8fd7cc32956b8711b78813ceb7aae24a3dce99aa602fe33978c4f3ab
+      tar: images/task16/task16-environment.tar
+      bytes: 178618880
+      tar_sha256: bc2f4bd9fd0f31a3c715bac43abadb6845b7d57c9d2d5f5893f9149d3fec8e4b
+      build:
+        context: tasks/task16/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench/task16-verifier:2.1.0-r10
+      image_id: sha256:167472bdd83611022cca61ed8a7a7e6023a305ce74434913f2ffd677019c3ebb
+      tar: images/task16/task16-verifier.tar
+      bytes: 178996224
+      tar_sha256: ae65a14d4f7c6c319988c46441cbc30d535731b897dfb67203388c739f565352
+      build:
+        context: tasks/task16/tests
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: chembench/task16-sidecar:2.1.0-r10
+      image_id: sha256:b01b9fb92b6f963ece3cacb71cbf6cfeaa034a88c3287ab1f73a0b0680b49a4b
+      tar: images/task16/task16-sidecar.tar
+      bytes: 178987520
+      tar_sha256: 2a3c534d050e70333486000dd9e19b8e61f93c0d7fb018618e9031776e218a79
+      build:
+        context: frameworks/14-17/docker_build
+        dockerfile: dockerfiles/sidecar.Dockerfile
+        compose: frameworks/14-17/docker_build/docker-compose.build.yaml
+        service: task16-sidecar
+    '17':
+    - role: environment
+      tag: chembench/task17-environment:2.1.0-r10
+      image_id: sha256:948bdd575668bb082a9cc978cb34d7d26507a0a5bb40e4beb3aba1ee7a20b622
+      tar: images/task17/task17-environment.tar
+      bytes: 178610176
+      tar_sha256: c29d30039e12202f9e04c7bd61e9952c5c06c4f6a7e1d16d00a68adbab9bb61f
+      build:
+        context: tasks/task17/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench/task17-verifier:2.1.0-r10
+      image_id: sha256:b1bc7098015a783bfd7200233279b90818de03a9c7eb5f101e36c321d440eeb4
+      tar: images/task17/task17-verifier.tar
+      bytes: 182675968
+      tar_sha256: b7d4642903a6154c4d91ced62e984b8d9eb663d0106ccc53467d32bbd271f213
+      build:
+        context: tasks/task17/tests
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: chembench/task17-sidecar:2.1.0-r10
+      image_id: sha256:17c53ca0fb366a615a36856d2d226d83ba43197e162126805ecca87eb8ec1f28
+      tar: images/task17/task17-sidecar.tar
+      bytes: 182667776
+      tar_sha256: c49014491896dfc63dced05229de5a191d43cdad9c2e94a62d97c3d34589e56a
+      build:
+        context: frameworks/14-17/docker_build
+        dockerfile: dockerfiles/sidecar.Dockerfile
+        compose: frameworks/14-17/docker_build/docker-compose.build.yaml
+        service: task17-sidecar
+    '19':
+    - role: environment
+      tag: matrix-task19-public:20260910
+      image_id: sha256:035435148783202ae172c9813c352e273e7e6dabd77e7b64b11312dc3a5fa700
+      tar: images/task19/task19-environment.tar
+      bytes: 53477888
+      tar_sha256: 8d9336bdea5d2bbc0b005b2a172c480f295ab106c3ed0a0a0e3d04759b4fd5c3
+      build:
+        context: tasks/task19/environment
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: matbench/task19-sidecar:20260910-protocol2
+      image_id: sha256:31e08e860f605a335f20ca8fe0cd65e85d2c4e0f76eecf133be8594a87a314b5
+      tar: images/task19/task19-sidecar.tar
+      bytes: 48552448
+      tar_sha256: 5f09662b3071fd1ee527121541fd9dd88767c9526669c1b818f7c606488d2bfa
+      build:
+        context: tasks/task19
+        dockerfile: tests/sidecar/Dockerfile
+    - role: verifier
+      tag: matbench/task19-verifier:20260910-protocol2
+      image_id: sha256:77750e75574f2bc54d0ce088ad4f1390e99ba51eee4db0fc8e8b82774dc58d49
+      tar: images/task19/task19-verifier.tar
+      bytes: 48555520
+      tar_sha256: 63458964af7f7899ca8cf2c0e0074be4c2815ed62e5d6ba3e30fad06d1d979b6
+      build:
+        context: tasks/task19/tests
+        dockerfile: Dockerfile
+    '20':
+    - role: environment
+      tag: matrix-task20-public:20260910
+      image_id: sha256:9056b5c6ca6b12647407216e7301a5eaecec52c212b35b0fbfbc5cbb681980f4
+      tar: images/task20/task20-environment.tar
+      bytes: 53477376
+      tar_sha256: 42c83f9e1f84cd3263fd2bf85bbea7c71c1b36b34f95a37f7a454b66b662477a
+      build:
+        context: tasks/task20/environment
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: matbench/task20-sidecar:20260910-protocol2
+      image_id: sha256:d00c635fbab88c0a9e472d4e976c725227c0cc8b9b51359cf967be1f475b4502
+      tar: images/task20/task20-sidecar.tar
+      bytes: 48548352
+      tar_sha256: 917941259cb259c0ad33328776d074c8bacea506dc8cffead8bdf6089e39aa6d
+      build:
+        context: tasks/task20
+        dockerfile: tests/sidecar/Dockerfile
+    - role: verifier
+      tag: matbench/task20-verifier:20260910-protocol2
+      image_id: sha256:47d5145438303bf591c288f2a47b223260194a99f76a3f467e4aea87d2871956
+      tar: images/task20/task20-verifier.tar
+      bytes: 48549888
+      tar_sha256: 21a159ba22575211c16ce02e51edba97e1dbe0a00bac76cd8ae915883e1e0c51
+      build:
+        context: tasks/task20/tests
+        dockerfile: Dockerfile
+  organizer:
+    '7':
+    - role: environment
+      tag: matbench/task07-environment:20260910-sixth-review
+      image_id: sha256:2cd3c6747491068fd559a7e697a305314dc3fffaa04f2e3453f7ed2c23621161
+      tar: images/task07/task07-environment.tar
+      bytes: 350813696
+      tar_sha256: 96ccd309f794d310a69ba67cf32933412bd7637032698ff3eefdb837fdd191f6
+      build:
+        context: tasks/task07/environment
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: matbench/task07-sidecar:20260910-sixth-review
+      image_id: sha256:2333d35ba1140b6b69728af51a67aee1fb8d95b5e6bcaa6006b5226a9cf1b918
+      tar: images/task07/task07-sidecar.tar
+      bytes: 351403008
+      tar_sha256: 68d8d1683f7beb19ec5cf37cc507d8a6d5ba35ada10cb79efe43461751fb6fd0
+      build:
+        context: tasks/task07/tests
+        dockerfile: Dockerfile.sidecar
+    '8':
+    - role: environment
+      tag: matbench/task08-environment:20260910-sixth-review
+      image_id: sha256:f00fc6aae6c34ce9afa4ccb60d4b1473c7cd50bf54f2cedd71e55006f03c2db0
+      tar: images/task08/task08-environment.tar
+      bytes: 374049280
+      tar_sha256: 97ac893016a8a8b4abb6e6e30d7e7ae8206ad00964cd08c1a05412c9d04f3445
+      build:
+        context: tasks/task08/environment
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: matbench/task08-sidecar:20260910-sixth-review
+      image_id: sha256:1a2375a7ffed60a7c3696e9d06c0da9ff4324efbc90bb209a58a5210740f5522
+      tar: images/task08/task08-sidecar.tar
+      bytes: 375797248
+      tar_sha256: b1e89d2b7d9eaf8e8fb1dfea3f25fe0ded4a07f73e4a0dd82f663f8bb15c15be
+      build:
+        context: tasks/task08/tests
+        dockerfile: Dockerfile.sidecar
+    '9':
+    - role: environment
+      tag: matbench/task09-environment:20260910-sixth-review
+      image_id: sha256:fc4a7f8124b7f635789c85d8d05b824aa1fa156e84419b2d42947c72255d5459
+      tar: images/task09/task09-environment.tar
+      bytes: 374039040
+      tar_sha256: efe77dd8ae3ca17e1aabded6afecfa2f99ab420ce41d3c1c072203ca2304c5a5
+      build:
+        context: tasks/task09/environment
+        dockerfile: Dockerfile
+    - role: sidecar
+      tag: matbench/task09-sidecar:20260910-sixth-review
+      image_id: sha256:c015d700a362bd5b1c2d98e7289276643b1b4e0e3893bfa65a6a677a72954485
+      tar: images/task09/task09-sidecar.tar
+      bytes: 383243776
+      tar_sha256: 56691b8913f7cbb585b84dd19ba22eff5df164290aae14e608e45afad4777ad2
+      build:
+        context: tasks/task09/tests
+        dockerfile: Dockerfile.sidecar
+  harbor:
+    '1':
+    - role: environment
+      tag: harbor-migration/task01:environment
+      image_id: sha256:a7b3a5226180502d53036680aa0a87c275810e15ee348aa1d78a27756ef59231
+      tar: images/task01/task01-environment.tar
+      bytes: 953507328
+      tar_sha256: 636da6b7077c861a2d62c278cc1470e01a8f002db84138d1534b9c6172f255ad
+      build:
+        context: tasks/task01/tasks/task-01-jarvis-2d-exfoliation-candidate/environment
+        dockerfile: Dockerfile.rebuild
+    - role: verifier
+      tag: harbor-migration/task01:verifier
+      image_id: sha256:ea61a7a0c112acc80c2fc32581a61a37d5daa896a6c763ae9e42b1d6b7d807af
+      tar: images/task01/task01-verifier.tar
+      bytes: 954863616
+      tar_sha256: d57f2601277d0ed5264ad0031531ddca0659ea8db762fc1e470841b85eff8d3b
+      build:
+        context: tasks/task01/tasks/task-01-jarvis-2d-exfoliation-candidate/tests
+        dockerfile: Dockerfile.rebuild
+    '2':
+    - role: environment
+      tag: harbor-migration/task02:environment
+      image_id: sha256:402d8946feec64505a62d1f290ea0f293d6ce5a0373052ed388f84fca9b4c174
+      tar: images/task02/task02-environment.tar
+      bytes: 1451036672
+      tar_sha256: 3800410ebfe45937c765d834d0f3af34521a9ff76411245559140a9ce28307e5
+      build:
+        context: tasks/task02/tasks/task-02-oligothiophene-smd-sapt/environment
+        dockerfile: Dockerfile.rebuild
+    - role: verifier
+      tag: harbor-migration/task02:verifier
+      image_id: sha256:9754f9f4418c05c47b733bb7d4b3b90015fa0752fc5318561ed858c2e0ae125a
+      tar: images/task02/task02-verifier.tar
+      bytes: 1451123200
+      tar_sha256: 159320b0f6ce37bababb45aa519b5e99f455787420bc87c1e485ade8b3cf5b60
+      build:
+        context: tasks/task02/tasks/task-02-oligothiophene-smd-sapt/tests
+        dockerfile: Dockerfile.rebuild
+    '3':
+    - role: environment
+      tag: harbor-migration/task03:environment
+      image_id: sha256:a38be5ea0f40d38d245b50c32eb8a2c2f798979ed36466a65f2c31780bf610ab
+      tar: images/task03/task03-environment.tar
+      bytes: 334743040
+      tar_sha256: 484c667be6e11edbba52029ac8ed4f9c5df5738e95f920d357651860fce4bd28
+      build:
+        context: tasks/task03/tasks/task-03-five-ring-xtb-dipro-marcus/environment
+        dockerfile: Dockerfile.rebuild
+    - role: verifier
+      tag: harbor-migration/task03:verifier
+      image_id: sha256:3bbba0933b85f890252697522f750e2d6156289bf72d715385eadded8049c471
+      tar: images/task03/task03-verifier.tar
+      bytes: 334807552
+      tar_sha256: 88aebd216acca6b5b90d28a56ebcd0174228bfaac43912da77c1e4cc58492de9
+      build:
+        context: tasks/task03/tasks/task-03-five-ring-xtb-dipro-marcus/tests
+        dockerfile: Dockerfile.rebuild
+  revision6:
+    '10':
+    - role: environment
+      tag: chembench-task-10-matbench-bandgap-pipeline-env:latest
+      image_id: sha256:8c5bd8f29ebdcc3f9b6df88e9feaa0d6f919bade03eed507a174142c2a16fa96
+      tar: images/task10/task10-environment.tar
+      bytes: 248214016
+      tar_sha256: 142af49aed06a845dd87a518889d49a255a8cd5f5a149d8b78f5618857e07ef7
+      build:
+        context: tasks/task10/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench-task-10-matbench-bandgap-pipeline-tests:latest
+      image_id: sha256:96ec8f8de7a92585dff6123e801e2a9a31acadb1451586aba0dc4c1999b0d99c
+      tar: images/task10/task10-verifier.tar
+      bytes: 248237056
+      tar_sha256: 99c6e5f420f79acdc15b9cf651133bfd07d6235446305c718ca3a59516faf87f
+      build:
+        context: tasks/task10/tests
+        dockerfile: Dockerfile
+    '11':
+    - role: environment
+      tag: chembench-task-11-lithium-electrolyte-design-env:latest
+      image_id: sha256:bf363de3a0fc0af789efda3da3a48d860a93a200fef4be0ad5ef750512175187
+      tar: images/task11/task11-environment.tar
+      bytes: 300699648
+      tar_sha256: 1f9c43592796ff1d7687def6fadc53e8f397946ee8f19860ccc2c3c240eac508
+      build:
+        context: tasks/task11/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench-task-11-lithium-electrolyte-design-tests:latest
+      image_id: sha256:49913896d870cab1ab8224c5503ac3f0eaa1c74986d46443a67141980019f741
+      tar: images/task11/task11-verifier.tar
+      bytes: 300717056
+      tar_sha256: cdfd697f03d13103f24683dc70c33f4fe60c90dfc745272ae843a0f8661cdfdc
+      build:
+        context: tasks/task11/tests
+        dockerfile: Dockerfile
+    '12':
+    - role: environment
+      tag: chembench-task-12-pybamm-fast-charge-env:latest
+      image_id: sha256:ea8dcfbf47fcc0c56f84680e5ef39c8409262783093d1a9319c306a73e9b4adf
+      tar: images/task12/task12-environment.tar
+      bytes: 318621184
+      tar_sha256: 8d9da630d7ec6c616268bf256c8dc393f35ab855f71910a2ec8d429cf1bb717f
+      build:
+        context: tasks/task12/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench-task-12-pybamm-fast-charge-tests:latest
+      image_id: sha256:1d5160151554d28cffc8241f5ba2b06efe41a1d1b150a8cc238c25e4e419ab87
+      tar: images/task12/task12-verifier.tar
+      bytes: 318639104
+      tar_sha256: 47e260691de26cfa9b7ab95d86e7a9c292bf15b43f05fe3d26006fe952c250df
+      build:
+        context: tasks/task12/tests
+        dockerfile: Dockerfile
+    '13':
+    - role: environment
+      tag: chembench-task-13-retrosynthesis-route-env:latest
+      image_id: sha256:898427732077c4d5cb05d43d2764146ba89059ed6f1b9d3fa992458332308990
+      tar: images/task13/task13-environment.tar
+      bytes: 324248576
+      tar_sha256: f8d6420a61dc758cd6dcc65eca623c8d3508f7189e9c02834aefddbac4a73e29
+      build:
+        context: tasks/task13/environment
+        dockerfile: Dockerfile
+    - role: verifier
+      tag: chembench-task-13-retrosynthesis-route-tests:latest
+      image_id: sha256:92be54b37d215aa24dd8380a0045121b9e1050993699ee50e18c5a00028ea932
+      tar: images/task13/task13-verifier.tar
+      bytes: 324268032
+      tar_sha256: 46e21997fd08ce6ccc9972821c921f924cf3743389232f8859d5fcbd9aa683fa
+      build:
+        context: tasks/task13/tests
+        dockerfile: Dockerfile
+shared_images:
+- role: harbor-runner-20260906
+  tag: matbench/harbor-runner:20260906
+  image_id: sha256:bcb8e5501bba269c6d73c9a6aacf98c130fa8f0ad1a90b37f50d41ee8828eb82
+  tar: images/shared_images/harbor-runner-20260906.tar
+  bytes: 511277056
+  tar_sha256: 122e1c8c5dd0bb8a100205809f0733ab22cc9f9c4ad4a64370062f790be284b2
+- role: gost-offline-pinned-amd64
+  tag: gogost/gost:offline-pinned-amd64
+  image_id: sha256:00e6df488e7885468873cd44692a73b8c931445159c4bf3a9db30729a4c828ae
+  tar: images/shared_images/gost-offline-pinned-amd64.tar
+  bytes: 19397632
+  tar_sha256: 520ba3de9a1c8ba3af0254ffd7acc40dac186c879557948dc721ad3ac9f2e981
+- role: egress-control-sidecar-38d5fad35d5daec4
+  tag: harbor-prebuilt:harbor-docker-egress-control-sidecar--38d5fad35d5daec4
+  image_id: sha256:12e2274564fa57c95a442bd56eade17a7598c2fad60df74b0af8698e7923f786
+  tar: images/shared_images/egress-control-sidecar-38d5fad35d5daec4.tar
+  bytes: 19384832
+  tar_sha256: 4e2038bd3f23c73e3a0b7ec254e753eb8e9cec9078b439d85e0fb1bea24b9966
+- role: egress-control-sidecar-b1e6760734a9e6f6
+  tag: harbor-prebuilt:harbor-docker-egress-control-sidecar--b1e6760734a9e6f6
+  image_id: sha256:1c19439a13b70d18d0fb51f6c884688304273d41d516455e8c2120fa6743103f
+  tar: images/shared_images/egress-control-sidecar-b1e6760734a9e6f6.tar
+  bytes: 19384832
+  tar_sha256: cb26a5f5f25fe8aa1c81fa40ab479728a20ad90afc124dc1dfeb34340c81cb65
+- role: egress-control-sidecar-fa5b36b768f368d7
+  tag: harbor-prebuilt:harbor-docker-egress-control-sidecar--fa5b36b768f368d7
+  image_id: sha256:f04cd3e7e907ccbd17f5fcfea3865f5e434f95476d3d0b09341c4858fd394421
+  tar: images/shared_images/egress-control-sidecar-fa5b36b768f368d7.tar
+  bytes: 19384832
+  tar_sha256: ac1fb354b748c64c4ce5a32693e5620fd2e3fb3e6bbd04b51a7c07c1de850af8
+- role: python-3.11-slim
+  tag: python:3.11-slim
+  image_id: sha256:9534e5a8e315485d4061ed659af0fd78a284c015f9b73661b41d6bab25604534
+  tar: images/shared_images/python-3.11-slim.tar
+  bytes: 50758144
+  tar_sha256: dc2d00b4616377f307d5ec4f9195ec04e53377fc94f3939ab30fb0631a1a9082
+- role: micromamba-2.8.1
+  tag: mambaorg/micromamba:2.8.1
+  image_id: sha256:fb18405d6004af757a38ec498a078240b4fd5549146990a484c28bb7e78aace4
+  tar: images/shared_images/micromamba-2.8.1.tar
+  bytes: 37604352
+  tar_sha256: 6e32cfb5061c810d4b574ac1814b66dc4830ab56fc77d2e51c22bdd9797c673b
+- role: harbor-runner-2.1.0-r10
+  tag: chembench/harbor-runner:2.1.0-r10
+  image_id: sha256:b86a14e69b0a3d43d9bf67f1981cc8785a36900a496ad0b9c0f00abadb62eb65
+  tar: images/shared_images/harbor-runner-2.1.0-r10.tar
+  bytes: 317149696
+  tar_sha256: 0e8d47be3e3667113bf5807a6f37f61af5161f56c8590696aa1901212cf95bc6

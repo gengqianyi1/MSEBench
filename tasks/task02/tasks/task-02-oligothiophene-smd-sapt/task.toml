@@ -1,0 +1,66 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+
+[task]
+name = "msebench/task-02-oligothiophene-smd-sapt"
+version = "2.1.2"
+description = "Oligothiophene SMD-SAPT solvent interaction analysis"
+authors = [{ name = "Tian Shuangyan" }]
+keywords = ["computational_chemistry", "msebench", "harbor"]
+
+[metadata]
+source_task_id = "task_02_oligothiophene_smd_sapt"
+source_version = "1.3"
+domain = "computational_chemistry"
+reference_llm_calls = 999999
+legacy_execution_mode = "native_runner"
+legacy_grader_version = "1.3-postrun-private-replay"
+migration_status = "harbor-ready"
+parity_validated = true
+protocol_decoupled = true
+protocol_validated = true
+scoring_validated = true
+private_boundary_validated = true
+oracle_scientifically_validated = true
+schema_validated = true
+build_validated = true
+leakage_validated = true
+parity_score_tolerance = 1e-9
+required_artifacts = ["final_answer.json", "result.json", "native_final_report.json", "stage_A_audit.json", "plan.json", "stage_B_bulk.json", "stage_C_local.json", "revisions.json", "structures", "logs", "seed_evidence"]
+
+release_eligible = true
+oracle_status = "verified_harbor"
+
+[agent]
+timeout_sec = 21600.0
+
+[verifier]
+timeout_sec = 21600.0
+environment_mode = "separate"
+
+[environment]
+network_mode = "no-network"
+# Reuse the sealed WSL-built participant image; Harbor must not rebuild from
+# micromamba (which would require network access and create an untracked image).
+docker_image = "harbor-migration/task02:environment"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 16384
+storage_mb = 40960
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import numpy, scipy, rdkit, pyscf; from pyscf.solvent import smd' && xtb --version"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 16384
+storage_mb = 40960
+gpus = 0

@@ -1,0 +1,14 @@
+# Build with the repository root as context after loading/building the verifier.
+ARG VERIFIER_IMAGE=chembench/task04-verifier:coordinate-2.1.1-20260912
+FROM ${VERIFIER_IMAGE}
+USER root
+COPY src/msebench/templates/sidecar/workspace_sidecar_server.py /workspace_sidecar_server.py
+COPY tasks/task04/tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/ /task/
+COPY tasks/task04/tasks/task-04-histidine-microstate-ensemble/tests/private_suite_adapter.py /tests/private_suite_adapter.py
+COPY tasks/task04/tasks/task-04-histidine-microstate-ensemble/tests/protocol_grader.py /tests/protocol_grader.py
+RUN test -x /usr/bin/bwrap && mv /usr/bin/bwrap /usr/bin/bwrap.real && mkdir -p /organizer_evidence && chmod 777 /organizer_evidence
+COPY tasks/task04/deploy/bwrap /usr/bin/bwrap
+RUN chmod 755 /usr/bin/bwrap
+WORKDIR /workspace
+ENTRYPOINT ["python", "/workspace_sidecar_server.py"]
+CMD []

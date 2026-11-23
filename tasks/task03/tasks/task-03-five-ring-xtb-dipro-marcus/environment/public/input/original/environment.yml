@@ -1,0 +1,12 @@
+name: five-ring-bench
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.20
+  - numpy=2.2.6
+  - pyyaml=6.0.3
+  - rdkit=2026.03.1
+  - xtb=6.7.1=h8876d29_4
+  - pip
+  - pip:
+      - openai==2.43.0

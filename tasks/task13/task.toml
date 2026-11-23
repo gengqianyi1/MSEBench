@@ -1,0 +1,55 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+
+[task]
+name = "msebench/task-13-retrosynthesis-route"
+version = "2.1.0"
+description = "Building-block-constrained forward synthesis route validation"
+authors = []
+keywords = ["cheminformatics", "msebench", "harbor"]
+
+[metadata]
+author_status = "confirmed_offline"
+source_task_id = "task_13_retrosynthesis_route"
+source_version = "2.0.2"
+domain = "cheminformatics"
+legacy_execution_mode = "agent"
+legacy_grader_version = "2.0.2-public-contract-no-target-double-count"
+migration_status = "harbor-ready-candidate"
+protocol_decoupled = true
+parity_validated = false
+required_artifacts = ["final_answer.json"]
+
+release_eligible = true
+oracle_status = "verified_offline"
+
+[agent]
+timeout_sec = 3000.0
+
+[verifier]
+timeout_sec = 3000.0
+environment_mode = "separate"
+
+[environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import rdkit, numpy'"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0

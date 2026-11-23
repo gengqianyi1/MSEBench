@@ -1,0 +1,191 @@
+task_id: "q1_multiobjective_mol_design"
+task_name: "Coupled descriptor-window molecular optimization with compensating edits"
+
+# Prompt identity. `question.md` IS the prompt, so any edit to it -- one character counts -- makes
+# every existing trajectory incomparable and requires a re-run, not a re-score. The version string
+# is bumped by hand when that happens; the digest is checked automatically by
+# grader/scripts/check_consistency.py and is recorded into every run_summary.json, so a trajectory
+# produced against a different question text cannot quietly enter a calibration table.
+prompt_version: "A4-2026-08-01"
+question_sha256: "57365aec5dbf6f2d968e6791a78148afe37e4a3b6d68a89e6661080687355e9e"
+
+# ================================================================================================
+# PUBLIC (model-visible) task definition.
+#
+# There is deliberately NO reference block and NO score-band table here. Both used to live in
+# this file, which is the file the run harness loads; the second-round review (姚涵予 #2,
+# 田双燕 §2.5) required the reference answer and the scoring anchors to be isolated from the
+# model-visible side. They now live in `grader/reference/reference_target.yaml`, which nothing on
+# this side reads. `scripts/package_for_delivery.py` refuses to build the public archive if the
+# reference structure, the reference value or a band anchor can be grepped out of any public file.
+# ================================================================================================
+
+# Starting molecule: 1-(3-amino-3-oxopropyl)-1-ethyl-3-(4-isopropyl-3-methoxyphenyl)urea.
+#
+# It was NOT hand-picked: it was selected mechanically by screening every feasible member of a
+# six-slot aryl-urea library as a candidate start, over a grid of MW/LogP/TPSA window widths and
+# every similarity floor on a 0.02 grid, scored against the difficulty gates and a reachability
+# criterion with the shipped evaluator. The screen, its library size, the gate values and the
+# reachability statistics of the selected instance are grader-side; see
+# grader/answers/start_molecule_screen.md.
+#
+# WHY THE SELECTION STATISTICS ARE NOT REPEATED HERE (second round, 2026-08-09). This file ships in
+# the public archive. The comment used to record how many single-slot edits are feasible-and-
+# improving, how many feasible improving designs exist and how many score bands are populated. Those
+# are the same class of number that review 15-P1 #1 required out of the sibling problems' question
+# text: they tell a reader how dense the scoring set is and how far a one-step edit can get, which
+# narrows the search without teaching any chemistry. question.md never carried them; this comment
+# did, and an agent with file access reads the package, not just the prompt.
+#
+# What stays, because the model is shown all of it in question.md anyway:
+#   MW    307.39 in [280, 320]
+#   LogP   2.548 in [2.0, 3.0]
+#   TPSA  84.66 in [30, 100]
+#   QED    0.8115
+# The primary amide on the propyl side chain is what holds QED down (two donors, three rotatable
+# bonds), but it carries a large share of the mass and the polar surface. Removing it raises QED and
+# drops MW toward the floor while pushing LogP toward the ceiling, so a gain has to be paid for with
+# a second, offsetting edit.
+# The previous release of this problem used the same starting molecule as another QED problem in
+# this suite; that is what this instance replaces (田双燕 §2.4).
+start_smiles: "CCN(CCC(N)=O)C(=O)Nc1ccc(C(C)C)c(OC)c1"
+
+optimization_target:
+  name: "QED"
+  direction: "maximize"
+  note: "Maximize QED subject to ALL hard constraints, including the narrow MW/LogP/TPSA windows."
+
+constraints:
+  valid_smiles: true
+  admissibility:
+    descriptor: "src/validation.py"
+    rule: "exactly one neutral organic molecule; no salts, mixtures, ions, isotopes, atom maps, wildcards, radicals or non-organic elements"
+  molecular_weight:
+    descriptor: "RDKit Descriptors.MolWt"
+    min: 280.0
+    max: 320.0
+  logp:
+    descriptor: "RDKit Crippen.MolLogP"
+    min: 2.0
+    max: 3.0
+  tpsa:
+    descriptor: "RDKit rdMolDescriptors.CalcTPSA"
+    min: 30.0
+    max: 100.0
+  sa_score:
+    descriptor: "RDKit Contrib SA_Score (Ertl & Schuffenhauer)"
+    max: 3.5
+    note: "Synthetic accessibility; 1=easy, 10=hard. Candidate must be <= max."
+  no_structural_alerts:
+    descriptor: "RDKit FilterCatalog PAINS + Brenk + NIH"
+    max_alerts: 0
+    note: "Candidate must trigger zero alerts across all three catalogs."
+  similarity:
+    descriptor: "RDKit Morgan fingerprint Tanimoto similarity"
+    method: "morgan_tanimoto"
+    radius: 2
+    n_bits: 2048
+    # The floor is an EDIT BUDGET, not a formality: Tanimoto falls as more of the molecule is
+    # rewritten, so it caps how much of the scaffold a candidate may replace. 0.44 is the value the
+    # mechanical screen selected for this starting molecule.
+    min: 0.44
+
+iteration:
+  max_rounds: 5
+  candidates_per_round: 1
+
+  # ----------------------------------------------------------------------------------------------
+  # What happens when a round produces no parseable candidate (round-3 audit, 刘丞军 P1).
+  #
+  # The second round shipped a threshold -- "a run is voided once it loses 2 or more rounds" -- that
+  # was written down AFTER the scores were seen. That is backwards: a degradation rule chosen once
+  # the results are known can always be set where it flatters the result. The rule below is declared
+  # here, in question.md, in the grader output and in the comparison layer BEFORE any run is judged,
+  # and it is the same rule for every model.
+  #
+  # Three separate facts, deliberately not collapsed into one:
+  #
+  #   1. SCORE. Unchanged. The score is the best usable candidate over the whole trajectory. A lost
+  #      round removes one attempt and nothing else, so the score of a short run is a LOWER BOUND on
+  #      what that model would have scored with all five rounds -- best-of-N is non-decreasing in N.
+  #      A lower bound is still a real measurement; it is just not a two-sided one.
+  #   2. PROTOCOL COMPLETENESS. A separate verdict, always reported, never inferred from the score:
+  #      COMPLETE only when all `max_rounds` rounds carry a parseable candidate. Anything else is
+  #      INCOMPLETE_MULTI_ROUND and must be labelled as such wherever the score appears (§16.6).
+  #   3. RE-RUN. An operational decision, taken on the completeness verdict, not on the score.
+  #      `rerun_required_missing_rounds` below is the declared trigger.
+  #
+  # An INCOMPLETE run is NOT discarded and NOT recorded as 0 -- §10 forbids letting an
+  # infrastructure loss enter the science column. It is reported, labelled, and excluded from any
+  # claim that requires a complete multi-round trajectory (model ranking, "complete three-model
+  # evidence", saturation judgements).
+  round_completeness:
+    complete_requires_all_rounds: true
+    # A round counts as carrying a candidate when the trajectory holds a parseable SMILES string for
+    # it. Whether that molecule is admissible, feasible or an improvement is a scientific question
+    # handled by the scoring rule; it has nothing to do with protocol completeness.
+    round_counts_when: "trajectory holds a parseable candidate SMILES for that round"
+    missing_round_causes:
+      - LLM_CALL_FAILURE      # the provider never returned usable content for that round
+      - UNPARSEABLE_SUBMISSION  # content returned, no candidate object recoverable from it
+      - NO_ROUND_RECORD       # the round is absent from the trajectory entirely
+    # Declared in advance, applied to every model identically.
+    rerun_required_missing_rounds: 1
+    score_of_incomplete_run: "reported as a lower bound in details.json, labelled INCOMPLETE_MULTI_ROUND"
+    harbor_reward_of_incomplete_run: 0.0
+    reward_rule: >-
+      The instruction makes all five rounds mandatory, so completeness gates the numeric
+      reward instead of merely labelling it. When protocol_completeness.verdict is not
+      COMPLETE the verifier writes reward 0.0, whatever the scientific score is. The
+      scientific score is still computed and kept in details.json as a lower bound,
+      because that is the right diagnostic for how far a run got before it broke -- but a
+      lower bound is not a leaderboard number, and a run that stops at round 3 must not
+      be indistinguishable from one that spent its whole measurement budget. This rule is
+      published here, before any run, so it is a declared protocol and not a threshold
+      picked after seeing scores.
+    incomplete_run_may_support:
+      - "this model reached at least this score"
+      - "this instance is not unreachable"
+    incomplete_run_may_not_support:
+      - "model ranking"
+      - "complete three-model difficulty evidence"
+      - "saturation or non-saturation of the instance"
+
+scoring:
+  total_points: 100
+  # Constraint satisfaction is a GATE, not a scoring category: an infeasible design contributes
+  # nothing and a feasible one earns no bonus for being feasible. Per-constraint flags are still
+  # computed and reported as diagnostics. The band table that turns achievement into points is
+  # grader-side only.
+  constraint_points: 0
+  optimality_points: 100
+  performed_by: "grader/scripts/score_run.py"
+
+feedback:
+  # Reduced-bandwidth feedback: the evaluator returns COMPUTED VALUES only.
+  # It does not return per-constraint pass/fail flags, does not restate the target windows,
+  # and does not tell the model whether a submission counted as a success. The question file
+  # states every window, so the model has complete information but must do its own bookkeeping.
+  return_numeric_values: true
+  return_constraint_flags: false
+  return_success_verdict: false
+  return_target_windows: false
+  return_best_so_far_qed: true
+
+positioning:
+  what_is_measured: >
+    Constrained multi-site molecular editing: raising the RDKit QED surrogate under three property
+    windows, a synthetic-accessibility cap, a zero-structural-alert requirement and a Morgan
+    fingerprint similarity floor that acts as an edit budget, over five rounds of numeric feedback.
+  what_is_NOT_measured: >
+    Potency, selectivity, ADMET, developability or real synthetic feasibility. No experimental or
+    simulated assay data of any kind is involved, and no property here is a measure of candidate
+    quality in a drug programme.
+  data_provenance: >
+    Every number is computed deterministically by RDKit from the submitted SMILES string: MolWt,
+    Crippen MolLogP, CalcTPSA, QED.qed, the RDKit Contrib SA_Score model, the PAINS/Brenk/NIH
+    FilterCatalogs and Morgan/Tanimoto similarity. Nothing is fitted or looked up for this task.
+  scope_of_conclusions: >
+    A score says how close a model got to the best design that an offline enumeration of this
+    chemotype found, under the stated constraints. It supports no claim about real-world molecular
+    design performance.

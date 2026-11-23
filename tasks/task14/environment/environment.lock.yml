@@ -1,0 +1,11 @@
+name: chembench
+channels:
+- conda-forge
+dependencies:
+- python=3.10.19
+- rdkit=2025.9.6
+- numpy=2.2.6
+- pyyaml=6.0.3
+- pip
+- pip:
+  - openai==2.15.0

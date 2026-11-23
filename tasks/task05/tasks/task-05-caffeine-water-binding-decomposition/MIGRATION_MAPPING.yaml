@@ -1,0 +1,36 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-05-caffeine-water-binding-decomposition
+source:
+  path: scientific-delivery/revised_tasks/task_05
+  version: 1.15.0
+  sha256: 765896b817ee2c7a5b90ad08d20db1944a0e1ae7a89eab85056a7b0ee1f22893
+files:
+  - source: tasks/task_05/input/original/question.md
+    destination: environment/public/question.md
+    handling: transformed
+    source_sha256: 3fcb1fddee58fb1d96f419ea263b107c2be19d9554ab516569b8653bc636596d
+    destination_sha256: 42e445cf17739adfd77907aca1c791ba9e2c0ce53c0c7dc59e1165b11f073c7a
+    reason: Correct finalization turns from two to the frozen four-turn task configuration.
+  - source: tasks/task_05/private_data/evaluator_bundle/src/evaluator/goal_driven.py
+    destination: tests/task_snapshot/source_package/tasks/task_05/private_data/evaluator_bundle/src/evaluator/goal_driven.py
+    handling: transformed
+    source_sha256: 9c810f1cf0374f1490d49c63a224bf948174c16e0631f4c331b25c073b0d0491
+    destination_sha256: b3eace9b39e59e1a3ece7e0109989149bbe069de5a5ea5eb274a578f3bba38ae
+    reason: Add a budget-feasible complete-reference alternative to the existing broad-screening coverage route.
+  - source: tasks/task_05/private_data/evaluator_bundle/src/evaluate.py
+    destination: tests/task_snapshot/source_package/tasks/task_05/private_data/evaluator_bundle/src/evaluate.py
+    handling: transformed
+    source_sha256: 6a22d4d3dada63907c2e24bee5d8f6e39636b61e2b166755da951c9aa6a3fab9
+    destination_sha256: eaa571cf482085088e7ff2339d9f96c1b627a8991240e1d4bdb05e5f8b9226fd
+    reason: Enforce the frozen whole-task zero gate only for a missing, malformed, or schema-invalid final answer.
+  - source: golden/task_05 and private evaluator bundle
+    destination: tests/task_snapshot/organizer_private and source_package
+    handling: organizer-only
+    source_sha256: 1272f5e4fe9d61515701ef3d6b5b9aa2c8ece077004882934705876a4aa57297
+    destination_sha256: 8621db1db85bccf066f5d0e89c3e679361fb90a2914a2d9e00b25ae554864739
+    reason: Golden, reference and scorer remain outside the participant workspace.
+author_approval:
+  name: Wei Chengrui
+  date: 2026-08-29
+  protocol_equivalent: confirmed_offline
+  scoring_equivalent: confirmed_offline

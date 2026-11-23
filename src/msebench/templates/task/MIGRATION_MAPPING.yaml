@@ -1,0 +1,18 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-XX-replace-me
+source:
+  path: REQUIRED
+  version: REQUIRED
+  sha256: REQUIRED
+files:
+  - source: REQUIRED
+    destination: REQUIRED
+    handling: copied  # copied | transformed | private-only | organizer-only | excluded
+    source_sha256: REQUIRED
+    destination_sha256: REQUIRED
+    reason: REQUIRED
+author_approval:
+  name: REQUIRED
+  date: REQUIRED
+  protocol_equivalent: pending
+  scoring_equivalent: pending

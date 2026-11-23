@@ -1,0 +1,34 @@
+schema: msebench.task-images/1.0
+task: '5'
+family: chembench
+images:
+- role: environment
+  tag: chembench/task05-environment:participant-20260905
+  image_id: sha256:f6ab005fa0005ba26053c77cf279987b73dda2487cfa03dcebd5b11a48058447
+  tar: images/task05/task05-environment.tar
+  bytes: 226630144
+  tar_sha256: f707201221507ca444376034df15283b6492304cf33ccb04fa3e140dc63f86a5
+  build:
+    context: tasks/task05/environment
+    dockerfile: Dockerfile.rebuild
+- role: sidecar
+  tag: chembench/task05-sidecar:participant-20260905
+  image_id: sha256:63a223accea0380900a6f82912fb5500fa1e35be2dba8d10fa84910cbb1165d2
+  tar: images/task05/task05-sidecar.tar
+  bytes: 231448064
+  tar_sha256: c568295c144ac8bc7aa21a12ff5efc5ddb71a8b210346b934d365e5b64b19045
+  build:
+    context: .
+    dockerfile: tasks/task05/environment/Dockerfile.sidecar
+- role: verifier
+  tag: chembench/task05-verifier:participant-20260905
+  image_id: sha256:777064b17876aba80b57be1866f9a3da1511fea6b9832cff943463705af23302
+  tar: images/task05/task05-verifier.tar
+  bytes: 231403008
+  tar_sha256: a209883f702d29cdabc156d27450be8ede4746080f7e5237d2d13b83c7e5f7ec
+  build:
+    context: tasks/task05/tasks/task-05-caffeine-water-binding-decomposition/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

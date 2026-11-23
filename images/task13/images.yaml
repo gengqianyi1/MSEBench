@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '13'
+family: revision6
+images:
+- role: environment
+  tag: chembench-task-13-retrosynthesis-route-env:latest
+  image_id: sha256:898427732077c4d5cb05d43d2764146ba89059ed6f1b9d3fa992458332308990
+  tar: images/task13/task13-environment.tar
+  bytes: 324248576
+  tar_sha256: f8d6420a61dc758cd6dcc65eca623c8d3508f7189e9c02834aefddbac4a73e29
+  build:
+    context: tasks/task13/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench-task-13-retrosynthesis-route-tests:latest
+  image_id: sha256:92be54b37d215aa24dd8380a0045121b9e1050993699ee50e18c5a00028ea932
+  tar: images/task13/task13-verifier.tar
+  bytes: 324268032
+  tar_sha256: 46e21997fd08ce6ccc9972821c921f924cf3743389232f8859d5fcbd9aa683fa
+  build:
+    context: tasks/task13/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

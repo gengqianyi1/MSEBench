@@ -1,0 +1,10 @@
+name: chembench-task-06
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - xtb=6.7.1
+  - numpy
+  - pyyaml
+  - jsonschema
+  - psutil

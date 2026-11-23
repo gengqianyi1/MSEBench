@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chembench.example/schemas/harness-contract.schema.json",
+  "title": "MSEBench Harness Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "task_id", "protocol", "budgets", "ownership", "release_gates"],
+  "properties": {
+    "schema_version": {"const": "chembench-harness-contract/1.0"},
+    "task_id": {"type": "string", "pattern": "^task-[0-9]{2}-[a-z0-9-]+$"},
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "implementation_status", "state_file"],
+      "properties": {
+        "type": {"enum": ["single_step", "multi_round", "controlled_tool", "controlled_suite", "adaptive_campaign", "staged_campaign"]},
+        "implementation_status": {"enum": ["implemented", "partial", "author_input_required"]},
+        "state_file": {"const": "/workspace/protocol_state.json"},
+        "max_rounds": {"type": "integer", "minimum": 1}
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "required": ["actions"],
+      "additionalProperties": {
+        "oneOf": [
+          {"type": "integer", "minimum": 0},
+          {"type": "null"},
+          {"type": "boolean"}
+        ]
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["immutable", "author_editable", "author_required"],
+      "properties": {
+        "immutable": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "author_editable": {"type": "array", "items": {"type": "string"}},
+        "author_required": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "author_confirmations": {
+      "type": "object",
+      "additionalProperties": {"enum": ["pending", "confirmed", "rejected", "confirmed_harbor"]}
+    },
+    "confirmation_evidence": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
+    "release_gates": {
+      "type": "object",
+      "additionalProperties": {"type": "boolean"},
+      "required": ["schema", "build", "oracle", "protocol_decoupled", "parity", "leakage", "release_eligible"]
+    }
+  }
+}

@@ -1,0 +1,51 @@
+schema_version: "1.0"
+
+# Copy this file to configs/models.yaml when running real providers. Credentials
+# are environment-variable names only; secret values must never appear here.
+models:
+  glm:
+    provider: "siliconflow"
+    transport: "openai_compatible"
+    model: "zai-org/GLM-5.2"
+    base_url: "https://api.siliconflow.cn/v1"
+    api_key_env: "GJLD_API_KEY"
+    temperature: 0
+    max_tokens: 4096
+    timeout_seconds: 180
+    max_retries: 2
+    enabled: true
+    provider_options:
+      seed: 20260804
+
+  deepseek:
+    provider: "siliconflow"
+    transport: "openai_compatible"
+    model: "deepseek-ai/DeepSeek-V4-Pro"
+    base_url: "https://api.siliconflow.cn/v1"
+    api_key_env: "GJLD_API_KEY"
+    temperature: 0
+    max_tokens: 4096
+    timeout_seconds: 180
+    max_retries: 2
+    enabled: true
+    provider_options:
+      seed: 20260804
+
+  kimi:
+    provider: "siliconflow"
+    transport: "openai_compatible"
+    model: "Pro/moonshotai/Kimi-K2.6"
+    base_url: "https://api.siliconflow.cn/v1"
+    api_key_env: "GJLD_API_KEY"
+    temperature: 0
+    max_tokens: 4096
+    timeout_seconds: 180
+    max_retries: 2
+    enabled: true
+    provider_options:
+      seed: 20260804
+
+provider_documentation:
+  quickstart: "https://docs.siliconflow.cn/en/userguide/quickstart"
+  function_calling: "https://docs.siliconflow.cn/en/userguide/guides/function-calling"
+  chat_completions: "https://docs.siliconflow.cn/en/api-reference/chat-completions/chat-completions"

@@ -1,0 +1,15 @@
+task_id: five_ring_xtb_dipro_marcus
+task_dir: tasks/five_ring_xtb_dipro_marcus
+llm:
+  api_config_file: configs/api_config_qwen.json
+run:
+  max_rounds: 5
+  output_root: runs
+  run_prefix: five_ring_xtb_dipro_marcus_vendor3-qwen3.5-plus
+parsing:
+  allow_markdown_fence: true
+logging:
+  trajectory_filename: trajectory.jsonl
+  llm_debug_filename: llm_api_debug.jsonl
+  conversation_markdown_filename: conversation.md
+  final_report_filename: final_report.json

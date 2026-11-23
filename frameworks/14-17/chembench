@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# Command entry point for THIS package (tasks 14-17). Every subcommand here works on the shipped
+# files alone; commands for tasks that are not in this package were removed rather than left to fail.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cmd="${1:-help}"; shift || true
+# PYTHONDONTWRITEBYTECODE: the checks import each task's own grader code, which would otherwise drop
+# __pycache__ into tasks/*/ -- changing the Harbor checksum of a task just because it was checked,
+# and making datasets/*/dataset.toml digests disagree with the tree. That happened on 2026-09-13.
+export PYTHONDONTWRITEBYTECODE=1
+py() { PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python "$@"; }
+case "$cmd" in
+  # ---- no Docker needed ---------------------------------------------------------------------
+  validate)               py "$ROOT/scripts/validate_structure.py" "$ROOT/tasks" ;;
+  package-check)          py "$ROOT/scripts/task14_17_package_self_contained_check.py" "$@" ;;
+  checks)
+    py "$ROOT/scripts/task14_17_package_self_contained_check.py"
+    py "$ROOT/scripts/task14_17_oracle_and_invalid_check.py"
+    py "$ROOT/scripts/task14_17_oracle_and_invalid_check.py" --self-test
+    py "$ROOT/scripts/task14_17_boundary_check.py"
+    py "$ROOT/scripts/task14_17_boundary_check.py" --self-test
+    py "$ROOT/scripts/validate_structure.py" "$ROOT/tasks"
+    ;;
+  baselines)              py "$ROOT/scripts/task14_17_shortcut_baseline_report.py" ;;
+  task14-oracle-check)    py "$ROOT/scripts/task14_oracle_replay_parity.py" ;;
+  task14-protocol-check)  py "$ROOT/scripts/task14_protocol_agent_check.py" ;;
+  task15-replay-check)    py "$ROOT/scripts/task15_replay_parity.py" ;;
+  task15-oracle-check)    py "$ROOT/scripts/task15_oracle_replay_check.py" ;;
+  task15-protocol-check)  py "$ROOT/scripts/task15_protocol_agent_check.py" ;;
+  private-response-check)
+    # the sidecar check binds an EPHEMERAL port on 127.0.0.1 (chosen by the OS), never a fixed one
+    py "$ROOT/scripts/private_response_sidecar_check.py"
+    py "$ROOT/scripts/private_response_agent_check.py"
+    py "$ROOT/scripts/private_response_replay_parity.py"
+    py "$ROOT/scripts/private_response_oracle_check.py"
+    ;;
+  # ---- Docker needed -----------------------------------------------------------------------
+  load-images)            "$ROOT/docker/load_images.sh" "$@" ;;
+  images-check)           py "$ROOT/scripts/offline_images.py" check --all-roles "$@" ;;
+  build-images)           "$ROOT/docker/build_images.sh" "$@" ;;
+  preflight)              "$ROOT/scripts/run_task.sh" preflight ;;
+  oracle)                 "$ROOT/scripts/run_task.sh" oracle "$@" ;;
+  llm)                    "$ROOT/scripts/run_task.sh" llm "$@" ;;
+  llm-mock)               "$ROOT/scripts/run_task.sh" llm-mock "$@" ;;
+  summary)                "$ROOT/scripts/run_task.sh" summary "$@" ;;
+  sidecar-build)          (cd "$ROOT" && ./sidecar/build_sidecar.sh "$@") ;;
+  sidecar-wiring-check)   py "$ROOT/scripts/task16_17_sidecar_wiring_check.py" "$@" ;;
+  *)
+    cat <<EOF
+Usage (run from anywhere; paths resolve to this package):
+
+  no Docker:
+    ./chembench validate
+    ./chembench package-check            self-contained + LLM-evaluable assertions
+    ./chembench checks                   every author-side check, with self-tests
+    ./chembench baselines                shortcut-strategy score ceilings
+    ./chembench task14-oracle-check | task14-protocol-check
+    ./chembench task15-replay-check | task15-oracle-check | task15-protocol-check
+    ./chembench private-response-check   tasks 16/17 sidecar protocol (ephemeral localhost port)
+
+  Docker (offline: every image ships in docker/, nothing is pulled or built at run time):
+    ./chembench load-images              verify the archive sha256, docker load, verify every image
+    ./chembench images-check             every image a run starts is loaded, layers as shipped
+    ./chembench build-images [--platform linux/amd64]   author side, needs network
+    ./chembench preflight                daemon, compose, harbor, images, no-network support
+    ./chembench oracle <task> [--local-public-network]
+    ./chembench llm-mock <task> [--scenario normal|large|invalid-round] [--local-public-network]
+                                         real llm path against a local mock model: run before spending credit
+    ./chembench llm    <task> [--local-public-network]   needs CHEMBENCH_MODEL_ID/API_KEY/API_BASE
+    ./chembench summary <job-name>
+    ./chembench sidecar-build 16|17
+    ./chembench sidecar-wiring-check [--task 16|17]
+
+  tasks: $(ls "$ROOT/tasks" | tr '\n' ' ')
+EOF
+    ;;
+esac

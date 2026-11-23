@@ -1,0 +1,69 @@
+schema_version: "2.0"
+task:
+  id: adaptive_xtb_torsion_profile_agent_v2
+  benchmark_version: "2.0.0"
+  case_id: 2_fluorobiphenyl_central_torsion_v1
+  protocol: adaptive_torsion_sampling_tool_loop/2.0
+  formal_campaign_id: formal_campaign_v2_recharge_01
+scientific:
+  molecule: 2-fluorobiphenyl
+  mapped_smiles: "[F:1][c:2]1[cH:3][cH:4][cH:5][cH:6][c:7]1-[c:8]1[cH:9][cH:10][cH:11][cH:12][cH:13]1"
+  target_dihedral_atom_maps: [6, 7, 8, 9]
+  method: GFN2-xTB
+  xtb_version: "6.7.1"
+  phase: gas
+  charge: 0
+  uhf: 0
+  threads: 1
+  angle_grid_deg: 5
+  reference_seed: 20260720
+  initial_geometry: RDKit ETKDGv3
+  preoptimization: constrained UFF
+  requested_final_angle_tolerance_deg: 2.0
+budget:
+  max_unique_scan_angles: 12
+  min_unique_valid_scan_angles: 10
+  max_scan_batches: 4
+  target_scan_batches: 3
+  min_feedback_rounds: 2
+  automatic_profile_fits: 3
+  max_provider_turns: 5
+  target_provider_turns: 3
+  max_attempts_per_angle: 2
+  single_xtb_timeout_seconds: 180
+  total_native_timeout_seconds: 900
+  max_output_tokens_per_provider_turn: 384
+  phase_0_angles: 6
+  phase_1_min_angles: 2
+  phase_1_max_angles: 3
+  phase_2_min_angles: 2
+  phase_2_max_angles: 3
+  recovery_min_angles: 1
+  recovery_max_angles: 2
+models:
+  require_exact_response_model: true
+  allow_fallback: false
+  allow_environment_model_override: false
+  maximum_total_attempts_per_provider_turn: 4
+  maximum_cumulative_retry_delay_seconds: 60
+  retry_backoff: bounded_exponential_jitter
+  temperature: 0
+  formal_order: [kimi, deepseek, glm]
+context:
+  mode: canonical_state_v2
+  canonical_state_max_chars: 7000
+  analysis_summary_max_chars: 2500
+  tool_result_max_chars: 6000
+  rationale_max_chars: 400
+security:
+  native_shell: false
+  model_network_access: false
+  model_filesystem_access: false
+  redact_provider_exceptions: true
+  forbidden_roots: [.env, evaluator_private, evaluator, framework, tools, configs, prompts]
+determinism:
+  json_sort_keys: true
+  json_indent: 2
+  json_ensure_ascii: false
+  allow_nan: false
+  trajectory_genesis_hash: "0000000000000000000000000000000000000000000000000000000000000000"

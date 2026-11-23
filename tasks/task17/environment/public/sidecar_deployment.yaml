@@ -1,0 +1,53 @@
+schema_version: chembench-protected-sidecar/1.0
+ownership:
+  framework_immutable: [session_and_quota_semantics, request_and_error_envelopes, response_allowlist_enforcement]
+  author_editable: [public_feedback_fields, scientific_private_handler, timeouts]
+  author_required_before_release: [private_image_digest, disclosure_justification, parity_evidence]
+endpoint:
+  url_env: CHEMBENCH_TASK17_SIDECAR_URL
+  health_path: /health
+  session_path: /session
+  evaluate_path: /evaluate
+limits:
+  measurements_per_session: 5
+deployment:
+  # Added 2026-09-06. Before this, nothing in the repository started this sidecar: there was no
+  # Dockerfile for it, no compose file anywhere, and nothing that set the url_env above. The agent's
+  # private_response_round branch has no fallback, so an evaluated-model run could not start.
+  compose_file: environment/docker-compose.yaml
+  service_name: task17-sidecar
+  image_definition: sidecar/Dockerfile          # build context is the PACKAGE ROOT, see sidecar/README.md
+  build_helper: sidecar/build_sidecar.sh 17
+  network: service:main                         # shares the agent container's namespace, so the
+                                                # endpoint is 127.0.0.1:8717 under both the
+                                                # egress-controlled and the plain configuration
+  wiring_check: scripts/task16_17_sidecar_wiring_check.py
+
+release:
+  # Still AUTHOR_REQUIRED_SHA256, and deliberately so. Two prerequisites are not the author's to
+  # decide, and writing any value before they are settled would make this field wrong rather than
+  # complete:
+  #   1. the digest must be for the architecture the benchmark will run on; only linux/arm64 can be
+  #      produced on the author machine;
+  #   2. a repo digest exists only once the image is pushed, and this image contains
+  #      private_data/ -- the enumerated reference optimum -- so it must go to a PRIVATE registry
+  #      chosen by the organizer.
+  # With those two given, `PLATFORM=<arch> ./sidecar/build_sidecar.sh 17` prints exactly what to
+  # paste here, and release_ready can go true.
+  private_image_digest: AUTHOR_REQUIRED_SHA256
+  private_image_platform: AUTHOR_REQUIRED_PLATFORM
+  release_ready: false
+  disclosure_justification: >
+    The sidecar returns only the public feedback fields enumerated in
+    templates/sidecar/private_response_server.py :: PUBLIC_FIELDS[17] -- measured responses,
+    desirability, budget bookkeeping, violated constraints and the running best. It never returns
+    the reference optimum, the achievement fraction, the score bands or any model coefficient, and
+    the server rejects its own response with `response_contract_violation` if a handler ever adds a
+    field outside that set. scripts/task16_17_sidecar_wiring_check.py asserts this from inside the
+    agent container against the live service.
+  parity_evidence: >
+    verification/harbor_oracle_e2e_20260906/ -- harbor 0.21.0 `run -a oracle -e docker` on
+    2026-09-06 drove all five rounds through the real verifier chain and the final legacy grader
+    returned the same score as the offline replay (100.0 for this task; 47.0 and 33.0 for tasks 14
+    and 15, whose Oracles replay archived legacy model trajectories, which is the same-submission
+    parity case). Sidecar reachability itself is covered by the wiring check named above.

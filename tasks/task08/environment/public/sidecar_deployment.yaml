@@ -1,0 +1,16 @@
+schema_version: chembench-hidden-suite/1.0
+endpoint: {url_env: CHEMBENCH_TASK08_SIDECAR_URL}
+limits: {case_count: 6}
+ownership:
+  framework_immutable: [session_order, quota_accounting, evidence_ids, response_allowlists]
+  author_editable: [failure_cases, xTB_tool_contracts, evaluator]
+  author_required_before_release: [private_image_digest, evidence_volume_mount, parity_evidence]
+release:
+  private_image_digest: sha256:1b79e4e36a8fe1c71f202bea05eb3268891d24f3e3c117758d5e9e9abece9e48
+  immutable_image: matbench/task08-sidecar:20260927-fix-frame-index@sha256:1b79e4e36a8fe1c71f202bea05eb3268891d24f3e3c117758d5e9e9abece9e48
+  release_ready: true
+  distribution: offline_docker_archive
+  runtime_versions: {docker_engine: 29.7.2, docker_compose: 5.5.0, harbor: 0.21.0}
+  startup: python scripts/deploy_release_sidecar.py --task 8 --start
+  evidence_mount: organizer evidence directory -> /organizer_evidence (read-write sidecar; read-only verifier; absent from agent)
+  parity_evidence: release_evidence/release_parity.json

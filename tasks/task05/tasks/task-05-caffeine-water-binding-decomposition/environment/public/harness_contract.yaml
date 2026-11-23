@@ -1,0 +1,48 @@
+schema_version: chembench-harness-contract/1.0
+task_id: task-05-caffeine-water-binding-decomposition
+protocol:
+  type: controlled_tool
+  implementation_status: implemented
+  state_file: /workspace/protocol_state.json
+  max_rounds: 1
+budgets:
+  actions: 260
+  scientific_turns: 65
+  finalization_turns: 4
+  xtb_jobs: 16
+  wall_time_sec: 9000
+ownership:
+  immutable:
+  - schema_version
+  - protocol.state_file
+  - ownership
+  - release_gates
+  - chembench_harness core
+  author_editable:
+  - protocol.type
+  - protocol.max_rounds
+  - budgets
+  - task-local plugin
+  - public feedback fields
+  - private grader scientific implementation
+  author_required:
+  - Declare the exact original action/observation sequence.
+  - Declare tool budgets, retry accounting, timeouts, and failure behavior.
+  - Identify every public and private field/file.
+  - Provide one valid Oracle and at least three invalid submissions.
+  - Define same-model legacy-versus-Harbor parity tolerances.
+  - Confirm the frozen-fragment binding-energy decomposition tool protocol.
+  - Confirm the private structural and energy-closure replay grader.
+author_confirmations:
+  protocol_equivalent: confirmed_harbor
+  scoring_equivalent: confirmed_harbor
+  private_boundary_correct: confirmed_harbor
+  oracle_scientifically_valid: confirmed_harbor
+release_gates:
+  schema: true
+  build: true
+  oracle: true
+  protocol_decoupled: true
+  parity: true
+  leakage: true
+  release_eligible: true

@@ -1,0 +1,43 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-13-retrosynthesis-route
+source:
+  path: 10_13_姚涵予_revision3_20260825.zip
+  version: revision3-20260825
+  sha256: c8d9b9cffc79c3972fad224d42d916a9c985110a248fae466c046ffc2ba9d1b8
+files:
+  - source: revised_tasks/chem_bench_v2_task_template/tasks/task_13_retrosynthesis_route/task.yaml
+    destination: tests/task_snapshot/task.yaml
+    handling: copied
+    source_sha256: 74bf223e1d9bac443184dfe9fb6c034f5129c6c38afda0ba56354c417bcaaefe
+    destination_sha256: 74bf223e1d9bac443184dfe9fb6c034f5129c6c38afda0ba56354c417bcaaefe
+    reason: Preserve score bounds, artifact contract, leaderboard role, and grader entrypoint.
+  - source: revised_tasks/chem_bench_v2_task_template/tasks/task_13_retrosynthesis_route/private_grader/grader.py
+    destination: tests/task_snapshot/private_grader/grader.py
+    handling: private-only
+    source_sha256: 0c459231b77f31b67dd18b7b7438360eadac3d6c1895dcdd4bc9b307b39994d1
+    destination_sha256: 0c459231b77f31b67dd18b7b7438360eadac3d6c1895dcdd4bc9b307b39994d1
+    reason: Replay the unchanged revision3 scientific grader only in the verifier image.
+  - source: revised_tasks/chem_bench_v2_task_template/tasks/task_13_retrosynthesis_route/private_data/references/reference_route.md
+    destination: tests/task_snapshot/private_data/references/reference_route.md
+    handling: organizer-only
+    source_sha256: 6043633165150b6123303ce834a6383e1a0b0582fd5e3ef7b506e7c9977952c3
+    destination_sha256: 6043633165150b6123303ce834a6383e1a0b0582fd5e3ef7b506e7c9977952c3
+    reason: Keep private labels, thresholds, or references outside the model workspace.
+  - source: chembench-author-handoff/AUTHOR_HANDOFF_PACKAGE.md
+    destination: tests/private_suite_adapter.py
+    handling: transformed
+    source_sha256: 0914b6eeb44ed547f736c4ab3d56b8f1f8b6ab913d2d970c2554dfd791af2b7c
+    destination_sha256: 0c807693c9bd173fd59d077773abf2c04e0668338b171974d7f2ef2a3ec6d339
+    reason: Implement allowlisted organizer-evidence capture and digest verification.
+  - source: chembench-author-handoff/AUTHOR_HANDOFF_PACKAGE.md
+    destination: tests/protocol_grader.py
+    handling: transformed
+    source_sha256: 0914b6eeb44ed547f736c4ab3d56b8f1f8b6ab913d2d970c2554dfd791af2b7c
+    destination_sha256: 90724f577761ce19e42706aa1742147eb35888a98a5805e325bd503297a58cc7
+    reason: Independently replay organizer evidence and emit Harbor reward artifacts.
+author_approval:
+  name: 姚涵予（按交付目录标识）
+  date: 2026-08-31
+  protocol_equivalent: confirmed
+  scoring_equivalent: confirmed
+

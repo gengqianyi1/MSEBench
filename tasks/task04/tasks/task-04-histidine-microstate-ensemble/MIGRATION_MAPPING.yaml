@@ -1,0 +1,30 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-04-histidine-microstate-ensemble
+source:
+  path: scientific-delivery/revised_tasks/task_04
+  version: 3.0.0
+  sha256: 012aa1385d21dacac2a853ec68a78510c3e57943a36576e250df178b943d0495
+files:
+  - source: tasks/task_04/public/question.md
+    destination: environment/public/question.md
+    handling: transformed
+    source_sha256: a55c74d3f09952fa271bd75ab8bb3c6b05a9c6206d83b1ecb93d53c47c0f959e
+    destination_sha256: 4414aed2fcbe8454809df9d061f399ac47573f70d5bd493674f4038c3c40d7b1
+    reason: Preserve the route-neutral task and add the already approved fixed-formula scope clarification.
+  - source: tasks/task_04/private/grader.py
+    destination: tests/task_snapshot/source_package/tasks/task_04/private/grader.py
+    handling: private-only
+    source_sha256: ce3ed252874dee19ad399fa66399977cb47273a84a49cf1c2338196e0b83c4d5
+    destination_sha256: ce3ed252874dee19ad399fa66399977cb47273a84a49cf1c2338196e0b83c4d5
+    reason: Unchanged geometry-derived private scientific grader.
+  - source: internal Golden and private reference
+    destination: tests/task_snapshot/organizer_private and private_reference
+    handling: organizer-only
+    source_sha256: b03f1932e8a902ac20470450692f9f42ef1596d19b5d533a7bdcf2927c544bb4
+    destination_sha256: 7589fb58c25dc885f3c620ece3a6d7e7d2acf73e3bd4ba477b6e8c9563386bdb
+    reason: Organizer-only evidence; never mounted in the participant workspace.
+author_approval:
+  name: Wei Chengrui
+  date: 2026-08-29
+  protocol_equivalent: confirmed_offline
+  scoring_equivalent: confirmed_offline

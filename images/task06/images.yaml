@@ -1,0 +1,34 @@
+schema: msebench.task-images/1.0
+task: '6'
+family: chembench
+images:
+- role: environment
+  tag: chembench/task06-environment:participant-20260905
+  image_id: sha256:d6a6498861de859a40232188972386091600c5da214e9084d96bf95f3c5b02d3
+  tar: images/task06/task06-environment.tar
+  bytes: 226610688
+  tar_sha256: 2680ba1a18277d9b8f9c51942442fbe808cf1fc2e005839812b41cf441159a07
+  build:
+    context: tasks/task06/environment
+    dockerfile: Dockerfile.rebuild
+- role: sidecar
+  tag: chembench/task06-sidecar:participant-20260905
+  image_id: sha256:e5b1b1289a9b9e975ba4807ca4248ea2c0e49dfa5fa61be84dc7cb5184f2d722
+  tar: images/task06/task06-sidecar.tar
+  bytes: 229637632
+  tar_sha256: 3082e4a8d81cad3092b2cf25d41ab1600cbc024566d6e5fd9057fb89e72c25f4
+  build:
+    context: .
+    dockerfile: tasks/task06/environment/Dockerfile.sidecar
+- role: verifier
+  tag: chembench/task06-verifier:participant-20260905
+  image_id: sha256:7161a35fb9030481c36647e670daef619ae688f3336002700bbb27cf62b444e3
+  tar: images/task06/task06-verifier.tar
+  bytes: 229592576
+  tar_sha256: cc39ee8bf8589453f252b294c176f6fba736c134bd1ff1e833f94649042d568c
+  build:
+    context: tasks/task06/tasks/task-06-terpyridine-coupled-torsion-landscape/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

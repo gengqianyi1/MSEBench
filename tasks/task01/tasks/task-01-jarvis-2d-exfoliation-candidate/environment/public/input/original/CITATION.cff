@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: JARVIS-DFT 2D Exfoliation-Energy and Candidate-Generation Tool-Calling Benchmark
+message: Cite this benchmark together with the frozen JARVIS-DFT data release and JARVIS-Tools.
+type: software
+version: 1.3
+date-released: 2026-08-24
+authors:
+  - name: Benchmark authors
+license: MIT

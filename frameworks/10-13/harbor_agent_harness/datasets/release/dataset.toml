@@ -1,0 +1,6 @@
+schema_version = "1.0"
+
+[dataset]
+name = "chembench/chembench-release"
+version = "0.2.0"
+description = "Tasks admitted only after every release gate."

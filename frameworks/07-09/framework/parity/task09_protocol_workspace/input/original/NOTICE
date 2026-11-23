@@ -1,0 +1,8 @@
+Adaptive RDKit-xTB Torsional Energy Profile Reconstruction Agent Benchmark
+Copyright (c) 2026 Liu Chengchun
+
+This benchmark invokes the separately installed xTB program. xTB is not
+redistributed in this archive. RDKit, NumPy, OpenAI Python, PyYAML, Pydantic,
+python-dotenv, pytest, and their transitive dependencies retain their own
+licenses. Model and provider names are used only for provenance and
+interoperability identification.

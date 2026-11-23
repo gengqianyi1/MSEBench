@@ -1,0 +1,19 @@
+{
+  "reviewed_on": "2026-11-08",
+  "source": "Organizer confirmed the release review of these 13 tasks.",
+  "tasks": {
+    "task-01-jarvis-2d-exfoliation-candidate": "0eec7f480aa2ef799981a23a02ba773729a8c97f6592741350c781bd05b5d675",
+    "task-02-oligothiophene-smd-sapt": "34d7509f35e6eccc5f9143321598910930dc91f843f3056f33a72506e7bcba24",
+    "task-03-five-ring-xtb-dipro-marcus": "30d34bf9465f62824c8747e808c63fcf389591245fa7eebfa26b861a3532779d",
+    "task-10-matbench-bandgap-pipeline": "a2b1d547f170cac0c93f4c5a837b3d75f65d9c31dd868669e3708cd4a5fe4956",
+    "task-11-lithium-electrolyte-design": "9befa4417e567099d202e2834f0f973c01f6925a495c964eeaf7304ba9b0ef8d",
+    "task-12-pybamm-fast-charge": "b7cd7fdfa00641619ec0912941e18ace0273bab921b849b7543e29ed8cc7290e",
+    "task-13-retrosynthesis-route": "87f1b15cdf7cacdd0d42d0c8d94c08815107b7bcae88accb226e21c1b63c2895",
+    "task-14-multiobjective-mol-design": "f5b3f125576785f677b37c13f399b253120b8579bd471703afb0906b954b14df",
+    "task-15-lipophilic-sulfonamide-edit-budget": "a47268b2d81672d620d99150c536b691fae8c9aea7cf2cd7d63412a38a28cc23",
+    "task-16-tablet-microenvironment-cqa": "1715b898651f0070b7eb7197cec60b68eae0a7b4936e0ba27968ca3794d60eec",
+    "task-17-spherical-agglomeration": "7b59c22b86be9a6dd12d4c196b53a047fba197b2f49af35b8924131d7303ad75",
+    "task-19-active-impurity-elucidation": "16c74eaa1aee8299ca9a59f438a64006f4a87a7b982af8e22591ec1d3ff2448a",
+    "task-20-catalyst-deactivation-diagnosis": "fe0082185de5c98ff3ede58ce0436a42cc10ab2f43d1abae3bc6683ca8434629"
+  }
+}

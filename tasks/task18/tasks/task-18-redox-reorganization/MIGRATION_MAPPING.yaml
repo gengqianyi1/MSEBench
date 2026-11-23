@@ -1,0 +1,27 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-18-redox-reorganization
+source:
+  artifact: ChemBench_Task07_redox_reorganization_engineering_candidate_20260822.zip
+  sha256: feb88a057d13025cb0d9e45ebb5053c1df97cf8e4050f69c045b986f342e1594
+  source_task_id: task_07_redox_reorganization
+  version: 1.0.0
+files:
+  - source: tasks/task_07/data/inputs/donor_01.xyz through donor_03.xyz
+    destination: environment/public/input/
+    handling: frozen-bytes
+    reason: Preserve the three scientific inputs while removing the prescribed legacy workflow.
+  - source: legacy public question, protocol, scoring, runner, and templates
+    destination: not migrated
+    handling: replaced
+    reason: They exposed calculation order, resource allocation, validation decisions, or redundant output contracts.
+  - source: new Task 18 private grader and three real-xTB repetitions
+    destination: tests/task_snapshot/private_grader, private_reference, and organizer_private
+    handling: organizer-only
+    reason: Private scientific replay material is never mounted in the participant workspace.
+author_approval:
+  name: Wei Chengrui
+  date: 2026-08-29
+  protocol_equivalent: approved_minimal_route_neutral_redesign
+  legacy_score_parity: not_applicable_no_source_model_runs
+  task18_scoring_revision: approved_scientific_partial_v4_1
+  harbor_private_replay: approved_same_boundary_as_tasks_04_06

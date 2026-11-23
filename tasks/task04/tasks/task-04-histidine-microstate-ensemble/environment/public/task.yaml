@@ -1,0 +1,35 @@
+task_id: task_04
+task_version: 3.0.0
+grader_version: 2.1.1
+physical_settings:
+  xtb_version: 6.7.1
+  method: GFN2-xTB
+  charge: 0
+  uhf: 0
+  temperature_kelvin: 298.15
+  environments: [gas, ALPB(water)]
+  single_threaded: true
+  l_stereochemistry_retained: true
+  mrrho_rotor_cutoff_cm1: 50
+main_compute_credits: 56
+recovery_compute_credits: 0
+# Audit 2026-09-27: made the wall-clock budget explicit in the public config.
+# These are the workspace-sidecar engine budget keys: a 10800-second scientific
+# phase and a 1800-second finalization phase (new xTB jobs are rejected during
+# finalization). Values match the current-generation engine contract.
+wall_time_seconds: 10800
+finalization_wall_time_seconds: 1800
+scan_allowed: false
+costs:
+  sp: 1
+  opt: 1
+  hessian: 4
+required_outputs:
+  - final_answer.json
+  - candidate_manifest.json
+schemas:
+  final_answer: schema/final_answer.schema.json
+  candidate_manifest: schema/candidate_manifest.schema.json
+runtime:
+  xtb_executable: xtb
+  timeout_seconds: 1800

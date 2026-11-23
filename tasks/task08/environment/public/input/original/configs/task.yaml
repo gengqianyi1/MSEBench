@@ -1,0 +1,163 @@
+schema_version: "2.0"
+task:
+  id: xtb_failure_diagnosis_restart_agent_v2
+  case_id: aspirin_gfn2_opt_hess_restart_v1
+  protocol:
+    name: xtb_failure_recovery_tool_loop
+    version: "1.0"
+  job_spec:
+    path: benchmark_case/job_spec.json
+    sha256: 6C75E2E82DB13AA0DB22DC53838252FAA7275CAD495B92C18983D0D9AB862D8E
+  case_manifest:
+    path: benchmark_case/case_manifest.json
+    sha256: 2D34ECA8EAA790836A29E4C24EE45FDEED4EDE95F10E057D0CD75B006899B4AD
+
+budget:
+  max_tool_calls: 24
+  min_successful_tool_calls: 6
+  max_agent_turns: 14
+  max_execution_attempts: 3
+  max_provider_retries: 2
+  total_timeout_seconds: 900
+  single_xtb_timeout_seconds: 240
+  max_text_read_lines_per_call: 160
+  max_text_read_bytes_per_call: 65536
+  require_read_text_evidence: true
+  require_native_xtb_execution: true
+  require_geometry_optimization: true
+  require_hessian: true
+
+runtime:
+  geometry_generation:
+    rdkit_version: "2025.03.5"
+    embed_algorithm: ETKDGv3
+    embed_seed: 20260719
+    preoptimization: UFF
+  replay:
+    call_model_api: false
+    run_native_xtb: false
+  live_xtb:
+    call_model_api_for_formal_runs: true
+    run_native_xtb: true
+  xtb:
+    environment_manager: conda
+    conda_environment: chembench
+    executable_alias: xtb
+    version: "6.7.1"
+    identity_policy: xtb_portable_identity/2.0
+    required_help_tokens: ["--opt", "--hess", "--gfn", "--chrg", "--uhf"]
+    platform_reference_hashes:
+      windows_amd64:
+        binary_sha256: E11F074B519C3B226F3FAB4902F36555C4BFB204CC0365BDB196313124E3DC1B
+        help_output_sha256: 784C835AB0615765245E609C5CEB78DA439A2144417C1E37E0DA7E0667A63A0E
+    initial_failure_cycle_limit: 1
+    restart_cycle_limit_default: 100
+    restart_cycle_limit_min: 2
+    restart_cycle_limit_max: 200
+    thread_count_default: 1
+    thread_count_min: 1
+    thread_count_max: 1
+    walltime_seconds_default: 180
+    walltime_seconds_max: 240
+    environment:
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+
+models:
+  registry_path: configs/models.example.yaml
+  formal_order:
+    - kimi
+    - deepseek
+    - glm
+  formal_execution_mode: REAL_API
+  formal_native_mode: LIVE_XTB
+  require_exact_response_model: true
+  allow_fallback: false
+  allow_environment_model_override: false
+
+tools:
+  contract_path: configs/tool_contracts.json
+  allowed:
+    - list_case_files
+    - read_text_range
+    - tail_text
+    - parse_xtb_log
+    - inspect_scheduler_record
+    - validate_xyz
+    - inspect_artifact_provenance
+    - prepare_restart
+    - run_xtb
+    - validate_attempt
+    - submit_final
+
+evaluator:
+  public_independent_replay: true
+  private_oracle_required_for_public_score: false
+  oracle_commitment:
+    path: configs/oracle_commitment.json
+    sha256: 13054A8D6702321D83A21BC80F0EB7806DDA4F472602676A74718A3CA41E45A4
+
+scoring:
+  total_points: 100
+  rounding_decimal_places: 4
+  categories:
+    failure_diagnosis_and_evidence: 40
+    restart_strategy_and_provenance: 20
+    actual_task_recovery: 30
+    compliance_and_efficiency: 10
+  diagnosis_reference:
+    primary_category: OPTIMIZATION_FAILURE
+    primary_cause_code: OPTIMIZATION_MAX_CYCLES
+    scheduler_assessment: EXECUTION_COMPLETED_SCIENCE_INCOMPLETE
+    conflict_resolution: SCHEDULER_STATUS_NOT_SCIENTIFIC_COMPLETION
+    legacy_disposition: NOT_CURRENT_INFORMATION_ONLY
+    scientific_core_cap_if_wrong: 20
+  eligibility_gates:
+    - complete_lifecycle
+    - formal_mode_truthful
+    - native_xtb_executed
+    - decisive_log_evidence_read
+    - optimization_converged
+    - hessian_completed
+    - final_artifacts_current
+    - legacy_not_used_as_current
+    - scientific_invariants_preserved
+    - oracle_not_accessed
+    - path_and_argv_safe
+    - budgets_respected
+    - trace_hash_chain_valid
+    - final_answer_schema_valid
+    - trusted_runtime_verified
+    - exact_model_identity_confirmed
+    - no_fallback_or_manual_rewrite
+    - no_secret_finding
+
+security:
+  workspace_only: true
+  reject_absolute_paths: true
+  reject_parent_segments: true
+  reject_symlink_escape: true
+  reject_shell_input: true
+  native_shell: false
+  model_network_access: false
+  redact_provider_exceptions: true
+  forbidden_read_roots:
+    - evaluator_private
+    - framework
+    - tools
+    - configs
+    - prompts
+
+determinism:
+  json_sort_keys: true
+  json_indent: 2
+  json_ensure_ascii: false
+  newline: LF
+  allow_nan: false
+  trajectory_genesis_hash: "0000000000000000000000000000000000000000000000000000000000000000"
+
+packaging:
+  archive_layout: flat_project_root
+  archive_filename: LiuChengchun_xTB_Failure_Diagnosis_Restart_Agent_Benchmark_v2.zip
+  exclude_private_oracle: true

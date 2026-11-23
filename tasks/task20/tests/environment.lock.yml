@@ -1,0 +1,4 @@
+name: chembench-task20-verifier
+channels: [conda-forge]
+dependencies:
+  - python=3.11.9

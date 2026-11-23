@@ -1,0 +1,16 @@
+services:
+  sidecar:
+    image: ${SIDECAR_IMAGE:?set image from images.lock.json}
+    command: ["--adapter", "/tests/private_suite_adapter.py", "--snapshot", "/task", "--evidence-dir", "/organizer_evidence", "--host", "0.0.0.0", "--port", "8080"]
+    volumes: ["${EVIDENCE_ROOT:?allocate trial evidence root}:/organizer_evidence"]
+    # Only the organizer runtime may create the inner bubblewrap sandbox.
+    cap_add: [SYS_ADMIN, NET_ADMIN]
+    security_opt: [seccomp=unconfined, no-new-privileges:true]
+    networks: [isolated]
+    labels:
+      chembench.task: "task04"
+      chembench.role: "workspace-sidecar"
+    stop_grace_period: 15s
+networks:
+  isolated:
+    internal: true

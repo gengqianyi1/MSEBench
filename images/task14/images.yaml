@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '14'
+family: chembench
+images:
+- role: environment
+  tag: chembench/task14-environment:2.1.0-r10
+  image_id: sha256:47915ddbeb6ceeafde2b24413ea09b57638376f7b1ce64bb87d78fb0adb8779c
+  tar: images/task14/task14-environment.tar
+  bytes: 313474048
+  tar_sha256: de1b43db49f55649743d722b5799a43fbbb123875f1bd6f60909e02aa0d60d92
+  build:
+    context: tasks/task14/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench/task14-verifier:2.1.0-r10
+  image_id: sha256:e87720835f95b3a17f69a93fe5cfe987f5436b8c2ab2e10f4c7fbe656773eb8d
+  tar: images/task14/task14-verifier.tar
+  bytes: 313590272
+  tar_sha256: 82d504df02f881c01be6045391f0d4fd00706bbd0d115922753633729e31a00c
+  build:
+    context: tasks/task14/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

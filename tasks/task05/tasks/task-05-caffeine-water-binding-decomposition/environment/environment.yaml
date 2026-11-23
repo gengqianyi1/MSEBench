@@ -1,0 +1,11 @@
+name: chembench
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - xtb=6.7.1
+  - numpy=1.26.4
+  - scipy=1.13.1
+  - pyyaml=6.0.2
+  - jsonschema=4.23.0
+  - psutil=6.1.1

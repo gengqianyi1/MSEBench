@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cmd="${1:-help}"; shift || true
+case "$cmd" in
+  validate)
+    python "$ROOT/scripts/validate_structure.py" "$ROOT/tasks"
+    ;;
+  build)
+    command -v docker >/dev/null || { echo "docker is required" >&2; exit 2; }
+    for t in "$ROOT"/tasks/task-*; do
+      id="$(basename "$t")"
+      docker build -t "chembench/${id}:2.1.0" "$t/environment"
+      docker build -t "chembench/${id}-verifier:2.1.0" "$t/tests"
+    done
+    ;;
+  run-development)
+    command -v harbor >/dev/null || { echo "harbor CLI is required" >&2; exit 2; }
+    for t in "$ROOT"/tasks/task-*; do
+      harbor run -p "$t" "$@"
+    done
+    ;;
+  run-chembench-agent)
+    command -v harbor >/dev/null || { echo "harbor CLI is required" >&2; exit 2; }
+    task="${1:?task directory name is required}"; shift
+    harbor run -p "$ROOT/tasks/$task" -a agents.chembench_agent:ChemBenchAgent "$@"
+    ;;
+  task14-oracle-check)
+    python "$ROOT/scripts/task14_oracle_replay_parity.py"
+    ;;
+  task03-protocol-check)
+    PYTHONPATH="$ROOT" python "$ROOT/scripts/task03_protocol_agent_check.py"
+    python "$ROOT/scripts/task03_verifier_security_check.py"
+    python "$ROOT/scripts/task03_oracle_fixture_check.py"
+    ;;
+  task14-protocol-check)
+    PYTHONPATH="$ROOT" python "$ROOT/scripts/task14_protocol_agent_check.py"
+    ;;
+  task14-oracle)
+    command -v docker >/dev/null || { echo "docker is required" >&2; exit 2; }
+    command -v harbor >/dev/null || { echo "harbor CLI is required" >&2; exit 2; }
+    harbor run -p "$ROOT/tasks/task-14-multiobjective-mol-design" -a oracle "$@"
+    ;;
+  task14-leakage-probe)
+    command -v harbor >/dev/null || { echo "harbor CLI is required" >&2; exit 2; }
+    python "$ROOT/scripts/task14_harbor_leakage_probe.py" --run --keep "$@"
+    ;;
+  task15-replay-check)
+    python "$ROOT/scripts/task15_replay_parity.py"
+    ;;
+  task15-oracle-check)
+    python "$ROOT/scripts/task15_oracle_replay_check.py"
+    ;;
+  task15-protocol-check)
+    PYTHONPATH="$ROOT" python "$ROOT/scripts/task15_protocol_agent_check.py"
+    ;;
+  single-step-oracle-check)
+    python "$ROOT/scripts/single_step_oracle_check.py"
+    ;;
+  private-response-check)
+    python "$ROOT/scripts/private_response_sidecar_check.py"
+    PYTHONPATH="$ROOT" python "$ROOT/scripts/private_response_agent_check.py"
+    python "$ROOT/scripts/private_response_replay_parity.py"
+    python "$ROOT/scripts/private_response_oracle_check.py"
+    ;;
+  task16-sidecar)
+    python "$ROOT/templates/sidecar/private_response_server.py" --task-number 16 --snapshot "$ROOT/tasks/task-16-tablet-microenvironment-cqa/tests/task_snapshot" --port 8716
+    ;;
+  task17-sidecar)
+    python "$ROOT/templates/sidecar/private_response_server.py" --task-number 17 --snapshot "$ROOT/tasks/task-17-spherical-agglomeration/tests/task_snapshot" --port 8717
+    ;;
+  run-parity)
+    command -v harbor >/dev/null || { echo "harbor CLI is required" >&2; exit 2; }
+    harbor run -p "$ROOT/datasets/parity" "$@"
+    ;;
+  dataset-init)
+    command -v harbor >/dev/null || { echo "harbor CLI is required" >&2; exit 2; }
+    (cd "$ROOT/datasets/development" && harbor dataset init "chembench/chembench-development" --description "ChemBench Harbor development")
+    ;;
+  *)
+    cat <<EOF
+Usage:
+  ./chembench validate
+  ./chembench build
+  ./chembench task14-oracle-check
+  ./chembench task03-protocol-check
+  ./chembench task14-protocol-check
+  ./chembench task14-oracle [Harbor args]
+  ./chembench task14-leakage-probe [Harbor args]
+  ./chembench task15-replay-check
+  ./chembench task15-oracle-check
+  ./chembench task15-protocol-check
+  ./chembench single-step-oracle-check
+  ./chembench private-response-check
+  ./chembench task16-sidecar
+  ./chembench task17-sidecar
+  ./chembench run-development -a <agent> -m <model>
+  ./chembench run-chembench-agent <task-directory> -m <model>
+  ./chembench run-parity -a <agent> -m <model>
+  ./chembench dataset-init
+EOF
+    ;;
+esac

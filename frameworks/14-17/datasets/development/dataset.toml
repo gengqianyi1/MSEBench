@@ -1,0 +1,29 @@
+schema_version = "1.0"
+
+# Regenerated 2026-09-13 for THIS package. The previous file listed 14 tasks, 10 of which are
+# not shipped here (01-03, 07-13), and its digests for 14-17 were stale -- they described an
+# earlier revision of those tasks. chembench_harness/validation.py only checks that a digest is
+# well-formed, not that it matches, so both problems passed validation silently.
+# Digests are Harbor task checksums of the shipped task directories; recompute with
+#   python -c "from harbor.models.task.task import Task; print(Task(task_dir=...).checksum)"
+
+[dataset]
+name = "chembench/chembench-development"
+version = "0.5.0"
+description = "Tasks 14-17 (author package). Local execution: ./chembench oracle <task> | ./chembench llm <task>."
+
+[[tasks]]
+name = "chembench/task-14-multiobjective-mol-design"
+digest = "sha256:a3e1746bd16badef64086f7c9279b3ee365dd6df417e56f1f441f901073a450f"
+
+[[tasks]]
+name = "chembench/task-15-lipophilic-sulfonamide-edit-budget"
+digest = "sha256:a16d033eb63538ace2157044c08afce778dab6d091180cdc9936258d178a5348"
+
+[[tasks]]
+name = "chembench/task-16-tablet-microenvironment-cqa"
+digest = "sha256:b91c9bdffcc516893c703fdcec5aaf8caf502c1c9db0ddd66ec166f86578ebd0"
+
+[[tasks]]
+name = "chembench/task-17-spherical-agglomeration"
+digest = "sha256:4549880141692078b63b7567d884b4ccdc181668a4c294cfacc65cfc1b2c8630"

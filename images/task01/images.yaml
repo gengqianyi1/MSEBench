@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '1'
+family: harbor
+images:
+- role: environment
+  tag: harbor-migration/task01:environment
+  image_id: sha256:a7b3a5226180502d53036680aa0a87c275810e15ee348aa1d78a27756ef59231
+  tar: images/task01/task01-environment.tar
+  bytes: 953507328
+  tar_sha256: 636da6b7077c861a2d62c278cc1470e01a8f002db84138d1534b9c6172f255ad
+  build:
+    context: tasks/task01/tasks/task-01-jarvis-2d-exfoliation-candidate/environment
+    dockerfile: Dockerfile.rebuild
+- role: verifier
+  tag: harbor-migration/task01:verifier
+  image_id: sha256:ea61a7a0c112acc80c2fc32581a61a37d5daa896a6c763ae9e42b1d6b7d807af
+  tar: images/task01/task01-verifier.tar
+  bytes: 954863616
+  tar_sha256: d57f2601277d0ed5264ad0031531ddca0659ea8db762fc1e470841b85eff8d3b
+  build:
+    context: tasks/task01/tasks/task-01-jarvis-2d-exfoliation-candidate/tests
+    dockerfile: Dockerfile.rebuild
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

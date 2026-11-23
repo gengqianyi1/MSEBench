@@ -1,0 +1,15 @@
+schema_version: chembench-env/1.0
+runtime_backend: docker
+build_base: mambaorg/micromamba:2.8.1
+source_environment_file: environment.yml
+normalized_lock_file: environment.lock.yml
+workdir: /workspace
+network_mode: no-network
+resources:
+  cpus: 4
+  memory_mb: 16384
+  storage_mb: 40960
+  gpus: 0
+healthcheck: python -c 'import numpy, scipy, rdkit, pyscf; from pyscf.solvent import smd' && xtb --version
+notes: Evaluated model calls are host-side through the Harbor agent; task containers
+  are intentionally no-network.

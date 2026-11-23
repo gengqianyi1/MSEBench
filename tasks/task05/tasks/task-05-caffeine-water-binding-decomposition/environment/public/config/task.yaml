@@ -1,0 +1,29 @@
+task_id: task_05
+scientific_problem_id: task_05_binding_decomposition
+task_version: 1.15.0
+status: release_candidate
+physical_settings:
+  xtb_version: 6.7.1
+  method: GFN2-xTB
+  solvent_model: none
+  complex_charge: 0
+  complex_uhf: 0
+  fragment_a_charge: 0
+  fragment_a_uhf: 0
+  fragment_b_charge: 0
+  fragment_b_uhf: 0
+  counterpoise: false
+  stable_atom_order_required: true
+  fragment_membership_file: data/inputs/fragment_manifest.csv
+budgets:
+  max_xtb_jobs: 16
+  max_scan_points: 0
+  max_agent_turns: 65
+  finalization_turns: 4
+  max_tool_calls: 260
+  wall_time_seconds: 9000
+  # Audit 2026-09-27: finalization wall clock raised 600 -> 1800 seconds so the
+  # submission-only finalization turns stay usable for long-thinking models.
+  finalization_wall_time_seconds: 1800
+required_outputs: [final_answer.json, report.md]
+hints_enabled: false

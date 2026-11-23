@@ -1,0 +1,19 @@
+schema_version: chembench-llm-profile/1.0
+name: deepseek-v4-pro-formal-20260905
+model_name: deepseek-v4-pro
+api_base_url: https://api.deepseek.com
+api_key_env: DEEPSEEK_API_KEY
+tasks:
+  - task01
+  - task02
+  - task03
+temperature: 0.0
+# Leave room for DeepSeek v4-pro hidden reasoning before native tool JSON.
+max_tokens: 32000
+request_timeout_sec: 600
+request_retries: 2
+use_native_tool_calls: true
+task03_cpus: 4
+task03_memory_mb: 12288
+task03_omp_num_threads: 1
+task03_round_timeout_sec: 1800

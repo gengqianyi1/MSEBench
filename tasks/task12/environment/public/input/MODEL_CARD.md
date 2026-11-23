@@ -1,0 +1,13 @@
+# PyBaMM model and score contract
+
+Formal environment: Windows x86-64; Python 3.9.24; PyBaMM 25.4.2; NumPy 1.26.4; SciPy 1.13.1; CasADi 3.6.7; SPMe; Chen2020; CasADi safe mode with `rtol=1e-7` and `atol=1e-7`; initial SOC 0.10. There is no solver fallback in the scored contract. One state-continuous experiment must complete all four steps: CC charge, CV hold, 5 minute rest, and 1C discharge to 2.50 V. Partial solutions are rejected as `PYBAMM_SIMULATION_ERROR`. Telemetry is disabled. No local absolute path or bundled virtual environment is part of this contract. The single source of truth is `environment.yml`, with replay evidence in `input/ENVIRONMENT_LOCK.md`.
+
+Public ranges: CC 1.0-4.0 C; CC/CV voltage 3.95-4.20 V with mismatch <=0.03 V; CV cutoff 0.05-0.30 C; each electrode thickness 50-110 um; porosity 0.25-0.45; particle radius 3-10 um. Performance thresholds: charge <=75 min, discharge capacity >=0.32 Ah, voltage 2.45-4.20 V, minimum negative-particle surface concentration >=1400 mol m-3.
+
+The 1400 mol m-3 threshold is an internal concentration floor for this fixed numerical benchmark. It is not calibrated as a lithium-plating onset or a real-cell safety certificate. Scores from earlier revisions clustered around 70-85; v2 is therefore positioned as a protocol-compliance and constrained-optimization benchmark, not a finely resolved hard-model leaderboard.
+
+Submission envelope: the preferred JSON shape is `{"candidate": {<eight numeric fields>}}`. The grader also accepts the same eight fields at the top level so that an otherwise valid scientific candidate is not rejected solely because of one wrapper object. See `input/schemas/candidate.schema.json`.
+
+<!-- 2026-09-27 fix: disclosed the score-weight contract below because the public rubric did not disclose it and diverged from grader execution. -->
+
+Score-weight disclosure (added 2026-09-27): the private grader awards fast_charge 30 / discharge_capacity 25 / voltage_safety 20 / plating_proxy 25 continuous points behind three pass/fail hard gates (valid submission and protocol, electrode manufacturability, completed four-step simulation; failing any one gate zeroes all continuous dimensions). The continuous full-score anchors coincide with the hard-gate boundaries: charge <= 75 min, discharge capacity >= 0.32 Ah, voltage within 2.45-4.20 V, and the 1400 mol m-3 minimum negative-particle surface concentration are simultaneously the gate conditions and the full-score anchors. A design that passes every hard gate therefore already sits on the full-score anchor of every continuous dimension ("passing all hard gates is the full-score band"); the continuous interpolation provides optimization gradient only below the gates. No anchor value was changed by this disclosure.

@@ -1,0 +1,7 @@
+schema_version: 1.0.0
+public_dimensions:
+  - final_scientific_result
+  - resource_allocation_and_adaptation
+  - uncertainty_and_conclusion_bounds
+  - raw_evidence_and_numeric_consistency
+private_details_withheld: [numeric_references, item_weights, comparison_tolerances, dependency_gates]

@@ -1,0 +1,570 @@
+# =================================================================================================
+# Task definition. Machine-readable twin of tasks/q1_microenvironment/question.md.
+#
+# RULER VERSION 2.0.0  -- FROZEN 2026-07-29. See CHANGELOG.md for what changed and why.
+# The frozen ruler is (a) this file, (b) src/design_space.POINT_BANDS, (c) src/scoring.py's four
+# gates, (d) data/oracle.npz at the sha256 recorded in data/oracle_schema.json, (e) question.md.
+# scripts/check_consistency.py fails if any of the five disagrees with the others.
+#
+# =================================================================================================
+# DATA NATURE: SYNTHETIC / SIMULATED BENCHMARK.  There is no registered product behind this task.
+# =================================================================================================
+# The API, the excipient property table, the five CQA response equations and the "baseline
+# formulation" are all invented for this benchmark. The scoring oracle (data/oracle.npz) is a
+# surrogate fitted to fixed-seed samples of the closed-form simulator src/response_model.cqa_true plus
+# additive fixed-seed Gaussian noise (sigma = 1 % of each CQA's spread over the training sample,
+# seed 20260727). No analytical measurement, no development data set, no dossier, no licence.
+# Scores measure search and formulation-reasoning behaviour on a synthetic surface; they are NOT
+# evidence about real formulation-development competence and do not transfer to a real product.
+# Full statement, including applicability and limitations: data/DATA_CARD.md.
+# (Audit finding #1, 2026-07-29: earlier drafts described the oracle as a validated model built on
+# this product's registered development data. It never was -- see CHANGELOG.md 2.0.0 for the exact
+# wording that was retracted. Corrected consistently in question.md, README.md, 审核说明.md, this
+# file and src/formulation.py.)
+#
+# Every calibrated number in this file is the verbatim output of scripts/enumerate_reference_best.py
+# at the shipping calibration (pull 0.34 / marg 0.55 / smooth desirability M 6.3, d(limit) 2e-4,
+# tail x2.6, floor 1e-6 / composition-overlap floor 0.88 / CQA-compliance gate ON). Do NOT hand-edit
+# any of them: scripts/check_consistency.py re-derives the windows, the start value, the reference
+# optimum and all four gates from the shipped oracle and asserts that this file still agrees, so a
+# hand-edit is a build failure rather than a silent difficulty change.
+#
+# What the graded model sees: the specification windows, the starting formulation, the level grids,
+# the constraints and the scoring bands -- all restated in question.md, which
+# scripts/check_consistency.py section 7 verifies. The `reference:` block is designer-only, is never
+# shown to the model or returned in feedback, and is REMOVED from the public delivery zip
+# (scripts/package_for_delivery.py --side public); the grader zip carries it.
+# =================================================================================================
+task_id: "q1_tablet_microenvironment_cqa"
+task_name: "Microenvironment- and solid-state-limited co-design of a low-dose, pH-labile direct-compression tablet under a composition-overlap floor"
+task_domain: "pharmaceutical development / solid oral dosage form design (QbD), SIMULATED"
+
+# -------------------------------------------------------------------------------------------------
+# VERSION FREEZE (audit finding #4: "the package contained run results from more than one scoring
+# version and the boundary of the version in force was not clear"). There is now exactly one scoring
+# version in the package, it is named here, and every shipped run directory records it in
+# final_report.json -> score.ruler_version.
+# -------------------------------------------------------------------------------------------------
+ruler_version: "2.0.0"
+ruler_frozen_on: "2026-07-29"
+
+# TWO VERSIONS, and they answer different questions. Keeping them apart is the point.
+#
+#   ruler_version   the SCORING RULE. Windows, desirability shape, release gate, achievement formula,
+#                   band table, oracle weights. Two scores are comparable if and only if this
+#                   matches. scripts/grade_run.py refuses to grade across a mismatch.
+#   prompt_version  WHAT THE MODEL WAS SHOWN. question.md plus everything src/main.py and
+#                   src/feedback.py add to it, including the tool declarations and the JSON key names
+#                   in the per-round feedback. Two TRAJECTORIES are comparable if and only if this
+#                   matches -- a run produced under an older prompt_version is evidence about a task
+#                   the package no longer poses, even when its score would still recompute.
+#
+# 2026-08-09 raised prompt_version 2 -> 3, again leaving ruler_version at 2.0.0: the
+# per-family score ceilings (best single change 17/100, two 30, three 44, process-only 14,
+# overlap>=0.93 44) and the enumeration population counts were withdrawn from question.md.
+# They told the model how many conditions to move and how much overlap to spend, which is
+# the search the five rounds measure. No window, gate, desirability constant or band moved,
+# so a submission scores exactly what it scored before -- but every prompt_version 2
+# trajectory is now evidence about a different task and was re-filed under
+# runs_round1_archive/. scripts/leak_check_question.py section F denies the withdrawn
+# numbers from here on.
+#
+# 2026-07-30 raised prompt_version 1 -> 2 while leaving ruler_version at 2.0.0: the scenario noun for
+# the starting point changed from "registered formulation" to "baseline formulation" (second-round
+# review of audit finding #1 -- the synthetic-data disclosure was accepted, but the body of the task
+# text was still borrowing the authority of a real registration). That renamed a model-visible
+# feedback key (composition_overlap_with_baseline_formulation) and several headings, so the three
+# calibration trajectories were RE-RUN from scratch. The scoring rule did not move, and the
+# re-derived scores are unchanged, but the OLD trajectories were deleted rather than re-scored,
+# because they were produced against different prompt text.
+prompt_version: 3
+prompt_version_changed_on: "2026-08-09"
+prompt_version_note: >
+  Raising prompt_version obliges a re-run of every shipped trajectory. Raising ruler_version obliges
+  a re-score (scripts/grade_run.py) and may oblige a re-run. scripts/check_consistency.py asserts
+  that every run directory records both, and that both match this file.
+
+ruler_components:
+  - "tasks/q1_microenvironment/task_config.yaml (this file: windows, desirability shape, gates, bands)"
+  - "src/design_space.POINT_BANDS (the band table; asserted equal to scoring.optimality_bands)"
+  - "src/scoring.py (the four gates and the achievement formula)"
+  - "data/oracle.npz (sha256 in data/oracle_schema.json)"
+  - "tasks/q1_microenvironment/question.md (what the model is told)"
+changelog: "CHANGELOG.md"
+
+data_provenance:
+  nature: "synthetic / simulated"
+  is_real_product_data: false
+  is_real_measurement_data: false
+  generating_process: "src/response_model.cqa_true -- five hand-written closed-form CQA equations over
+    an invented excipient property table; standard solid-dosage functional shapes, coefficients
+    chosen for benchmark behaviour, not fitted to any measurement"
+  surrogate: "data/oracle.npz -- dense MLP 22-128-64-5, relu/identity, fitted to 54,000 fixed-seed
+    samples of the generating process; THIS surrogate is the ruler, not an approximation of one"
+  noise_model: "additive i.i.d. Gaussian on each CQA, zero mean, sigma = 0.01 x that CQA's standard
+    deviation over the training sample; homoscedastic, uncorrelated, no batch effect"
+  seed: 20260727
+  holdout_r2_per_cqa: [0.99985, 0.99983, 0.99975, 0.99984, 0.99974]
+  licence: "not applicable -- nothing in this package is derived from third-party data"
+  applicability: "measures multi-objective search behaviour, constraint bookkeeping and
+    formulation-reasoning under a change budget, on a synthetic surface"
+  limitations: "no external validity; the excipient-to-CQA directions are internally consistent but
+    not validated against literature or experiment; scores must not be reported as evidence of real
+    formulation-development capability, and no number here has regulatory meaning"
+  data_card: "data/DATA_CARD.md"
+task_summary: >
+  A 5 mg pH-labile amine-salt API with an ester linkage is formulated as a 200 mg immediate-release
+  direct-compression tablet. All five CQAs of the baseline formulation sit on the unfavourable edge
+  of two-sided specification windows at once. Under a PACMP-style limited-change budget -- at most 4
+  of 12 declared conditions, at most 1 excipient identity change, mass-weighted composition overlap
+  with the baseline formulation >= 0.88 -- redesign the formulation and the two process set points
+  to maximise the equal-weight smooth two-sided desirability D over the five windows, subject to a
+  hard release gate: a formulation with ANY CQA outside its window is not releasable, scores nothing
+  and cannot be a success, however high its aggregate desirability. The five CQAs are read off a
+  SYNTHETIC fitted surrogate that ships with the package (data/oracle.npz; see data/DATA_CARD.md --
+  simulated data, not a real product model), so the objective cannot be evaluated by hand; five
+  rounds of measurement are the only information channel.
+
+# The baseline formulation the agent starts from. Every one of the five CQAs sits on the dangerous
+# edge of its window here (u_start = 0.643-0.647 of the way from the target to a limit on every one of
+# the five, per-CQA desirability 0.0031-0.0032), so no single CQA can be repaired without pushing
+# another out. Also declared in src/formulation.START, which is the authority; this copy is for the
+# report and is asserted equal by scripts/check_consistency.py.
+baseline_formulation:
+  T1_mcc_grade: "PH102"
+  T2_mcc_pct: 40.0
+  T3_acid_id: "CIT"
+  T4_acid_pct: 1.0
+  T5_meg_pct: 0.0
+  T6_dis_id: "CCS"
+  T7_dis_pct: 6.0
+  T8_mgst_pct: 1.0
+  T9_blend_min: 10.0
+  T10_sil_pct: 0.2
+  T11_press_MPa: 180.0
+  T12_man_pct: 0.0
+
+# -------------------------------------------------------------------------------------------------
+# Design space. There is no external dataset: the "dataset" of this task is the enumerable design
+# space below plus the fitted oracle in data/oracle.npz (fixed seed 20260727, provenance and
+# rebuild recipe in src/formulation.py). Nothing is downloaded and nothing is fetched at run time.
+#
+# src/formulation.LEVELS is the authority; this block is the machine-readable copy used by the report
+# and by reviewers, and scripts/check_consistency.py asserts the two are identical.
+# -------------------------------------------------------------------------------------------------
+design_space:
+  core_tablet_mass_mg: 200.0
+  api_pct_of_core: 2.5                 # 5 mg in a 200 mg core; not a design variable
+  qs_filler: "DCPA (dibasic calcium phosphate anhydrous), q.s. to 100 % of the core"
+  n_slots: 12
+  size_gross: 3413975040
+  size_acid_consistent: 2347107840
+  # design_space.size_in_change_budget: WITHHELD -- grader-side calibration, see private_data/.
+  identity_change_slots: ["T3_acid_id", "T6_dis_id", "T12_man_pct"]
+  process_slots: ["T9_blend_min", "T11_press_MPa"]   # do not enter the composition-overlap vector
+  slots:
+    T1_mcc_grade:
+      unit: "MCC grade"
+      levels: ["PH101", "PH102", "PH200", "PH301"]
+    T2_mcc_pct:
+      unit: "% of core weight"
+      levels: [28.0, 31.0, 34.0, 37.0, 40.0, 43.0, 46.0, 49.0]
+    T3_acid_id:
+      unit: "acidifier identity"
+      levels: ["none", "FUM", "TAR", "CIT"]
+    T4_acid_pct:
+      unit: "% of core weight"
+      levels: [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0]
+    T5_meg_pct:
+      unit: "% of core weight"
+      levels: [0.0, 0.25, 0.5, 1.0, 2.0]
+    T6_dis_id:
+      unit: "superdisintegrant identity"
+      levels: ["XPVP", "CCS", "LHPC", "SSG"]
+    T7_dis_pct:
+      unit: "% of core weight"
+      levels: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+    T8_mgst_pct:
+      unit: "% of core weight"
+      levels: [0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 1.0, 1.25, 1.5]
+    T9_blend_min:
+      unit: "min"
+      levels: [2.0, 3.0, 5.0, 8.0, 10.0, 15.0, 20.0]
+    T10_sil_pct:
+      unit: "% of core weight"
+      levels: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+    T11_press_MPa:
+      unit: "MPa"
+      levels: [100.0, 120.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 260.0]
+    T12_man_pct:
+      unit: "% of core weight"
+      levels: [0.0, 2.0, 4.0, 6.0, 8.0, 10.0]
+  substances:
+    API: "API (pH-labile amine ester salt)"
+    DCPA: "dibasic calcium phosphate anhydrous (q.s. filler)"
+    MAN: "mannitol Pearlitol 100SD"
+    MCC: "microcrystalline cellulose"
+    FUM: "fumaric acid"
+    TAR: "tartaric acid"
+    CIT: "citric acid anhydrous"
+    MEG: "meglumine"
+    XPVP: "crospovidone"
+    CCS: "croscarmellose sodium"
+    LHPC: "low-substituted hydroxypropyl cellulose"
+    SSG: "sodium starch glycolate"
+    MGST: "magnesium stearate"
+    SIL: "colloidal silicon dioxide"
+
+objective:
+  name: "smooth_two_sided_desirability_D"
+  direction: "maximize"
+
+  # ----------------------------------------------------------------------------------------------
+  # THE RULER. All six numbers below are part of the score, not presentation: src/evaluator.py
+  # refuses to build a scorer if any of them is absent rather than falling back to a default, and
+  # scripts/check_consistency.py asserts that the scorer it builds from this block is bit-identical
+  # to the one scripts/enumerate_reference_best.py used to derive the reference and the gates.
+  #
+  # Why it is not the piecewise-cubic Derringer-Suich form any more. That form is exactly zero
+  # outside a window, so D collapsed the instant one of the five CQAs crossed a limit, which made
+  # the score surface a cliff rather than a slope and left the bands below unactivated. The smooth
+  # form keeps the per-round feedback informative about HOW FAR a near miss was. It is not a
+  # release criterion -- see release_gate below. The measurements behind this decision are in the
+  # grader package (审核说明.md section 10 and CHANGELOG.md); they are not repeated here, because
+  # this file ships on the model-visible side.
+  # ----------------------------------------------------------------------------------------------
+  desirability:
+    form: "smooth_asymmetric_two_sided_hill_with_exponential_tail"
+    hill_exponent: 6.3                 # M: how fast d falls off between target and spec limit
+    d_at_spec_limit: 0.0002            # e: d exactly AT the printed L / U
+    tail_decay_multiplier: 2.6         # kappa: outside the window, decay at kappa x the ramp's slope
+    floor: 1.0e-6                      # d never reaches 0, so dD/dy is non-zero everywhere
+    plateau_fraction: 0.0              # width of the d = 1 plateau, in half-window units
+    weights: [1.0, 1.0, 1.0, 1.0, 1.0]     # equal weight, five CQAs
+  note: >
+    D = exp( sum_i w_i ln d_i / sum_i w_i ) over the five two-sided CQA windows below. With
+    u = |y - T| in half-window units (u = 0 at the target, u = 1 at the printed L or U, computed
+    separately on each side so the two halves may differ in width): d_i = 1/(1 + (a u)^M) for
+    u <= 1, with a fixed by d_i(1) = d_at_spec_limit, and d_i = d_at_spec_limit *
+    exp(-kappa*M*(1-d_at_spec_limit)*(u-1)) for u > 1, the whole thing floored at `floor`. d_i is
+    1 at the target, continuous and strictly positive everywhere, and every window is two-sided, so
+    no CQA is "more is better". A CQA over its limit is a large but finite penalty rather than an
+    annihilation: at the limit d_i is 2e-4, a quarter of a half-window outside it is 4.3e-6, and far
+    outside it saturates at 1e-6. The five CQAs are read off a SYNTHETIC surrogate fitted to
+    fixed-seed samples of a closed-form simulator (data/oracle.npz; data/DATA_CARD.md); they are not
+    computable from the printed table by hand, which is the point. D is the OPTIMISATION SIGNAL and
+    the ranking key among compliant designs -- it is NOT a release criterion: a CQA outside its
+    window still has a positive d_i, but the design fails the release gate below and scores nothing.
+  # Specification windows. Reported to the decimal place the analytical methods report, and the
+  # scorer uses these exact numbers -- see design_space.WINDOW_DECIMALS for why the rounding happens
+  # during calibration rather than only in the question text. The targets and the two-sided structure
+  # are unchanged in meaning; the limits are the pull/marg calibration below (pull 0.28 -> 0.34
+  # widens every window in proportion to the improvement the change budget can actually reach, marg
+  # 0.35 -> 0.55 is how close to a limit the baseline formulation sits). That widening is what
+  # lifts the "all five CQAs in specification at once" rate from 2.0 % to 8.2 % of the feasible set.
+  windows:
+    microenvironment_pH:
+      unit: "pH of a 20 % w/v aqueous slurry of the final blend"
+      lower: 4.16
+      target: 5.43
+      upper: 6.7
+    emc_60rh_pct:
+      unit: "% w/w equilibrium moisture content, 25 C / 60 % RH"
+      lower: 1.96
+      target: 2.98
+      upper: 3.99
+    tensile_strength_MPa:
+      unit: "MPa radial tensile strength"
+      lower: 1.42
+      target: 2.11
+      upper: 2.81
+    ffc:
+      unit: "flow function coefficient of the final blend (dimensionless)"
+      lower: 4.35
+      target: 5.61
+      upper: 6.87
+    q30_pct:
+      unit: "% dissolved at 30 min"
+      lower: 77.3
+      target: 86.9
+      upper: 96.5
+
+# -------------------------------------------------------------------------------------------------
+# THE RELEASE GATE (audit finding #3, new in ruler 2.0.0).
+#
+# Finding: "a feasible formulation could be recorded as a benchmark SUCCESS even with a CQA outside
+# its specification window, because its aggregate desirability exceeded the starting formulation's."
+#
+# Fix: CQA compliance is now a HARD gate, checked with exactly the windows below and exactly the
+# windows question.md prints. A submission scores 0 and `success` stays False unless ALL FIVE CQAs
+# are strictly inside [lower, upper]. Implemented in src/scoring.is_cqa_compliant /
+# src/scoring.is_qualifying (scalar) and src/design_space.compliance_mask / qualifying_mask
+# (vectorised); the reference optimum and every difficulty gate are measured over the same set.
+# -------------------------------------------------------------------------------------------------
+release_gate:
+  all_cqa_in_spec_required: true
+  rule: "every CQA must satisfy lower < y < upper, strictly, with the windows in objective.windows"
+  applies_to: ["success verdict", "eligibility for any point of the 100"]
+  desirability_is_not_a_release_criterion: >
+    The smooth desirability D stays strictly positive outside a window on purpose, so the per-round
+    feedback surface has no cliff and near-misses are ranked informatively. D ranks the COMPLIANT
+    designs against each other and is the optimisation signal; it cannot buy a success verdict or a
+    single point for a formulation that is not releasable.
+  # release_gate.measured_effect_of_the_gate: WITHHELD -- grader-side calibration, see private_data/.
+constraints:
+  acid_consistency:
+    description: >
+      The acidifier identity and its amount must agree: an acid at a non-zero level, or 'none' at 0 %.
+  mass_closure:
+    description: >
+      The core is fixed at 200 mg with 5 mg API; the main filler (DCPA) makes up the balance.
+    min_filler_pct: 10.0
+  composition_overlap:
+    description: >
+      Mass-weighted composition overlap (Ruzicka / weighted Jaccard) against the baseline
+      formulation: sum_i min(w_i, w0_i) / sum_i max(w_i, w0_i) over the mass fractions of all
+      components. A different excipient identity is a different component, so a swap costs its whole
+      mass. Process parameters do not enter the composition vector.
+    method: "ruzicka_mass_overlap"
+    min: 0.88
+  max_slot_changes:
+    description: "At most this many of the 12 declared conditions may differ from the baseline set."
+    max: 4
+  max_identity_changes:
+    description: >
+      At most this many excipient identity changes (a different acidifier, a different
+      superdisintegrant, or introducing mannitol).
+    max: 1
+  lubricant_range:
+    description: "Magnesium stearate, % of core weight; the floor is the anti-sticking minimum."
+    min: 0.3
+    max: 1.5
+  acidifier_total:
+    description: "Total acidifier, % of core weight (palatability and tolerability)."
+    max: 4.0
+
+# -------------------------------------------------------------------------------------------------
+# TOOL LAYER (audit finding #5, new in ruler 2.0.0).
+#
+# Finding: "the flow is driven by a fixed harness that always calls the same prediction model; there
+# is no record of the model choosing a tool, handling a tool failure, or changing the order in which
+# it gathers information."
+#
+# Fix: the model decides, every turn, whether to call a diagnostic tool, which one, how many times
+# and with what arguments, and it has to recover from its own malformed calls. Implemented in
+# src/tools.py (the authority) and driven by the inner loop in src/main.py; the tool declarations the
+# model sees are rendered from src/tools.tool_catalogue(), so the prompt cannot drift from the code.
+#
+# HARD LIMIT ON WHAT A TOOL MAY RETURN: no tool returns, or lets a caller assemble, any CQA value,
+# any per-CQA desirability, D, an achievement, a score, a band, a compliance verdict or the reference
+# design. Every number a tool returns is arithmetic on the composition table that question.md already
+# prints in full. The tools therefore add NO information about the design space or the ruler, which
+# is why the offline difficulty gates are unaffected by them; what they can change is model
+# behaviour, so the three calibration models were re-run from scratch rather than re-scored.
+# -------------------------------------------------------------------------------------------------
+tools:
+  enabled: true
+  protocol: "JSON. Each assistant turn is one object: {\"tool_calls\": [...]} or {\"candidate\": {...}}"
+  call_budget_per_round: 4
+  max_tool_turns_per_round: 2
+  max_llm_calls_per_round: 3          # 1 submission turn + at most 2 tool-request turns
+  available:
+    - name: "validate_formulation"
+      kind: "diagnostic"
+      returns: "legality (on-grid / acid consistency / mass closure), q.s. filler %, composition in
+        % and mg, changed-slot and identity-change counts, composition overlap with the starting
+        formulation, and the boolean hard-constraint checklist"
+    - name: "composition_overlap"
+      kind: "diagnostic"
+      returns: "mass-weighted composition overlap between two formulations (default: against the
+        starting formulation) with the per-component min/max terms and whether the floor is met"
+    - name: "excipient_note"
+      kind: "diagnostic"
+      returns: "role, generic compatibility / risk caution and controlling slot for ONE excipient
+        code; explicitly direction-free with respect to the five CQAs"
+  forbidden_by_design:
+    - "the aggregate desirability D of an unsubmitted formulation"
+    - "any predicted CQA value"
+    - "the per-CQA desirability breakdown"
+    - "any in-spec / out-of-spec verdict"
+    - "achievement, score, band, or the reference design"
+  failure_modes_returned:
+    - "unknown_tool -- the name is not one of the three"
+    - "bad_arguments -- arguments is not an object, or a required argument is missing"
+    - "off_grid -- a slot value is not a declared level (per-slot detail returned)"
+    - "missing_slots -- fewer than twelve slots given"
+    - "unknown_excipient -- the code is not in the substance table (valid codes returned)"
+    - "quota_exceeded -- the per-round budget is spent; the model must submit"
+  consequence_of_ignoring_the_quota: >
+    A round in which the model still requests tools after being told to submit is recorded as a
+    protocol failure and submits nothing, exactly like an unparseable reply. That is the recovery
+    branch the audit asked for, and it is visible in
+    final_report.json -> checks.tool_layer.n_tool_requests_after_budget_exhausted.
+
+iteration:
+  max_rounds: 5
+  candidates_per_round: 1
+  note: >
+    Five rounds, one formulation per round, fixed budget: the run always uses all five rounds and
+    there is no early stop, so every model is scored on the same number of measurements. The score is
+    the best usable formulation over the whole trajectory (src/scoring.py), not the last one, so a
+    model is never punished for exploring in a later round.
+
+
+  # ----------------------------------------------------------------------------------------------
+  # What happens when a round produces no parseable candidate (round-3 audit, 刘丞军 P1).
+  #
+  # The second round shipped a threshold -- "a run is voided once it loses 2 or more rounds" -- that
+  # was written down AFTER the scores were seen. A degradation rule chosen once the results are
+  # known can always be set where it flatters them. The rule below is declared here, in the grader
+  # output and in the comparison layer BEFORE any run is judged, identically for every model, and is
+  # the same rule in all four tasks of this suite.
+  #
+  # Three facts, deliberately not collapsed into one:
+  #   1. SCORE. Unchanged. Best-of-N over the trajectory is non-decreasing in N, so a lost round can
+  #      only lower the score: the number stays a valid LOWER BOUND, which is a measurement and not
+  #      a discard reason (§10 forbids letting an infrastructure loss into the science column).
+  #   2. PROTOCOL COMPLETENESS. A separate verdict, always reported, never inferred from the score.
+  #      COMPLETE only when all `max_rounds` rounds carry a parseable candidate (§16.6).
+  #   3. RE-RUN. An operational trigger read from `rerun_required_missing_rounds`, not a judgement
+  #      made after seeing the number.
+  round_completeness:
+    complete_requires_all_rounds: true
+    round_counts_when: "the trajectory holds a parseable candidate for that round"
+    missing_round_causes:
+      - LLM_CALL_FAILURE        # the provider never returned usable content for that round
+      - UNPARSEABLE_SUBMISSION  # content returned, no candidate recoverable from it
+      - NO_ROUND_RECORD         # the round is absent from the trajectory entirely
+    rerun_required_missing_rounds: 1
+    score_of_incomplete_run: "reported as a lower bound in details.json, labelled INCOMPLETE_MULTI_ROUND"
+    harbor_reward_of_incomplete_run: 0.0
+    reward_rule: >-
+      The instruction makes all five rounds mandatory, so completeness gates the numeric
+      reward instead of merely labelling it. When protocol_completeness.verdict is not
+      COMPLETE the verifier writes reward 0.0, whatever the scientific score is. The
+      scientific score is still computed and kept in details.json as a lower bound,
+      because that is the right diagnostic for how far a run got before it broke -- but a
+      lower bound is not a leaderboard number, and a run that stops at round 3 must not
+      be indistinguishable from one that spent its whole measurement budget. This rule is
+      published here, before any run, so it is a declared protocol and not a threshold
+      picked after seeing scores.
+    incomplete_run_may_support:
+      - "this model reached at least this score"
+      - "this instance is not unreachable"
+    incomplete_run_may_not_support:
+      - "model ranking"
+      - "complete three-model difficulty evidence"
+      - "saturation or non-saturation of the instance"
+  max_rounds: 5
+  candidates_per_round: 1
+  note: >
+    Five rounds, one formulation per round, fixed budget: the run always uses all five rounds and
+    there is no early stop, so every model is scored on the same number of measurements. The score is
+    the best usable formulation over the whole trajectory (src/scoring.py), not the last one, so a
+    model is never punished for exploring in a later round.
+
+# -------------------------------------------------------------------------------------------------
+# Designer-only. Produced by scripts/enumerate_reference_best.py; NOT exposed to the model.
+# -------------------------------------------------------------------------------------------------
+reference:
+  # WITHHELD FROM THE MODEL-VISIBLE HALF. The reference optimum, its design, the achievement anchors,
+  # the difficulty-gate values and the score histogram are the answer to this task, so they live only
+  # on the grading side: private_data/tasks/<subdir>/task_config.yaml. Nothing in this package can
+  # compute a score, and the task loop detects the absent block and records an unscored run.
+  available_in_this_package: false
+  held_by: "private_data/tasks/q1_microenvironment/task_config.yaml"
+  grade_with: "the harness grader, private_grader/grader.py"
+
+scoring:
+  ruler_version: "2.0.0"          # copied into every final_report.json -> score.ruler_version
+  prompt_version: 3               # copied into every final_report.json -> prompt_version
+  total_points: 100
+
+  # Feasibility is a GATE, not a scoring category. See the rationale in src/scoring.py; src/scoring.py
+  # raises if this is not 0.
+  #
+  # Short version: awarding a slice of the total for per-constraint coverage lifts every competent
+  # model by a flat amount before any design work is measured, which makes a difficulty target
+  # arithmetically unreachable -- and a tablet that misses a release specification cannot be shipped,
+  # so there is nothing to pay for. An infeasible formulation therefore scores exactly 0, and a
+  # feasible one earns no credit for being feasible.
+  constraint_points: 0
+
+  optimality_points: 100
+
+  # achievement = clip((D_best_qualifying - D_baseline) / (D_reference - D_baseline), 0, 1).
+  # "Qualifying" is the FOUR-gate set: on-grid, inside the PACMP change budget, ALL FIVE CQAs inside
+  # their specification windows (the release gate), and D above the starting formulation.
+  #
+  # SIXTEEN bands, deliberately dense below achievement 0.25 (audit finding #4: under the seven-band
+  # 1.x table two of three calibration models collided in the same bottom band). Equal to
+  # design_space.POINT_BANDS, which check_consistency.py asserts.
+  #
+  # The lowest band worth >= 50 points starts at achievement 0.60. That placement is MEASURED, not
+  # chosen for looks: the sponsor's acceptance criterion is that no offline shortcut family and no
+  # calibration model may reach 50/100, and the boundary sits above the highest shortcut ceiling the
+  # designer-side probes found. Which families were probed, what they reach, and the arithmetic that
+  # pins the boundary are recorded in the GRADER package only (审核说明.md section 3.1 and 4,
+  # answers/naive_answer_probes.json). Lowering the boundary requires re-running those probes.
+  optimality_bands:
+    - {min_achievement: 0.90, points: 100}
+    - {min_achievement: 0.80, points: 88}
+    - {min_achievement: 0.70, points: 76}
+    - {min_achievement: 0.60, points: 62}
+    - {min_achievement: 0.45, points: 44}
+    - {min_achievement: 0.36, points: 36}
+    - {min_achievement: 0.29, points: 30}
+    - {min_achievement: 0.22, points: 25}
+    - {min_achievement: 0.16, points: 21}
+    - {min_achievement: 0.115, points: 17}
+    - {min_achievement: 0.08, points: 14}
+    - {min_achievement: 0.055, points: 11}
+    - {min_achievement: 0.035, points: 8}
+    - {min_achievement: 0.02, points: 6}
+    - {min_achievement: 0.008, points: 4}
+    - {min_achievement: 0.0001, points: 2}
+
+  # Continuous, band-free quantities written into every final_report.json by
+  # src/scoring.continuous_diagnostics, so two runs in the same band can still be ranked
+  # (audit finding #4). None of them is part of the score.
+  continuous_metrics_reported:
+    - "best_qualifying_raw_achievement (unclipped)"
+    - "best_qualifying_desirability and its per-CQA desirability breakdown"
+    - "best_by_desirability + whether it was compliant (i.e. what the release gate cost)"
+    - "n_rounds_measured / budget_feasible / cqa_compliant / qualifying"
+    - "best_qualifying_round, max_n_cqa_in_spec_over_run"
+    - "per_round: D, raw achievement, n_cqa_in_spec, overlap, slots changed"
+
+# -------------------------------------------------------------------------------------------------
+# Reduced-bandwidth feedback. Implemented in src/feedback.py, which is the authority; these switches
+# document the contract and are what a reviewer should read first.
+#
+# Returned, because the CQAs are outputs of a fitted model and cannot be obtained any other way --
+# without them the task is not an optimisation at all:
+#   * the five measured CQA values of the submitted formulation, and its desirability D;
+#   * the submission's own budget bookkeeping (composition overlap, changed conditions, identity
+#     changes, q.s. filler %) and the list of violated feasibility constraints. All of this is plain
+#     arithmetic on the composition table, so it leaks nothing the model could not recompute -- while
+#     a model that silently drifted out of the budget would otherwise burn every remaining round on
+#     formulations that can never score;
+#   * the best D reached so far in the run.
+#
+# Withheld, because returning it would replace the design problem with a search against a free
+# perfect verifier -- the failure that made an earlier problem in this series trivial:
+#   * which CQAs are inside or outside their windows, and the per-CQA desirability breakdown;
+#   * the specification windows themselves (they are printed in question.md in full, so the model has
+#     complete information and can do this classification itself);
+#   * the reference optimum, its value, the achievement fraction, the score, or any verdict.
+# -------------------------------------------------------------------------------------------------
+feedback:
+  return_measured_cqa_values: true
+  return_desirability: true
+  return_budget_bookkeeping: true
+  return_feasibility_violations: true
+  return_per_cqa_window_verdicts: false
+  return_per_cqa_desirability: false
+  return_specification_windows: false
+  return_reference_value: false
+  return_achievement_or_score: false
+  return_success_verdict: false
+  return_best_so_far: true

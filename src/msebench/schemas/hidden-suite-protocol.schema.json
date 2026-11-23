@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chembench.local/schemas/hidden-suite-protocol.schema.json",
+  "title": "ChemBench protected hidden-suite deployment",
+  "type": "object",
+  "required": ["schema_version", "endpoint", "limits", "ownership", "release"],
+  "properties": {
+    "schema_version": {"const": "chembench-hidden-suite/1.0"},
+    "endpoint": {"type": "object", "required": ["url_env"], "properties": {"url_env": {"type": "string"}}},
+    "limits": {"type": "object", "required": ["case_count"], "properties": {"case_count": {"type": "integer", "minimum": 1}}},
+    "ownership": {"type": "object"},
+    "release": {"type": "object", "required": ["private_image_digest", "release_ready"]}
+  },
+  "additionalProperties": false
+}

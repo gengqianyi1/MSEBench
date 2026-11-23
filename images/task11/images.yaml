@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '11'
+family: revision6
+images:
+- role: environment
+  tag: chembench-task-11-lithium-electrolyte-design-env:latest
+  image_id: sha256:bf363de3a0fc0af789efda3da3a48d860a93a200fef4be0ad5ef750512175187
+  tar: images/task11/task11-environment.tar
+  bytes: 300699648
+  tar_sha256: 1f9c43592796ff1d7687def6fadc53e8f397946ee8f19860ccc2c3c240eac508
+  build:
+    context: tasks/task11/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench-task-11-lithium-electrolyte-design-tests:latest
+  image_id: sha256:49913896d870cab1ab8224c5503ac3f0eaa1c74986d46443a67141980019f741
+  tar: images/task11/task11-verifier.tar
+  bytes: 300717056
+  tar_sha256: cdfd697f03d13103f24683dc70c33f4fe60c90dfc745272ae843a0f8661cdfdc
+  build:
+    context: tasks/task11/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

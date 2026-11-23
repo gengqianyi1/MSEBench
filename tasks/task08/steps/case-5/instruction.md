@@ -1,0 +1,1 @@
+Solve protected xTB recovery case 5. Inspect the frozen failure through declared tools, cite exact read evidence, execute a provenance-safe optimization and Hessian restart, validate both phases, then submit the structured final candidate.

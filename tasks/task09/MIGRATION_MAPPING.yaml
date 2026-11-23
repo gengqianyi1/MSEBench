@@ -1,0 +1,61 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-09-adaptive-xtb-torsion-profile
+source:
+  path: chembench-author-handoff/tasks/task-09-adaptive-xtb-torsion-profile
+  version: 2.1.1-chembench2
+  sha256: a9b3b232fca2a2fc9e058c7c68d5068e365bb4091e635cf358352a6ff3685609
+files:
+  - source: MIGRATION.md
+    destination: MIGRATION.md
+    handling: copied
+    source_sha256: 3164a864e401de55bb613ced54156a934698ef23ca584176d1d567da6e87c0fe
+    destination_sha256: 3164a864e401de55bb613ced54156a934698ef23ca584176d1d567da6e87c0fe
+    reason: Preserve the organizer-authored migration statement unchanged.
+  - source: harness_contract.yaml
+    destination: harness_contract.yaml
+    handling: transformed
+    source_sha256: 188cca1d7af36c265e4cdf63e357fa507f6f16ffca1dd23d8a1a6f9b9ca9c8a1
+    destination_sha256: 3d23c6a9197ce71fbd746d94897939b7a58a6b046480613eace9098e31738262
+    reason: Restore frozen campaign, angle, feedback, native-attempt, timeout, and output-token budgets in author-editable fields.
+  - source: environment/public/harness_contract.yaml
+    destination: environment/public/harness_contract.yaml
+    handling: transformed
+    source_sha256: 188cca1d7af36c265e4cdf63e357fa507f6f16ffca1dd23d8a1a6f9b9ca9c8a1
+    destination_sha256: 3d23c6a9197ce71fbd746d94897939b7a58a6b046480613eace9098e31738262
+    reason: Keep the public contract projection byte-identical to the task-local contract.
+  - source: environment/public/.chembench_agent.json
+    destination: environment/public/.chembench_agent.json
+    handling: transformed
+    source_sha256: 58bad9fa674ad81d8e0907ed39d3ca809fd472a93bb1cdee95faa25c308c2d9a
+    destination_sha256: d5945af51daacba7ec4cf1f13c48afc76f02971116ca4e3a52d1efa440d75a1b
+    reason: Match the frozen five-turn/five-public-action campaign limit.
+  - source: tests/private_suite_adapter.py
+    destination: tests/private_suite_adapter.py
+    handling: transformed
+    source_sha256: fc7313b72643435549646bed4623606ec230a50532776b41f178fb3061ee82c4
+    destination_sha256: 87e1a3f1685617eec5921cf17436f98e5625795ae62d0c2b43de676a76549fa8
+    reason: Correct phase reporting, bind evidence to session/case/model identity, and keep public replay temporaries under the session root rather than the frozen snapshot.
+  - source: tests/protocol_grader.py
+    destination: tests/protocol_grader.py
+    handling: transformed
+    source_sha256: d69d6b7680f41ad7ce47a57f245ee1f809bb3b1bd296b81bb80813d13de1c505
+    destination_sha256: 7474537d74e064146ea110bc1ba6af2143bc141d6ead6b335b608a21284f2679
+    reason: Re-evaluate the complete four-case organizer evidence campaign and emit all required Harbor artifacts fail closed.
+  - source: tests/test.sh
+    destination: tests/test.sh
+    handling: transformed
+    source_sha256: 056b98f85cb5d52e0a903690dcae6d66bf6c0b9e6c614e40b513c2eceeef2e6a
+    destination_sha256: 9a277e7de79a07f02450bbc250181f15d82ff4b635bb3fefa2fa64ecca170583
+    reason: Invoke the Harbor organizer-evidence protocol grader instead of the legacy workspace grader.
+  - source: revision5-author/tests/migration_regression.py
+    destination: tests/migration_regression.py
+    handling: transformed
+    source_sha256: 4b227ba28fb7f9f31ea8f27a95064cef905684b8eb5b1b61bd65d8ba2a80419f
+    destination_sha256: 4b227ba28fb7f9f31ea8f27a95064cef905684b8eb5b1b61bd65d8ba2a80419f
+    reason: Add four-case Oracle, trusted-identity fixture, missing-identity, self-report injection, path traversal, artifact, and snapshot-pollution regression coverage; no live model is represented.
+author_approval:
+  name: Liu Chengchun
+  date: 2026-08-29
+  protocol_equivalent: confirmed_harbor_replay
+  scoring_equivalent: confirmed_reference_optimum_100
+framework_blockers: []

@@ -1,0 +1,34 @@
+schema: msebench.task-images/1.0
+task: '19'
+family: chembench
+images:
+- role: environment
+  tag: matrix-task19-public:20260910
+  image_id: sha256:035435148783202ae172c9813c352e273e7e6dabd77e7b64b11312dc3a5fa700
+  tar: images/task19/task19-environment.tar
+  bytes: 53477888
+  tar_sha256: 8d9336bdea5d2bbc0b005b2a172c480f295ab106c3ed0a0a0e3d04759b4fd5c3
+  build:
+    context: tasks/task19/environment
+    dockerfile: Dockerfile
+- role: sidecar
+  tag: matbench/task19-sidecar:20260910-protocol2
+  image_id: sha256:31e08e860f605a335f20ca8fe0cd65e85d2c4e0f76eecf133be8594a87a314b5
+  tar: images/task19/task19-sidecar.tar
+  bytes: 48552448
+  tar_sha256: 5f09662b3071fd1ee527121541fd9dd88767c9526669c1b818f7c606488d2bfa
+  build:
+    context: tasks/task19
+    dockerfile: tests/sidecar/Dockerfile
+- role: verifier
+  tag: matbench/task19-verifier:20260910-protocol2
+  image_id: sha256:77750e75574f2bc54d0ce088ad4f1390e99ba51eee4db0fc8e8b82774dc58d49
+  tar: images/task19/task19-verifier.tar
+  bytes: 48555520
+  tar_sha256: 63458964af7f7899ca8cf2c0e0074be4c2815ed62e5d6ba3e30fad06d1d979b6
+  build:
+    context: tasks/task19/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

@@ -1,0 +1,36 @@
+schema: msebench.task-images/1.0
+task: '16'
+family: chembench
+images:
+- role: environment
+  tag: chembench/task16-environment:2.1.0-r10
+  image_id: sha256:eafb358e8fd7cc32956b8711b78813ceb7aae24a3dce99aa602fe33978c4f3ab
+  tar: images/task16/task16-environment.tar
+  bytes: 178618880
+  tar_sha256: bc2f4bd9fd0f31a3c715bac43abadb6845b7d57c9d2d5f5893f9149d3fec8e4b
+  build:
+    context: tasks/task16/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench/task16-verifier:2.1.0-r10
+  image_id: sha256:167472bdd83611022cca61ed8a7a7e6023a305ce74434913f2ffd677019c3ebb
+  tar: images/task16/task16-verifier.tar
+  bytes: 178996224
+  tar_sha256: ae65a14d4f7c6c319988c46441cbc30d535731b897dfb67203388c739f565352
+  build:
+    context: tasks/task16/tests
+    dockerfile: Dockerfile
+- role: sidecar
+  tag: chembench/task16-sidecar:2.1.0-r10
+  image_id: sha256:b01b9fb92b6f963ece3cacb71cbf6cfeaa034a88c3287ab1f73a0b0680b49a4b
+  tar: images/task16/task16-sidecar.tar
+  bytes: 178987520
+  tar_sha256: 2a3c534d050e70333486000dd9e19b8e61f93c0d7fb018618e9031776e218a79
+  build:
+    context: frameworks/14-17/docker_build
+    dockerfile: dockerfiles/sidecar.Dockerfile
+    compose: frameworks/14-17/docker_build/docker-compose.build.yaml
+    service: task16-sidecar
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

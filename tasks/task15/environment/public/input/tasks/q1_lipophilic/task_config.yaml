@@ -1,0 +1,284 @@
+task_id: "q1_lipophilic_sulfonamide_edit_budget"
+task_name: "Surrogate-property optimization of an anilide sulfonamide under a fingerprint-similarity edit budget"
+
+# ---------------------------------------------------------------------------------------------
+# PUBLIC (model-visible) task configuration.
+#
+# Review finding 1 (evaluation isolation): this file used to carry a `reference:` block with the
+# reference structure, the reference objective value, the score bands and the measured difficulty
+# gates. All of that has moved to grader/reference/reference_target.yaml, which is NOT part of the
+# public package. Nothing in this file, and nothing anywhere else on the public side, discloses the
+# reference design or the target value, and nothing here can be inverted to recover them.
+#
+# Review finding 3 (scientific scope): see `positioning` below. This is a SURROGATE-PROPERTY
+# optimization benchmark. It measures constrained molecular editing against computed surrogates, not
+# real lead optimization. No potency, selectivity, ADMET or experimental data is involved, and none
+# is simulated.
+# ---------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------
+# TWO VERSIONS, and they oblige different things. Both were introduced in the 2026-08 revision;
+# before that this package carried no version field at all, which is why the numbering starts where
+# it does rather than at some archaeological zero.
+#
+#   ruler_version   the SCORING RULE: the constraint windows, the achievement formula, the score
+#                   bands and the point total. Changing it makes old SCORES incomparable, so every
+#                   shipped run must be RE-SCORED (a pure function of the trajectory -- no API
+#                   calls). 1.0.0 is the pure-optimality rubric that took effect on 2026-07-30
+#                   (100 points from the objective, feasibility as a gate worth 0). The 2026-08
+#                   revision did NOT touch it.
+#
+#   prompt_version  WHAT THE MODEL WAS SHOWN: question.md, plus everything src/main.py puts into a
+#                   message. Changing it makes old TRAJECTORIES evidence about a different task, so
+#                   every shipped run must be RE-RUN and the old runs DELETED, not re-scored.
+#                   1 = the 2026-07-30 question.md.
+#                   2 = the 2026-08 revision. External review found one sentence after the
+#                       fourteen-move table ("Not one of those moves earns anything") that read as
+#                       "no single-position edit can score", which contradicts the measured fact
+#                       that exactly one single-slot edit is feasible and improving. The sentence
+#                       now scopes itself to the table and states outright that single-position
+#                       edits are not uniformly worthless. Every shipped trajectory was re-run.
+#
+# Both values are copied into run_summary.json and into final_report.json, and check_consistency.py
+# asserts that every shipped run carries the CURRENT prompt_version -- a stale trajectory is
+# evidence about a task this package no longer poses.
+# ---------------------------------------------------------------------------------------------
+ruler_version: "1.0.0"
+prompt_version: 3
+prompt_version_changed_on: "2026-08-09"
+prompt_version_note: >
+  3 (2026-08-09): second-round review 15-P1 #1. The per-move QED/MW columns of the
+  fourteen-move table, the "exactly one single-slot edit is feasible and improving"
+  sentence and the similarity-shell population table were withdrawn from question.md as
+  search-narrowing disclosures; the qualitative chemistry behind them was kept.
+  ruler_version is deliberately UNCHANGED at 1.0.0 -- no window, threshold, achievement
+  formula or band moved, so a submission scores exactly what it scored before. What did
+  change is what the model is shown, which makes every prompt_version 2 trajectory
+  evidence about a different task. All of them were re-filed under runs_round1_archive/.
+
+positioning:
+  category: "surrogate-property constrained-editing benchmark"
+  what_is_measured: >
+    Whether a model can raise a COMPUTED drug-likeness surrogate (RDKit QED) on one starting molecule
+    while holding six hard computed constraints, one of which -- a Morgan fingerprint similarity
+    floor -- acts as a budget on how much of the molecule may change.
+  what_is_NOT_measured: >
+    Biological potency, target selectivity, metabolic stability, toxicity, developability and real
+    synthetic feasibility. QED is a published desirability composite fitted to marketed-drug property
+    distributions; it is a coarse surrogate for "drug-likeness" and not a measure of candidate
+    quality. Tanimoto similarity on Morgan fingerprints is a substructure-overlap statistic, not a
+    measure of pharmacological or synthetic relatedness. SA_Score is a fragment-frequency heuristic,
+    not a route assessment.
+  data_provenance: >
+    Every number in this benchmark is computed deterministically by RDKit from the SMILES string. No
+    experimental measurement, no vendor or registry data, no simulated assay and no fitted
+    structure-activity model is used anywhere. There is no noise model because there is no measured
+    quantity.
+  scope_of_conclusions: >
+    A score on this task supports claims about constrained multi-site molecular editing under
+    quantitative feedback on a non-inspectable objective. It does NOT support claims about medicinal
+    chemistry judgement, real lead optimization capability or candidate-quality assessment.
+
+# ---------------------------------------------------------------------------------------------
+# FROZEN ENVIRONMENT AND MEASUREMENT PROTOCOL.
+#
+# External review (2026-08) asked for this: strong designs have to operate close to the 0.40
+# similarity floor, so anything that shifts a fingerprint bit or an aromaticity perception by a hair
+# could in principle move a candidate across it. The answer is to pin the toolchain and to write the
+# protocol down, so a re-score years later is the same measurement rather than a similar one.
+#
+# Measured, not asserted: every descriptor below was recomputed for 122 molecules (the start, the
+# reference, all 55 one-slot moves, all 15 out-of-chemotype moves, the top 50 feasible designs)
+# under RDKit 2025.09.6/Python 3.10.19 and RDKit 2026.03.4/Python 3.13.5. Max |difference| was
+# 0.000e+00 on QED, MW, LogP, TPSA, SA_Score and similarity; canonical SMILES, alert counts and
+# feasibility verdicts were identical for all 122. See 整改说明2.md.
+# ---------------------------------------------------------------------------------------------
+reproducibility:
+  pinned_environment: "requirements.txt (exact `==` pins; see also `environment` in every final_report.json)"
+  python: "3.10.19"
+  rdkit: "2025.09.6"
+  standardization_protocol: >
+    (1) RDKit parses the submitted string with sanitization on; (2) admissibility is decided BEFORE
+    any descriptor call and an inadmissible input is rejected, never repaired; (3) only then is
+    rdMolStandardize.Cleanup applied -- sanitization, functional-group normalization, metal
+    disconnection, re-ionization -- and single-fragment plus net-zero-charge are re-asserted
+    afterwards; (4) every descriptor and the fingerprint are computed on that standardized molecule,
+    and the canonical SMILES recorded in the trajectory is Chem.MolToSmiles(std, canonical=True).
+    No tautomer canonicalization and no protonation-state adjustment is performed, in either
+    direction, so the submitted protonation/tautomer form is the one that is measured.
+  fingerprint_protocol: >
+    rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048), Tanimoto against the STANDARDIZED
+    starting molecule (the reference point goes through the identical pipeline), result rounded to 6
+    decimals. Counts are not used; it is the bit-vector fingerprint.
+  determinism: >
+    Scoring is a pure function of the recorded trajectory. grader/scripts/score_run.py makes no API
+    call, so the same run always produces the same score.
+
+start_smiles: "CC(=O)Nc1ccc(F)c(S(=O)(=O)N(C)CCCN2CCCC2)c1"
+
+optimization_target:
+  name: "QED"
+  direction: "maximize"
+  kind: "computed surrogate property"
+  note: >
+    Maximize RDKit QED subject to every hard constraint. QED is a fitted geometric mean of eight
+    desirability functions, so it cannot be evaluated by inspection: the returned number is the only
+    way to learn where a design sits. It is a surrogate for drug-likeness, not a measurement of it.
+
+# Admissibility of a submitted string, enforced by src/validation.py BEFORE any descriptor is
+# computed. Review finding 2: the earlier evaluator accepted salts, mixtures, bare inorganic ions,
+# isotope labels and atom-mapped fragments, all of which shift MW/LogP/TPSA/QED/similarity. An
+# inadmissible input is now rejected outright and is never repaired into a scorable one.
+input_admissibility:
+  exactly_one_component: true          # no salts, no mixtures, no counter-ions
+  net_formal_charge: 0                 # neutral overall; net-zero zwitterions are allowed
+  allowed_elements: ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br", "I"]
+  must_contain_carbon: true
+  isotope_labels_allowed: false
+  atom_map_numbers_allowed: false
+  wildcard_or_query_atoms_allowed: false
+  radicals_allowed: false
+  abnormal_valence: "rejected by RDKit sanitization"
+  standardization: >
+    rdMolStandardize.Cleanup is applied only AFTER an input has been accepted, so two different SMILES
+    strings for the same molecule score identically. It is never used to strip a counter-ion or to
+    neutralize a charge, because that would turn an inadmissible submission into a scorable one.
+  regression_tests: "tests/test_input_validation.py"
+
+constraints:
+  valid_smiles: true
+  molecular_weight:
+    descriptor: "RDKit Descriptors.MolWt"
+    min: 345.0
+    max: 385.0
+    note: >
+      The start sits 12.5 Da above the FLOOR. QED on this molecule improves mainly by shedding mass,
+      so most improving edits fall through the bottom of this window.
+  logp:
+    descriptor: "RDKit Crippen.MolLogP"
+    min: 1.0
+    max: 2.3
+  tpsa:
+    descriptor: "RDKit rdMolDescriptors.CalcTPSA"
+    min: 62.0
+    max: 88.0
+    note: >
+      A ceiling as well as a floor. The sulfonyl and the acetamido together already supply most of
+      the polar surface area, so adding polarity pushes through the top while removing the acetamido
+      falls through the bottom.
+  sa_score:
+    descriptor: "RDKit Contrib SA_Score (Ertl & Schuffenhauer)"
+    max: 3.5
+  no_structural_alerts:
+    descriptor: "RDKit FilterCatalog PAINS + Brenk + NIH"
+    max_alerts: 0
+  similarity:
+    descriptor: "RDKit Morgan fingerprint Tanimoto similarity to the starting molecule"
+    method: "morgan_tanimoto"
+    radius: 2
+    n_bits: 2048
+    min: 0.40
+    note: >
+      The EDIT BUDGET. Similarity falls as more of the molecule changes, so this floor caps how much
+      of the molecule may be redesigned at once.
+
+iteration:
+  max_rounds: 5
+  candidates_per_round: 1
+
+
+  # ----------------------------------------------------------------------------------------------
+  # What happens when a round produces no parseable candidate (round-3 audit, 刘丞军 P1).
+  #
+  # The second round shipped a threshold -- "a run is voided once it loses 2 or more rounds" -- that
+  # was written down AFTER the scores were seen. A degradation rule chosen once the results are
+  # known can always be set where it flatters them. The rule below is declared here, in the grader
+  # output and in the comparison layer BEFORE any run is judged, identically for every model, and is
+  # the same rule in all four tasks of this suite.
+  #
+  # Three facts, deliberately not collapsed into one:
+  #   1. SCORE. Unchanged. Best-of-N over the trajectory is non-decreasing in N, so a lost round can
+  #      only lower the score: the number stays a valid LOWER BOUND, which is a measurement and not
+  #      a discard reason (§10 forbids letting an infrastructure loss into the science column).
+  #   2. PROTOCOL COMPLETENESS. A separate verdict, always reported, never inferred from the score.
+  #      COMPLETE only when all `max_rounds` rounds carry a parseable candidate (§16.6).
+  #   3. RE-RUN. An operational trigger read from `rerun_required_missing_rounds`, not a judgement
+  #      made after seeing the number.
+  round_completeness:
+    complete_requires_all_rounds: true
+    round_counts_when: "the trajectory holds a parseable candidate for that round"
+    missing_round_causes:
+      - LLM_CALL_FAILURE        # the provider never returned usable content for that round
+      - UNPARSEABLE_SUBMISSION  # content returned, no candidate recoverable from it
+      - NO_ROUND_RECORD         # the round is absent from the trajectory entirely
+    rerun_required_missing_rounds: 1
+    score_of_incomplete_run: "reported as a lower bound in details.json, labelled INCOMPLETE_MULTI_ROUND"
+    harbor_reward_of_incomplete_run: 0.0
+    reward_rule: >-
+      The instruction makes all five rounds mandatory, so completeness gates the numeric
+      reward instead of merely labelling it. When protocol_completeness.verdict is not
+      COMPLETE the verifier writes reward 0.0, whatever the scientific score is. The
+      scientific score is still computed and kept in details.json as a lower bound,
+      because that is the right diagnostic for how far a run got before it broke -- but a
+      lower bound is not a leaderboard number, and a run that stops at round 3 must not
+      be indistinguishable from one that spent its whole measurement budget. This rule is
+      published here, before any run, so it is a declared protocol and not a threshold
+      picked after seeing scores.
+    incomplete_run_may_support:
+      - "this model reached at least this score"
+      - "this instance is not unreachable"
+    incomplete_run_may_not_support:
+      - "model ranking"
+      - "complete three-model difficulty evidence"
+      - "saturation or non-saturation of the instance"
+  max_rounds: 5
+  candidates_per_round: 1
+
+# Review finding 4: the model drives a real tool layer. HARD RULE, asserted by the grader's
+# consistency script: no tool returns the objective (QED), and no tool returns the numeric value of
+# any of QED's eight component descriptors. The tools are diagnostic only -- admissibility,
+# similarity to the start, structural alerts, and a boolean constraint checklist.
+tools:
+  enabled: true
+  max_calls_per_round: 6
+  max_tool_messages_per_round: 2
+  available:
+    - "validate_structure"
+    - "similarity_to_start"
+    - "structural_alerts"
+    - "constraint_checklist"
+  forbidden_returns:
+    - "QED (the objective)"
+    - "numeric molecular weight"
+    - "numeric LogP"
+    - "numeric TPSA"
+    - "numeric H-bond donor count"
+    - "numeric H-bond acceptor count"
+    - "numeric rotatable-bond count"
+    - "numeric aromatic-ring count"
+  failure_modes_returned_to_model:
+    - "unknown_tool"
+    - "malformed_tool_call"
+    - "invalid_arguments"
+    - "invalid_molecule"
+    - "quota_exceeded"
+
+feedback:
+  return_numeric_values: true
+  return_constraint_flags: false
+  return_success_verdict: false
+  return_target_windows: false
+  return_best_so_far: true
+
+# Scoring is performed by the isolated grading side, which holds the reference target and the score
+# bands. This harness computes properties and feedback only.
+scoring:
+  performed_by: "grader/scripts/score_run.py"
+  ruler_version: "1.0.0"          # must equal the top-level ruler_version and the grader's copy
+  total_points: 100
+  constraint_points: 0
+  note: >
+    All 100 points come from the objective. Satisfying the hard constraints earns nothing by itself:
+    a design that violates any of them is not a usable molecule and contributes nothing. The score is
+    a monotone graded function of how much of the reachable objective headroom the best usable design
+    captured, measured against a reference target held only by the grading side.

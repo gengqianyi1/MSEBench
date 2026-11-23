@@ -1,0 +1,8 @@
+FROM docker:29-cli@sha256:eccaacfeed644c7de222ff047483568cb988dde95476fbaaf10ea2d04921bb66 AS docker_cli
+FROM matbench/task08-environment@sha256:f00fc6aae6c34ce9afa4ccb60d4b1473c7cd50bf54f2cedd71e55006f03c2db0
+USER root
+COPY --from=docker_cli /usr/local/bin/docker /usr/local/bin/docker
+COPY --from=docker_cli /usr/local/libexec/docker/cli-plugins /usr/local/libexec/docker/cli-plugins
+RUN python -m pip install --no-cache-dir harbor==0.21.0
+ENTRYPOINT []
+CMD ["bash"]

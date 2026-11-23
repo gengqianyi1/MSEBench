@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '10'
+family: revision6
+images:
+- role: environment
+  tag: chembench-task-10-matbench-bandgap-pipeline-env:latest
+  image_id: sha256:8c5bd8f29ebdcc3f9b6df88e9feaa0d6f919bade03eed507a174142c2a16fa96
+  tar: images/task10/task10-environment.tar
+  bytes: 248214016
+  tar_sha256: 142af49aed06a845dd87a518889d49a255a8cd5f5a149d8b78f5618857e07ef7
+  build:
+    context: tasks/task10/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench-task-10-matbench-bandgap-pipeline-tests:latest
+  image_id: sha256:96ec8f8de7a92585dff6123e801e2a9a31acadb1451586aba0dc4c1999b0d99c
+  tar: images/task10/task10-verifier.tar
+  bytes: 248237056
+  tar_sha256: 99c6e5f420f79acdc15b9cf651133bfd07d6235446305c718ca3a59516faf87f
+  build:
+    context: tasks/task10/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

@@ -1,0 +1,54 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+
+[task]
+name = "msebench/task-19-dual-impurity-elucidation"
+version = "3.2.0"
+description = "Dual pharmaceutical impurity elucidation with protected analytical experiments"
+authors = [{ name = "Wei Shuaixi" }]
+keywords = ["analytical_chemistry", "pharmaceutical_chemistry", "msebench", "harbor"]
+
+[metadata]
+source_task_id = "task_19_dual_impurity_elucidation"
+source_version = "2.2.0"
+domain = "analytical_pharmaceutical_chemistry"
+legacy_execution_mode = "not_applicable_new_task"
+legacy_grader_version = "not_applicable_new_task"
+migration_status = "docker-oracle-e2e-validated-formal-harbor-pending"
+parity_validated = true
+required_artifacts = ["final_answer.json", "cases/case-1/case_result.json"]
+task_owned_llm = false
+protocol_decoupled = true
+release_eligible = true
+oracle_status = "verified-100"
+
+[agent]
+timeout_sec = 3900.0
+
+[verifier]
+timeout_sec = 3900.0
+environment_mode = "separate"
+
+[environment]
+network_mode = "no-network"
+build_timeout_sec = 1800.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import json, yaml'"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 1800.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192
+gpus = 0

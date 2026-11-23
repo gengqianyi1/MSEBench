@@ -1,0 +1,20 @@
+FROM mambaorg/micromamba:2.8.1
+COPY --chown=$MAMBA_USER:$MAMBA_USER environment.lock.yml /tmp/environment.lock.yml
+COPY wheels/pyscf-2.8.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl /tmp/pyscf-2.8.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+# PySCF 2.8.0 is not published as a conda-forge linux-64 package.  Remove
+# that unsatisfiable pin from the conda solve, then install the same pinned
+# release through pip inside the resulting environment.
+RUN sed '/^- pyscf=/d' /tmp/environment.lock.yml > /tmp/environment.nopyscf.yml && \
+    micromamba create -y -n chembench -f /tmp/environment.nopyscf.yml && \
+    echo '4BAA59297DE8A2992E8AFA5B20A12164B6128C14CCC09431D05F73E3EEFDF008  /tmp/pyscf-2.8.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl' | sha256sum -c - && \
+    micromamba run -n chembench python -m pip install --no-cache-dir /tmp/pyscf-2.8.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl && \
+    micromamba clean --all --yes
+ENV PATH=/opt/conda/envs/chembench/bin:$PATH
+ENV MAMBA_DEFAULT_ENV=chembench
+USER root
+RUN mkdir -p /workspace /logs/agent /logs/artifacts /logs/verifier && chown -R $MAMBA_USER:$MAMBA_USER /workspace /logs
+USER $MAMBA_USER
+WORKDIR /workspace
+COPY --chown=$MAMBA_USER:$MAMBA_USER public/ /workspace/
+RUN micromamba run -n chembench python -c "import pyscf; from pyscf.solvent import smd; print('PySCF', pyscf.__version__, 'SMD_OK')"
+CMD ["bash"]

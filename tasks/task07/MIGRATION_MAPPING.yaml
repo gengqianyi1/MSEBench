@@ -1,0 +1,55 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-07-qed-molecular-design
+source:
+  path: chembench-author-handoff/tasks/task-07-qed-molecular-design
+  version: 2.1.1-chembench2
+  sha256: fa4220ab6c8e9b7c18d6de8bbd30e34bab47216b16bee55ea858b027b10b75a1
+files:
+  - source: MIGRATION.md
+    destination: MIGRATION.md
+    handling: copied
+    source_sha256: 10fa14b97e393185b9b2d0224fb7305c4792e421e0ddbd815afbad6278862183
+    destination_sha256: 10fa14b97e393185b9b2d0224fb7305c4792e421e0ddbd815afbad6278862183
+    reason: Preserve the organizer-authored migration statement unchanged.
+  - source: harness_contract.yaml
+    destination: harness_contract.yaml
+    handling: transformed
+    source_sha256: 947cd1ce7eaea283796ff8da287c98abc7ad3eea6ba3fa39ee046f1af799094d
+    destination_sha256: defecfe3ee9451e0d1e82d41259ad59bd8054d6bff27251afbb803154d2e05ce
+    reason: Restore frozen legacy action, turn, unique-candidate, provider-retry, timeout, and eligibility budgets in author-editable fields.
+  - source: environment/public/harness_contract.yaml
+    destination: environment/public/harness_contract.yaml
+    handling: transformed
+    source_sha256: 947cd1ce7eaea283796ff8da287c98abc7ad3eea6ba3fa39ee046f1af799094d
+    destination_sha256: defecfe3ee9451e0d1e82d41259ad59bd8054d6bff27251afbb803154d2e05ce
+    reason: Keep the public contract projection byte-identical to the task-local contract.
+  - source: tests/private_suite_adapter.py
+    destination: tests/private_suite_adapter.py
+    handling: transformed
+    source_sha256: e5b32b19a62699aef8fc9d2b824b6fa8d9c7e6a25ba822d3913209a0a865dab3
+    destination_sha256: ed5c181db471c6f049223e216b669c0fac6af11590206d5892a6390c955b087f
+    reason: Persist session-bound organizer evidence and record requested/actual model identity from organizer-only inputs.
+  - source: tests/protocol_grader.py
+    destination: tests/protocol_grader.py
+    handling: transformed
+    source_sha256: 0f323fb9010145420a32618230859293fd25f2807a9ce28b55850e02ac271d2d
+    destination_sha256: 96dab21c61b0d3fcb44ee4760b5d890c7303425d6d0bc9e5080198da4a8c9a03
+    reason: Independently replay organizer-owned RDKit evidence and fail closed on unsafe, absent, inconsistent, or unverified model-identity evidence.
+  - source: tests/Dockerfile
+    destination: tests/Dockerfile
+    handling: transformed
+    source_sha256: 95b7437f68a779afd930c2360f31fd005f9a8b338366ed4439c1812d66aa6adc
+    destination_sha256: b13e28b786419af2f9dae8499331b700b0be7d15da489210bbc5684b9fbbf5c1
+    reason: Include the task-private adapter in the verifier image build context.
+  - source: revision5-author/tests/migration_regression.py
+    destination: tests/migration_regression.py
+    handling: transformed
+    source_sha256: 05f403daa5085655654007c471a6f55524d9ac9f31b98f79db63c66fea8c4a8d
+    destination_sha256: 05f403daa5085655654007c471a6f55524d9ac9f31b98f79db63c66fea8c4a8d
+    reason: Add deterministic Oracle, trusted-identity fixture, missing-identity, self-report injection, path traversal, and artifact regression coverage; no live model is represented.
+author_approval:
+  name: Liu Chengchun
+  date: 2026-08-29
+  protocol_equivalent: confirmed_harbor_replay
+  scoring_equivalent: confirmed_reference_optimum_100
+framework_blockers: []

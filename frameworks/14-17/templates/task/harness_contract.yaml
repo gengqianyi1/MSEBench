@@ -1,0 +1,47 @@
+# COPY THIS FILE INTO A TASK ROOT AS harness_contract.yaml.
+# Lines marked IMMUTABLE are owned by the framework and must not be changed by task authors.
+schema_version: chembench-harness-contract/1.0  # IMMUTABLE
+task_id: task-XX-replace-me                     # REQUIRED: framework maintainer assigns
+
+protocol:
+  type: single_step                             # EDITABLE: select one supported protocol type
+  implementation_status: author_input_required  # IMMUTABLE: changed only by release tooling
+  state_file: /workspace/protocol_state.json    # IMMUTABLE
+  max_rounds: 1                                 # EDITABLE: must match original protocol
+
+budgets:
+  actions: 1                                    # EDITABLE: must match original protocol
+
+ownership:
+  immutable:                                    # IMMUTABLE list
+    - schema_version
+    - protocol.state_file
+    - ownership
+    - release_gates
+  author_editable:                              # IMMUTABLE list; values named here may be edited
+    - protocol.type
+    - protocol.max_rounds
+    - budgets
+    - task_plugin
+    - public_feedback_fields
+  author_required:                              # REQUIRED: author must resolve every item
+    - Describe the original action/observation sequence.
+    - Declare every tool budget and timeout.
+    - Identify public versus private outputs.
+    - Provide one valid Oracle and three invalid submissions.
+    - Define legacy parity tolerances.
+
+author_confirmations:                           # REQUIRED: author changes pending to confirmed/rejected
+  protocol_equivalent: pending
+  scoring_equivalent: pending
+  private_boundary_correct: pending
+  oracle_scientifically_valid: pending
+
+release_gates:                                  # IMMUTABLE: only CI/release tooling may change
+  schema: false
+  build: false
+  oracle: false
+  protocol_decoupled: false
+  parity: false
+  leakage: false
+  release_eligible: false

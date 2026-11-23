@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '12'
+family: revision6
+images:
+- role: environment
+  tag: chembench-task-12-pybamm-fast-charge-env:latest
+  image_id: sha256:ea8dcfbf47fcc0c56f84680e5ef39c8409262783093d1a9319c306a73e9b4adf
+  tar: images/task12/task12-environment.tar
+  bytes: 318621184
+  tar_sha256: 8d9da630d7ec6c616268bf256c8dc393f35ab855f71910a2ec8d429cf1bb717f
+  build:
+    context: tasks/task12/environment
+    dockerfile: Dockerfile
+- role: verifier
+  tag: chembench-task-12-pybamm-fast-charge-tests:latest
+  image_id: sha256:1d5160151554d28cffc8241f5ba2b06efe41a1d1b150a8cc238c25e4e419ab87
+  tar: images/task12/task12-verifier.tar
+  bytes: 318639104
+  tar_sha256: 47e260691de26cfa9b7ab95d86e7a9c292bf15b43f05fe3d26006fe952c250df
+  build:
+    context: tasks/task12/tests
+    dockerfile: Dockerfile
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

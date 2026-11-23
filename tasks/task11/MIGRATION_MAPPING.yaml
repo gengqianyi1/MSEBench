@@ -1,0 +1,43 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-11-lithium-electrolyte-design
+source:
+  path: 10_13_姚涵予_revision3_20260825.zip
+  version: revision3-20260825
+  sha256: c8d9b9cffc79c3972fad224d42d916a9c985110a248fae466c046ffc2ba9d1b8
+files:
+  - source: revised_tasks/chem_bench_v2_task_template/tasks/task_11_lithium_electrolyte_design/task.yaml
+    destination: tests/task_snapshot/task.yaml
+    handling: copied
+    source_sha256: 9adfe451fcb738f8a0cd7d4633c3ad78092aed6322037a96003912f204ededf0
+    destination_sha256: 9adfe451fcb738f8a0cd7d4633c3ad78092aed6322037a96003912f204ededf0
+    reason: Preserve score bounds, artifact contract, leaderboard role, and grader entrypoint.
+  - source: revised_tasks/chem_bench_v2_task_template/tasks/task_11_lithium_electrolyte_design/private_grader/grader.py
+    destination: tests/task_snapshot/private_grader/grader.py
+    handling: private-only
+    source_sha256: 61fc03be5ab0d43295bbb5e378d2cfcb85e5716fa04c93f7e98a779046a54101
+    destination_sha256: 61fc03be5ab0d43295bbb5e378d2cfcb85e5716fa04c93f7e98a779046a54101
+    reason: Replay the unchanged revision3 scientific grader only in the verifier image.
+  - source: revised_tasks/chem_bench_v2_task_template/tasks/task_11_lithium_electrolyte_design/private_data/reserved_smiles.txt
+    destination: tests/task_snapshot/private_data/reserved_smiles.txt
+    handling: organizer-only
+    source_sha256: 7e70698457895154edcc39b7f1f4642a08c126b4acf1f56f37690e280ac5e645
+    destination_sha256: 7e70698457895154edcc39b7f1f4642a08c126b4acf1f56f37690e280ac5e645
+    reason: Keep private labels, thresholds, or references outside the model workspace.
+  - source: chembench-author-handoff/AUTHOR_HANDOFF_PACKAGE.md
+    destination: tests/private_suite_adapter.py
+    handling: transformed
+    source_sha256: 0914b6eeb44ed547f736c4ab3d56b8f1f8b6ab913d2d970c2554dfd791af2b7c
+    destination_sha256: 35daf4b54a7747729b39511c0af3f108589affc569aa9890439bff467819a897
+    reason: Implement allowlisted organizer-evidence capture and digest verification.
+  - source: chembench-author-handoff/AUTHOR_HANDOFF_PACKAGE.md
+    destination: tests/protocol_grader.py
+    handling: transformed
+    source_sha256: 0914b6eeb44ed547f736c4ab3d56b8f1f8b6ab913d2d970c2554dfd791af2b7c
+    destination_sha256: 90724f577761ce19e42706aa1742147eb35888a98a5805e325bd503297a58cc7
+    reason: Independently replay organizer evidence and emit Harbor reward artifacts.
+author_approval:
+  name: 姚涵予（按交付目录标识）
+  date: 2026-08-31
+  protocol_equivalent: confirmed
+  scoring_equivalent: confirmed
+

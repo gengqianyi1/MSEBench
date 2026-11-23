@@ -1,0 +1,1 @@
+Work autonomously from the public files in `/workspace`. Use only the public tools exposed by the MSEBench sidecar. Write the contracted answer to `submission/final_answer.json` and the scientific report to `submission/report.md`, then call `submit`. The organizer records xTB evidence outside the model workspace and the private grader independently replays it.

@@ -1,0 +1,25 @@
+schema: msebench.task-images/1.0
+task: '7'
+family: organizer
+images:
+- role: environment
+  tag: matbench/task07-environment:20260910-sixth-review
+  image_id: sha256:2cd3c6747491068fd559a7e697a305314dc3fffaa04f2e3453f7ed2c23621161
+  tar: images/task07/task07-environment.tar
+  bytes: 350813696
+  tar_sha256: 96ccd309f794d310a69ba67cf32933412bd7637032698ff3eefdb837fdd191f6
+  build:
+    context: tasks/task07/environment
+    dockerfile: Dockerfile
+- role: sidecar
+  tag: matbench/task07-sidecar:20260910-sixth-review
+  image_id: sha256:2333d35ba1140b6b69728af51a67aee1fb8d95b5e6bcaa6006b5226a9cf1b918
+  tar: images/task07/task07-sidecar.tar
+  bytes: 351403008
+  tar_sha256: 68d8d1683f7beb19ec5cf37cc507d8a6d5ba35ada10cb79efe43461751fb6fd0
+  build:
+    context: tasks/task07/tests
+    dockerfile: Dockerfile.sidecar
+install:
+  loader: scripts/image_manager.py
+  usage: 'python3 scripts/image_manager.py ensure --all     # verify+load every task image'

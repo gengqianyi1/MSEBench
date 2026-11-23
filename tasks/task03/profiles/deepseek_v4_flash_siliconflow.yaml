@@ -1,0 +1,22 @@
+# Official-model profile template for release-ready Agent Tasks 01–03.
+# This file contains no credential. Export SILICONFLOW_API_KEY in the shell
+# running the launcher, or pass a private --env-file that is not committed.
+schema_version: chembench-llm-profile/1.0
+name: deepseek-v4-flash-siliconflow
+model_name: deepseek-ai/DeepSeek-V4-Flash
+api_base_url: https://api.siliconflow.cn/v1
+api_key_env: SILICONFLOW_API_KEY
+tasks: [task01, task02, task03]
+request_retries: 3
+request_timeout_sec: 300
+temperature: 0.0
+max_tokens: 12000
+# The JSON protocol fallback is provider-neutral and avoids assuming that an
+# OpenAI-compatible proxy implements native function-calling identically.
+use_native_tool_calls: false
+task01_sidecar_url: http://127.0.0.1:8710
+task02_sidecar_url: http://127.0.0.1:8711
+task03_cpus: 4
+task03_memory_mb: 12288
+task03_omp_num_threads: 1
+task03_round_timeout_sec: 1800

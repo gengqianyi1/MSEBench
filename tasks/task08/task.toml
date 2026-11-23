@@ -1,0 +1,82 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+multi_step_reward_strategy = "final"
+
+[task]
+name = "chembench/task-08-xtb-failure-diagnosis-restart"
+version = "2.2.0"
+description = "xTB Failure Diagnosis and Restart Agent Benchmark v2"
+authors = [{ name = "Liu Chengjun" }]
+keywords = ["computational_chemistry", "chembench", "harbor"]
+
+[metadata]
+source_task_id = "task_08_xtb_failure_diagnosis_restart"
+source_version = "2.1.1-chembench2"
+domain = "computational_chemistry"
+legacy_execution_mode = "native_runner"
+legacy_grader_version = "xtb-failure-suite-v2-replay-1.1"
+migration_status = "harbor-ready-candidate"
+parity_validated = true
+required_artifacts = ["final_answer.json", "benchmark_result.json", "benchmark_run/campaign_summary.json", "benchmark_run/*/suite_evaluation.json"]
+task_owned_llm = false
+protocol_decoupled = true
+protocol_validated = true
+scoring_validated = true
+private_boundary_validated = true
+oracle_scientifically_validated = true
+schema_validated = true
+build_validated = true
+leakage_validated = true
+release_eligible = true
+oracle_status = "verified_harbor"
+
+[agent]
+timeout_sec = 5700.0
+
+[verifier]
+timeout_sec = 5700.0
+environment_mode = "separate"
+
+[environment]
+docker_image = "matbench/task08-environment:20260910-sixth-review"
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+
+[[steps]]
+name = "case-1"
+description = "Diagnose and recover protected xTB case 1"
+[[steps]]
+name = "case-2"
+description = "Diagnose and recover protected xTB case 2"
+[[steps]]
+name = "case-3"
+description = "Diagnose and recover protected xTB case 3"
+[[steps]]
+name = "case-4"
+description = "Diagnose and recover protected xTB case 4"
+[[steps]]
+name = "case-5"
+description = "Diagnose and recover protected xTB case 5"
+[[steps]]
+name = "case-6"
+description = "Diagnose and recover protected xTB case 6 and verify the suite"
+
+[environment.healthcheck]
+command = "python -c 'import numpy, rdkit' && xtb --version"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0

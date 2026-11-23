@@ -1,0 +1,32 @@
+name: chembench
+channels:
+- conda-forge
+dependencies:
+- python=3.10.20
+- pip
+- setuptools
+- wheel
+- cmake>=3.24
+- ninja
+- make
+- git
+- c-compiler
+- cxx-compiler
+- fortran-compiler
+- pkg-config
+- libblas=*=*openblas
+- liblapack=*=*openblas
+- openblas
+- rdkit=2026.03.4
+- xtb=6.7.1
+- psi4=1.11
+- numpy=2.2.6
+- scipy=1.15.2
+- h5py=3.16.0
+- pandas=2.3.3
+- pyyaml=6.0.3
+- jsonschema=4.26.0
+- psutil=7.2.2
+- openai=2.45.0
+- pyberny=0.6.3
+- geometric=1.1.1

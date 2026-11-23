@@ -1,0 +1,230 @@
+# =================================================================================================
+# Environment declaration for K_spherical_agglomeration_benchmark.
+#
+# Documentation that happens to be machine-readable: the single place that states which interpreter
+# this package was built and calibrated with, what has to be installed, which LLM endpoints the
+# trajectories were produced against, and what to run to prove the package is intact. Nothing in src/
+# reads it. The files that ARE read at run time are configs/default*.yaml (harness) and
+# configs/api_config*.json (provider credentials).
+#
+# Build status: all five steps done. Step 4 produced the graded trajectories under runs/ and step 5
+# the audit note 审核说明.md and scripts/package_for_delivery.py. Every script referenced below exists
+# in the GRADER archive; the participant archive ships only the harness scripts, because the rest
+# quote designer-side measurements. The measured scores, the difficulty gates and the reference
+# optimum are grader-side and are deliberately not repeated in this file, which ships in the
+# participant archive.
+# =================================================================================================
+
+package:
+  name: "K_spherical_agglomeration_benchmark"
+  task_id: "q1_spherical_agglomeration_cqa"
+  entry_point: "src/main.py"
+  working_directory: "the package root -- every path in configs/*.yaml is relative to it"
+
+interpreter:
+  # The interpreter the surrogate was fitted with and every gate measured with. Any CPython 3.10-3.12
+  # works, but see `pickle_compatibility` below before switching.
+  #
+  # No absolute path is recorded here on purpose. The second-round acceptance checklist
+  # (Evaluation_20250809.md §16.9) requires that a delivered package carry no path belonging to the
+  # author's machine, because such a path is not reproducible on a clean server and reads as an
+  # undeclared dependency. Build your own interpreter with the `setup` block below.
+  path: "$PY -- set by the operator, see `setup`; any CPython >= 3.10 satisfying `pinned`"
+  python_version: "3.10.19"
+  platform_built_on: "macOS 26.5 / arm64 (Darwin 25.5.0), Clang 20.1.8"
+  minimum_python: "3.10"
+
+dependencies:
+  requirements_file: "requirements.txt"
+  install: "$PY -m pip install -r requirements.txt"
+  pinned:
+    numpy: "2.2.6"                # the ONE load-bearing dependency: population balance + surrogate
+    PyYAML: "6.0.3"               # load-bearing: reads configs and task_config.yaml
+    openai: "2.15.0"              # only needed to drive a model; offline scripts do not import it
+    httpx: "0.28.1"
+    pydantic: "2.12.5"
+  optional_audit_only:
+    scikit-learn: "1.7.2"         # only to re-run the pickle -> .npz migration audit
+    joblib: "1.5.2"               # ditto
+    scipy: "1.15.3"               # pulled in by sklearn; never imported by src/
+    threadpoolctl: "3.6.0"
+  not_required:
+    - "scikit-learn / joblib at RUN time -- the surrogate is arrays now, not a pickle"
+    - "rdkit -- this benchmark has no molecules"
+    - "pymatgen, ase, networkx, pandas -- unused"
+    - "xtb / psi4 / pyscf -- no quantum chemistry anywhere"
+  offline: >
+    Everything except the LLM call runs offline. No dataset is downloaded and no model is fetched: the
+    ruler is the array bundle in data/, and the design space is enumerated in process.
+
+cost_of_one_evaluation:
+  measured: "1.21 ms per design, single-threaded, on the interpreter above"
+  composition: >
+    ~0.8 ms for the 30-bin agglomeration-breakage population balance (40-240 adaptive steps),
+    ~0.3 ms for the frozen MLP forward pass, the rest for the PSD statistics, the yield mass balance
+    and the desirability. An exhaustive pass over the whole feasible change-budget neighbourhood
+    takes about 25 s on 8 processes. (Its size is a designer-side measurement and is grader-only.)
+  determinism: "no RNG is touched at evaluation time; repeated evaluation is bit-identical"
+
+surrogate:
+  # SYNTHETIC model. Not fitted to any experiment. Full model card: data/MODEL_CARD.md (grader side).
+  file: "data/agglo_strength_porosity.npz"
+  schema: "data/agglo_strength_porosity.schema.json"
+  format: >
+    numpy .npz, plain float64 arrays, opened with allow_pickle=False. Contents: scaler_mean,
+    scaler_scale (16 each), W0..W3 / b0..b3 for an MLP(128, 96, 64), mu_y, sc_y, n_layers. No
+    pickled object of any kind, so loading it is not code execution and there is no version-pinned
+    deserialiser in the path.
+  forward_pass: "src/agglomeration.surrogate_predict -- standardise, dense relu stack, de-standardise"
+  data_nature: >
+    Fitted with seed 20260726 to 60 000 samples of the mechanism in src/agglomeration.py plus
+    SYNTHETIC heteroscedastic noise emulating measurement scatter. It is not measurement scatter; no
+    laboratory data exists. Predicts (log strength, log porosity) from the 16 mechanistic
+    intermediates in agglomeration.FEATS. Hold-out R^2 against the noise-free mechanism: 0.9993 and
+    0.9996. data/agglo_training_data.npz is the training set, shipped so the fit can be reproduced.
+  migrated_from_pickle: >
+    The original artefact was data/agglo_strength_porosity.joblib (a pickled sklearn Pipeline:
+    StandardScaler + MLPRegressor(128, 96, 64)). External review flagged unpickling as a blocking
+    security defect, so the parameters were extracted into the .npz above. The migration is
+    BIT-IDENTICAL: max |old - new| = 0.000e+00 on d50, strength, porosity, yield_pct AND on the
+    desirability D, over 6 387 designs (the whole 1-slot and 2-slot families plus a 5 000-design
+    random sample of the feasible change-budget neighbourhood, seed 20260729). Evidence:
+    data/SURROGATE_MIGRATION_EVIDENCE.json; re-measure with
+    scripts/verify_surrogate_migration.py (needs the original pickle, which is NOT shipped) or
+    re-derive with scripts/convert_surrogate_to_npz.py.
+  if_it_will_not_load: >
+    A .npz that numpy cannot read means a corrupted download. If the surrogate must be refitted,
+    refit from data/agglo_training_data.npz with the same seed, then re-derive everything downstream:
+      $PY scripts/enumerate_reference_best.py     # rewrites the reference and the gates
+      $PY scripts/check_consistency.py            # must end 'CONSISTENT: one calibration, ...'
+    Do NOT hand-edit task_config.yaml to make the checks pass.
+
+llm_providers:
+  # OpenAI-compatible chat-completions endpoints. src/llm_client.py speaks nothing but that API, via
+  # the `openai` package. To add a vendor: copy the matching example file, set base_url / model /
+  # api_key, and point a configs/default_<name>.yaml at it.
+  #
+  # THE OFFICIAL SECOND-ROUND MODEL SET is deepseek-v4-pro, kimi-k2.6 and GLM-5.2, and comparison
+  # runs must use those three and nothing else. `temperature` is 0.0 for all three: the score is a
+  # random variable, one run per model is already only a calibration point (Evaluation_20250809.md
+  # §16.7), and sampling at 0.7 on top of n=1 measures the sampler rather than the model.
+  endpoints:
+  - name: "deepseek"
+    base_url: "https://api.deepseek.com"
+    model: "deepseek-v4-pro"
+    max_tokens: 16384
+    temperature: 0.0
+    api_config: "configs/api_config_deepseek.json"
+    template: "configs/api_config_deepseek.example.json"
+    harness_config: "configs/default_deepseek.yaml"
+    endpoint_status: "VERIFIED -- this package's shipped trajectories were produced against it"
+    note: >
+      This endpoint accepts the model name deepseek-v4-pro only; deepseek-chat and deepseek-reasoner
+      return HTTP 400. 16384 completion tokens are needed -- at 8192 the first attempt reliably spends
+      the whole budget on reasoning and returns empty content, wasting one call per round.
+  - name: "kimi"
+    base_url: "<UNCONFIRMED -- set before the comparison runs; see endpoint_status>"
+    model: "kimi-k2.6"
+    max_tokens: 16384
+    temperature: 0.0
+    api_config: "configs/api_config_kimi.json"
+    template: "configs/api_config_kimi.example.json"
+    harness_config: "configs/default_kimi.yaml"
+    endpoint_status: >
+      UNCONFIRMED. No kimi endpoint has ever produced a trajectory for this package. The one that was
+      tried, kimi-k3 behind the DashScope compatible gateway, is recorded under `known_bad`: that
+      gateway caps a response stream at 298 s and this question text needs a completion budget that
+      cannot be produced inside the cap, so it fails at both ends. kimi-k2.6 must therefore be reached
+      through a gateway WITHOUT that cap -- Moonshot's own OpenAI-compatible endpoint, or an internal
+      relay -- and must be probed before any comparison run is launched:
+          $PY scripts/test_llm_connection.py --config configs/default_kimi.yaml
+      Treat a green probe as necessary, not sufficient: the probe sends a short prompt, and the 298 s
+      failure only appears on the full-length one.
+  - name: "glm"
+    base_url: "<UNCONFIRMED -- set before the comparison runs; see endpoint_status>"
+    model: "GLM-5.2"
+    max_tokens: 16384
+    temperature: 0.0
+    api_config: "configs/api_config_glm.json"
+    template: "configs/api_config_glm.example.json"
+    harness_config: "configs/default_glm.yaml"
+    endpoint_status: >
+      UNCONFIRMED for GLM-5.2. The DashScope compatible gateway served glm-4.6 for this package's
+      first-round trajectories, but glm-4.6 is NOT the model this round asks for and its runs are not
+      interchangeable with GLM-5.2's. Probe the model name before use; probing one name costs one
+      call. Note that glm-4.5 on that gateway is streaming-only and returns HTTP 400 for a
+      non-streaming request, so a 400 on a new GLM name is more likely a transport-mode restriction
+      than a wrong name.
+  retired:
+    # Kept only so that first-round run directories under runs/ remain interpretable. These are NOT
+    # part of the second-round model set and must not appear in a comparison table.
+    glm-4.6_on_dashscope: "produced the first-round GLM trajectories; superseded by GLM-5.2"
+    qwen-plus_on_dashscope: "produced the first-round Qwen trajectories; not in the official set"
+  known_bad:
+    kimi-k3_on_dashscope: >
+      The gateway enforces a 298 s response-stream limit (its own 504 body says
+      timeout_seconds=298), and a question text this long needs a completion budget that cannot be
+      produced inside that window. No client-side timeout helps. Do not use.
+    glm-4.5_on_dashscope: "Streaming only; a non-streaming request returns HTTP 400."
+
+credentials:
+  where: "configs/api_config_<provider>.json, key field `api_key`"
+  templates: "configs/api_config*.example.json -- copy, then paste your key over the placeholder"
+  never_committed: >
+    .gitignore excludes configs/api_config*.json and keeps only the *.example.json templates.
+    scripts/package_for_delivery.py excludes every configs/api_config*.json that is not an
+    *.example.json, scans the files it is about to archive AND the written archive from the inside,
+    and refuses to leave a zip behind if any key-shaped string survives. Verified by injecting a
+    fake key: exit 1, no zip.
+  run_outputs: >
+    src/main.py writes runs/<run>/api_config_used.json with api_key replaced by "<redacted>", so a
+    shipped run directory records the configuration without the secret.
+
+setup:
+  # Copy-paste order for a fresh machine. Everything except the LLM call is offline.
+  - "cd <package root>                                   # all config paths are relative to it"
+  - "python3.10 -m venv .venv && PY=.venv/bin/python     # any CPython >= 3.10; 3.10.19 was used"
+  - "$PY -m pip install -r requirements.txt              # pinned versions, see `dependencies`"
+  - "$PY -c 'import sys; sys.path.insert(0, \"src\"); import agglomeration as A;
+     print(A.responses(A.START))'                        # proves the frozen surrogate loads"
+  - "$PY scripts/check_consistency.py                    # 12 s, offline, must end CONSISTENT"
+  - "$PY scripts/leak_check_question.py                  # 1 s, offline, must end LEAK CHECK CLEAN"
+  - "cp configs/api_config.example.json configs/api_config_deepseek.json   # then paste the key"
+  - "$PY scripts/test_llm_connection.py --config configs/default_deepseek.yaml"
+  - "$PY src/main.py --config configs/default_deepseek.yaml               # 5 rounds, 5 API calls"
+
+how_to_change_the_model: >
+  Two files, no code. (1) configs/api_config_<provider>.json holds base_url, model, api_key,
+  temperature, max_tokens and the retry/token schedule -- copy the nearest *.example.json and edit
+  those five fields. (2) configs/default_<provider>.yaml points `llm.api_config_file` at it; copy
+  configs/default.yaml and change that one line. Then run
+  `$PY src/main.py --config configs/default_<provider>.yaml`. Any OpenAI-compatible
+  chat-completions endpoint works; src/llm_client.py speaks nothing else. Nothing about the task,
+  the scoring or the calibration depends on the provider -- runs/<run>/ records which one was used.
+
+verification:
+  # All offline; the first three are the ones a reviewer should run.
+  # The first four are GRADER-ONLY scripts and are absent from the participant archive.
+  - command: "$PY scripts/check_consistency.py"
+    expect: "'CONSISTENT: one calibration, four artifacts, three gates re-measured.', exit 0 (131 checks, ~3 s)"
+  - command: "$PY scripts/leak_check_question.py"
+    expect: "'LEAK CHECK CLEAN' and exit status 0 (63 checks: complete / leak-free / neutral)"
+  - command: "$PY scripts/enumerate_reference_best.py --workers 8"
+    expect: "re-derives the reference optimum and the difficulty gates from the shipped scorer (~1 min)"
+  - command: "$PY scripts/measure_naive_policies.py"
+    expect: "396 mechanically generated naive multi-variable policies; prints the ceiling by move
+             multiplicity and exits 0 only if that ceiling is under the acceptance line (~3 s)"
+  - command: "$PY scripts/rescore_run.py runs/<run_dir>"
+    expect: "re-scores a shipped trajectory from its stored submissions, no API call; must reproduce the
+             total in that run's final_report.json (check_consistency.py group 9 asserts this per run)"
+  - command: "$PY scripts/package_for_delivery.py"
+    expect: "'PACKAGED: six deliverable classes present, three defences passed.'; aborts with exit 1 if
+             any key-shaped string is found in the inputs or inside the written archive"
+
+run:
+  command: "$PY src/main.py --config configs/default_deepseek.yaml"
+  cost: "5 chat-completions calls per run (one per round), plus retries on truncation"
+  outputs: >
+    runs/<model>_<task_id>_<timestamp>/ with trajectory.jsonl, conversation.md, llm_api_debug.jsonl,
+    final_report.json, and copies of the question, task config and redacted API config
+  rescore_without_calling_a_model: "$PY scripts/rescore_run.py runs/<run_dir>"

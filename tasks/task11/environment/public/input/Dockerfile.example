@@ -1,0 +1,7 @@
+FROM condaforge/miniforge3:24.11.3-0
+WORKDIR /benchmark
+COPY environment.yml /tmp/environment.yml
+RUN mamba env create -f /tmp/environment.yml && mamba clean -afy
+ENV PATH=/opt/conda/envs/chembench-task-example/bin:$PATH
+ENV PYTHONUNBUFFERED=1
+CMD ["python", "--version"]

@@ -1,0 +1,48 @@
+schema_version: chembench-harness-contract/1.0
+task_id: task-19-active-impurity-elucidation
+protocol:
+  type: controlled_suite
+  implementation_status: implemented
+  state_file: /workspace/protocol_state.json
+  max_rounds: 6
+budgets:
+  actions: 6
+  experiment_calls: 4
+ownership:
+  immutable:
+  - schema_version
+  - protocol.state_file
+  - ownership
+  - release_gates
+  - chembench_harness core
+  author_editable:
+  - protocol.type
+  - protocol.max_rounds
+  - budgets
+  - task-local plugin
+  - public feedback fields
+  - private grader scientific implementation
+  author_required:
+  - Confirm the six-turn action and terminal sequence.
+  - Confirm experiment quotas, rejected-call accounting, timeout and infrastructure behavior.
+  - Confirm the public/private field matrix.
+  - Approve one Oracle and at least three invalid submissions.
+  - Approve direct-driver versus Harbor-sidecar parity tolerance of exact equality.
+author_confirmations:
+  protocol_equivalent: confirmed
+  scoring_equivalent: confirmed
+  private_boundary_correct: confirmed
+  oracle_scientifically_valid: confirmed
+confirmation_evidence:
+  protocol_equivalent: organizer-private test_sidecar_http.py
+  scoring_equivalent: organizer-private Harbor parity test
+  private_boundary_correct: organizer-private release-boundary test
+  oracle_scientifically_valid: organizer-private Oracle regression
+release_gates:
+  schema: true
+  build: false
+  oracle: true
+  protocol_decoupled: true
+  parity: true
+  leakage: true
+  release_eligible: true

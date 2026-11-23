@@ -1,0 +1,162 @@
+# 从头构建题 14–17（revision10）运行所需的全部 Docker 镜像。
+#
+#   ./build.sh                                   # 推荐：构建 + 让题包认可本地镜像 + 校验
+#   docker compose -f docker-compose.build.yaml build [服务名...]     # 只构建
+#
+# 本文件只用于 build，不要 `up`：这些服务是镜像配方，不是要启动的服务。
+# 镜像名与题包里 task.toml / environment/docker-compose.yaml / docker/runner/IMAGE 中的引用逐字一致，
+# 构建完成后 Harbor 直接按名字启动，不再拉取或构建。
+#
+# 依赖：Docker Engine ≥ 23 + Compose v2 + buildx（BuildKit）。additional_contexts 需要 BuildKit。
+# 网络：需要能访问 Docker Hub、conda-forge、PyPI、deb.debian.org、download.docker.com，
+#       或在 .env 里改成镜像源（见 .env.example）。
+#
+# 题包位置：默认是与本目录并列的 ..（zip 解压结果），
+#           可用环境变量 CHEMBENCH_PKG 覆盖。相对路径以本文件所在目录为基准。
+#
+# 私有内容：verifier 与 sidecar 镜像内含 tests/task_snapshot（参考最优解、分档阈值），
+#           只供组织方使用，切勿推送到公开 registry。
+
+x-micromamba-args: &micromamba-args
+  MICROMAMBA_IMAGE: ${MICROMAMBA_IMAGE:-mambaorg/micromamba:2.8.1}
+  CONDA_CHANNEL: ${CONDA_CHANNEL:-conda-forge}
+  PIP_INDEX_URL: ${PIP_INDEX_URL:-}
+
+x-common: &common
+  platform: ${CHEMBENCH_PLATFORM:-linux/amd64}
+
+services:
+  # ------------------------------------------------------------------ task 14
+  task14-environment:
+    <<: *common
+    image: chembench/task14-environment:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-environment.Dockerfile
+      additional_contexts:
+        task: ${CHEMBENCH_PKG:-..}/tasks/task-14-multiobjective-mol-design/environment
+      args: *micromamba-args
+  task14-verifier:
+    <<: *common
+    image: chembench/task14-verifier:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-verifier.Dockerfile
+      additional_contexts:
+        tests: ${CHEMBENCH_PKG:-..}/tasks/task-14-multiobjective-mol-design/tests
+      args: *micromamba-args
+
+  # ------------------------------------------------------------------ task 15
+  task15-environment:
+    <<: *common
+    image: chembench/task15-environment:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-environment.Dockerfile
+      additional_contexts:
+        task: ${CHEMBENCH_PKG:-..}/tasks/task-15-lipophilic-sulfonamide-edit-budget/environment
+      args: *micromamba-args
+  task15-verifier:
+    <<: *common
+    image: chembench/task15-verifier:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-verifier.Dockerfile
+      additional_contexts:
+        tests: ${CHEMBENCH_PKG:-..}/tasks/task-15-lipophilic-sulfonamide-edit-budget/tests
+      args: *micromamba-args
+
+  # ------------------------------------------------------------------ task 16
+  task16-environment:
+    <<: *common
+    image: chembench/task16-environment:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-environment.Dockerfile
+      additional_contexts:
+        task: ${CHEMBENCH_PKG:-..}/tasks/task-16-tablet-microenvironment-cqa/environment
+      args: *micromamba-args
+  task16-verifier:
+    <<: *common
+    image: chembench/task16-verifier:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-verifier.Dockerfile
+      additional_contexts:
+        tests: ${CHEMBENCH_PKG:-..}/tasks/task-16-tablet-microenvironment-cqa/tests
+      args: *micromamba-args
+  task16-sidecar:
+    <<: *common
+    image: chembench/task16-sidecar:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/sidecar.Dockerfile
+      additional_contexts:
+        tests: ${CHEMBENCH_PKG:-..}/tasks/task-16-tablet-microenvironment-cqa/tests
+        server: ${CHEMBENCH_PKG:-..}/templates/sidecar
+      args:
+        <<: *micromamba-args
+        TASK_NUMBER: "16"
+        PORT: "8716"
+
+  # ------------------------------------------------------------------ task 17
+  task17-environment:
+    <<: *common
+    image: chembench/task17-environment:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-environment.Dockerfile
+      additional_contexts:
+        task: ${CHEMBENCH_PKG:-..}/tasks/task-17-spherical-agglomeration/environment
+      args: *micromamba-args
+  task17-verifier:
+    <<: *common
+    image: chembench/task17-verifier:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/task-verifier.Dockerfile
+      additional_contexts:
+        tests: ${CHEMBENCH_PKG:-..}/tasks/task-17-spherical-agglomeration/tests
+      args: *micromamba-args
+  task17-sidecar:
+    <<: *common
+    image: chembench/task17-sidecar:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/sidecar.Dockerfile
+      additional_contexts:
+        tests: ${CHEMBENCH_PKG:-..}/tasks/task-17-spherical-agglomeration/tests
+        server: ${CHEMBENCH_PKG:-..}/templates/sidecar
+      args:
+        <<: *micromamba-args
+        TASK_NUMBER: "17"
+        PORT: "8717"
+
+  # ------------------------------------------------------------------ shared
+  # Harbor 运行器：python 3.12 + harbor 0.21.0 + docker CLI/compose（RUN.md 里的 `docker run` 用它）
+  harbor-runner:
+    <<: *common
+    image: chembench/harbor-runner:2.1.0-r10
+    build:
+      context: .
+      dockerfile: dockerfiles/runner.Dockerfile
+      additional_contexts:
+        # 题包根目录的 .dockerignore 会屏蔽 requirements.txt，所以用本目录里的副本；
+        # build.sh 构建前会先用题包里的 requirements.txt 刷新它。
+        req: ./runner-context
+      args:
+        PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.12-slim-bookworm}
+        DEBIAN_MIRROR: ${DEBIAN_MIRROR:-}
+        DOCKER_APT_REPO: ${DOCKER_APT_REPO:-https://download.docker.com/linux/debian}
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-}
+
+  # Harbor 0.21.0 自带的 egress-control sidecar。no-network 题在 Linux 上每次 trial 都要用；
+  # 名字是 Harbor 按"配方内容 + 平台"算出的哈希，下面这个是 linux/amd64 的名字。
+  # 其他平台由 build.sh 的校准步骤按 Harbor 实际查找的名字补打标签。
+  harbor-egress-control:
+    <<: *common
+    image: harbor-prebuilt:harbor-docker-egress-control-sidecar--b1e6760734a9e6f6
+    build:
+      context: ./egress-control-sidecar
+      args:
+        GOST_IMAGE: ${GOST_IMAGE:-gogost/gost:3.2.7-nightly.20260602@sha256:afc0137758ab4ce399d47a299f9abbacbf522b52a17e59cbb4b4e7a1a66e9196}

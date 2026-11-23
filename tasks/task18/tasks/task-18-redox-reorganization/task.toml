@@ -1,0 +1,63 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+multi_step_reward_strategy = "final"
+
+[task]
+name = "msebench/task-18-redox-reorganization"
+version = "4.1.0"
+description = "Autonomous conformer-resolved GFN2-xTB oxidation thermodynamics and inner-sphere reorganization Pareto screening"
+authors = [{ name = "Wei Chengrui" }]
+keywords = ["computational_chemistry", "xtb", "redox", "reorganization", "msebench", "harbor"]
+
+[metadata]
+instance_id = "task-18-redox-reorganization"
+scientific_problem_id = "task_18_redox_reorganization"
+identity_registry = "environment/public/identity_registry.json"
+comparison_grader_version = "4.2.0"
+source_task_id = "task_07_redox_reorganization"
+source_version = "1.0.0"
+domain = "computational_chemistry"
+legacy_execution_mode = "native_runner"
+legacy_grader_version = "1.0.0"
+migration_status = "contract-parity-participant-verified"
+task_owned_llm = false
+protocol_decoupled = true
+parity_validated = true
+schema_validated = true
+leakage_validated = true
+required_artifacts = ["final_answer.json", "report.md"]
+release_eligible = true
+oracle_status = "verified_harbor"
+
+[agent]
+# Audit 2026-09-27: agent timeout 11400 -> 12600 to match the 10800-second
+# scientific phase plus the 1800-second finalization allowance (was 600).
+timeout_sec = 12600.0
+
+[verifier]
+timeout_sec = 10800.0
+environment_mode = "separate"
+
+[environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import numpy, scipy, yaml, jsonschema, psutil' && xtb --version"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0

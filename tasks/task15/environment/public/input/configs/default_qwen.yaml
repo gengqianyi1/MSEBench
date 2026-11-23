@@ -1,0 +1,28 @@
+# RETIRED -- first round only. qwen-plus is NOT part of the second-round model set and a
+# qwen run must not appear in a comparison table. This file is kept solely so that the
+# first-round run directories under runs/ remain interpretable.
+llm:
+  api_config_file: "configs/api_config_qwen.json"
+
+runtime:
+  max_rounds: 5
+  candidates_per_round: 1
+  run_dir: "runs"
+  random_seed: 42
+  save_prompts: true
+  save_raw_responses: true
+
+task:
+  task_dir: "tasks/q1_lipophilic"
+  question_file: "question.md"
+  task_config_file: "task_config.yaml"
+
+parsing:
+  strict_json: true
+  allow_markdown_fence: true
+
+logging:
+  trajectory_filename: "trajectory.jsonl"
+  llm_debug_filename: "llm_api_debug.jsonl"
+  conversation_markdown_filename: "conversation.md"
+  run_summary_filename: "run_summary.json"

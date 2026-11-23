@@ -1,0 +1,7 @@
+name: chembench
+channels:
+- conda-forge
+dependencies:
+- python=3.10.14
+- rdkit=2023.09.6
+- pyyaml=6.0.1

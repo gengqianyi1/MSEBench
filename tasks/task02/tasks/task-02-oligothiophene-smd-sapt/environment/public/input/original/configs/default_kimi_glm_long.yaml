@@ -1,0 +1,32 @@
+task_id: oligothiophene_smd_sapt_v3
+task_dir: tasks/oligothiophene_smd_sapt_v3
+llm:
+  api_config_file: configs/api_config_kimi.json
+evaluation:
+  api_config_file: configs/evaluator_api_config.json
+run:
+  output_root: runs
+  run_prefix: oligothiophene_v3_0
+  max_llm_turns: 60
+  max_wall_time_seconds: 10800
+  stop_when_stage_D_valid: true
+execution:
+  max_script_runtime_seconds: 7200
+  default_script_runtime_seconds: 900
+  stdout_stderr_tail_chars: 16000
+  max_script_size_bytes: 300000
+  python_executable: python
+  timeout_floor_seconds:
+    pure_python_floor_seconds: 60
+    microtest_floor_seconds: 300
+    xtb_production_floor_seconds: 1800
+    pyscf_production_floor_seconds: 7200
+    psi4_production_floor_seconds: 7200
+    mixed_production_floor_seconds: 7200
+logging:
+  trajectory_filename: trajectory.jsonl
+  tool_calls_filename: tool_calls.jsonl
+  llm_debug_filename: llm_api_debug.jsonl
+  conversation_markdown_filename: conversation.md
+  final_answer_filename: final_answer.json
+  final_report_filename: final_report.json

@@ -1,0 +1,124 @@
+schema_version = "1.4"
+multi_step_reward_strategy = "final"
+# Harbor collects these from the AGENT container after each step. Only files the agent itself
+# produces belong here: /workspace/rounds and protocol_state.json. trajectory.jsonl,
+# run_summary.json, final_answer.json and final_report.json are rebuilt by tests/final_grader.py
+# INSIDE THE VERIFIER container, so listing them here made Harbor log
+#   Failed to download artifact '/workspace/trajectory.jsonl' from service 'main' (best-effort)
+# on every single run -- harmless, but it makes a healthy run look broken and it was the
+# artifact-contract inconsistency a round-5 reviewer of task 14 asked us to resolve. The
+# verifier-side products are declared in .chembench_agent.json :: verifier_rebuilt_artifacts.
+artifacts = [
+    "/workspace/rounds",
+    "/workspace/protocol_state.json",
+]
+
+[task]
+name = "chembench/task-15-lipophilic-sulfonamide-edit-budget"
+version = "2.1.0"
+description = "Multi-site coordinated optimization of an anilide sulfonamide under a fingerprint-similarity edit budget"
+authors = [{ name = "Cao Yang" }]
+keywords = ["computational_chemistry", "chembench", "harbor"]
+
+[metadata]
+source_task_id = "task_15_lipophilic_sulfonamide_edit_budget"
+source_version = "2.0.0"
+domain = "computational_chemistry"
+legacy_execution_mode = "native_runner"
+legacy_grader_version = "2.1.0-harness"
+migration_status = "harbor-ready-candidate"
+protocol_decoupled = true
+parity_validated = true
+# Round-5 reviewers of tasks 15 and 17 both flagged that a single boolean called
+# `parity_validated` invites upstream tools to read "same model, both harnesses" when what was
+# actually shown is "same submission, same score". Split, so neither can be mistaken for the other.
+submission_replay_parity = true
+same_model_cross_harness_parity = false
+build_validated = true
+# What those two flags are backed by. Read this before reusing them for a release decision.
+harbor_oracle_evidence = 'harbor 0.21.0 run -a oracle -e docker, 2026-09-06: all five step verifiers returned a numeric reward and the final legacy grader scored 33.0, identical to the offline expectation. Executed with network_mode set to public, because this Docker host kernel lacks CONFIG_NFT_FIB_INET and Harbor therefore cannot enforce no-network; the Oracle path opens no network connection, so the scoring chain measured is the same one.'
+parity_scope = 'same-submission parity: the Oracle submission scores the same offline and through the Harbor verifier. This is NOT a live-model run of one model under both harnesses, which still needs model budget.'
+build_validated_platform = "linux/amd64: every image a trial starts ships prebuilt in docker/ (docker/image_manifest.json) and is started by name, so no image is pulled or built at run time. Built with docker buildx from the environment/ and tests/ Dockerfiles of this task."
+required_artifacts = ["final_answer.json", "trajectory.jsonl", "run_summary.json"]
+
+release_eligible = true
+oracle_status = "verified_harbor"
+
+# Prebuilt image, loaded from docker/ in this package (./chembench load-images). With docker_image set,
+# Harbor starts the container from it and never builds, so a host with no route to Docker Hub or
+# conda-forge can run the task. environment/Dockerfile is the exact recipe the image was built from
+# (docker/build_images.sh); `harbor run --force-build` still rebuilds from it on a networked host.
+[environment]
+docker_image = "chembench/task15-environment:2.1.0-r10"
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import rdkit, numpy'"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[[steps]]
+name = "round-1"
+[steps.agent]
+timeout_sec = 3600.0
+[steps.verifier]
+timeout_sec = 600.0
+environment_mode = "separate"
+
+[[steps]]
+name = "round-2"
+[steps.agent]
+timeout_sec = 3600.0
+[steps.verifier]
+timeout_sec = 600.0
+environment_mode = "separate"
+
+[[steps]]
+name = "round-3"
+[steps.agent]
+timeout_sec = 3600.0
+[steps.verifier]
+timeout_sec = 600.0
+environment_mode = "separate"
+
+[[steps]]
+name = "round-4"
+[steps.agent]
+timeout_sec = 3600.0
+[steps.verifier]
+timeout_sec = 600.0
+environment_mode = "separate"
+
+[[steps]]
+name = "round-5"
+[steps.agent]
+timeout_sec = 3600.0
+[steps.verifier]
+timeout_sec = 14400.0
+environment_mode = "separate"
+
+# The separate verifier runs from its own prebuilt image (tests/Dockerfile: graders + task_snapshot).
+# Without this table Harbor would give the verifier a copy of [environment] -- after docker_image was
+# added there, that would be the AGENT image, which has no grader.
+[verifier.environment]
+docker_image = "chembench/task15-verifier:2.1.0-r10"
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+
+[verifier.environment.healthcheck]
+command = "python -c 'import rdkit, numpy'"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3

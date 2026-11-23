@@ -1,0 +1,19 @@
+[project]
+name = "chembench-harbor"
+version = "0.1.0"
+description = "ChemBench Harbor migration - development repository"
+requires-python = ">=3.12"
+dependencies = [
+    "harbor==0.21.0",
+    "jsonschema>=4.23.0",
+    "pyyaml>=6.0.2",
+]
+
+[project.scripts]
+chembench-harness = "chembench_harness.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chembench_harness*", "agents*", "verifiers*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

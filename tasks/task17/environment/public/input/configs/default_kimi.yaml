@@ -1,0 +1,29 @@
+# OFFICIAL second-round model configuration. The comparison set is exactly
+# deepseek-v4-pro, kimi-k2.6 and GLM-5.2, all at temperature 0.0, all on the same task
+# version, harness, tool permissions, budget and grader (Evaluation_20250809.md 16.7).
+# Endpoint, model name and token budget live in the api_config file named below.
+llm:
+  api_config_file: "configs/api_config_kimi.json"
+
+runtime:
+  max_rounds: 5
+  candidates_per_round: 1
+  run_dir: "runs"
+  random_seed: 42
+  save_prompts: true
+  save_raw_responses: true
+
+task:
+  task_dir: "tasks/q1_agglomeration"
+  question_file: "question.md"
+  task_config_file: "task_config.yaml"
+
+parsing:
+  strict_json: true
+  allow_markdown_fence: true
+
+logging:
+  trajectory_filename: "trajectory.jsonl"
+  llm_debug_filename: "llm_api_debug.jsonl"
+  conversation_markdown_filename: "conversation.md"
+  final_report_filename: "final_report.json"

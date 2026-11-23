@@ -1,0 +1,230 @@
+tag: chembench/task04-verifier:coordinate-2.1.1-20260912
+image_id: sha256:45a1c8fd57c104cd1db55c60ae465a750746638e1c9184b22d25f964e9c1244b
+tar: images/task04/task04-verifier.tar
+base_hint: debian.sh
+platform: linux/amd64
+runtime_config:
+  Env:
+  - PATH=/opt/conda/envs/chembench/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  - MAMBA_USER=mambauser
+  - MAMBA_USER_ID=57439
+  - MAMBA_USER_GID=57439
+  - LANG=C.UTF-8
+  - LC_ALL=C.UTF-8
+  - ENV_NAME=base
+  - MAMBA_ROOT_PREFIX=/opt/conda
+  - MAMBA_EXE=/bin/micromamba
+  - CONDA_OVERRIDE_CUDA=
+  - MAMBA_DEFAULT_ENV=chembench
+  Entrypoint:
+  - /usr/local/bin/_entrypoint.sh
+  Cmd:
+  - bash
+  WorkingDir: /workspace
+  User: '57439'
+  Labels:
+    distro_id: debian
+    org.opencontainers.image.created: '2026-06-10T15:31:14.529Z'
+    org.opencontainers.image.description: Rapid builds of small Conda-based containers using micromamba.
+    org.opencontainers.image.licenses: Apache-2.0
+    org.opencontainers.image.revision: d12544cb2979d3be2bfa917168e93b4d49fb6d96
+    org.opencontainers.image.source: https://github.com/mamba-org/micromamba-docker
+    org.opencontainers.image.title: micromamba-docker
+    org.opencontainers.image.url: https://github.com/mamba-org/micromamba-docker
+    org.opencontainers.image.version: latest
+layers:
+- sha256:5b4d6ff92fc4e14e911b7753c954fac965d48c40fe1075758d284148ccace970
+- sha256:59067e1d8d9f3259e40a16beb14932ceab53cb7d08f319bc7487150d5c5f2daa
+- sha256:e8e927a261c8c8119ec99e3c2eea0ec93e92ea948862454011e1c7380296a4bd
+- sha256:d5e5b1e982d23614aa963e97a9d69520061e2941ae91c6ce1b16a277e8e188c7
+- sha256:e8d416049d30b886b0e14eac6992a9e6c825c3f531ec92af7971da9128833703
+- sha256:6d82ba5f854ac108715594c6a6353da0c5dd6d6135d7effddee447cbd03def23
+- sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+- sha256:8d21ccba5e21d7601bb750140ec60317a505bb0fecd29c1ab1ad8e5934379312
+- sha256:7bd973cc57b1bfea445970f5cc84f3f876a692c1c740c01b3a3dd389341394fb
+- sha256:c4230b9a05c073859eb55c1467e046d9cb8de49f4042171de8a1806a13ab3dce
+- sha256:b4bbffc84eabb5681601e6c240e5f764173b4de5d2b7a7f9746ef8f7cc60d14e
+- sha256:1f4239652b0a07e9b8b5279d305e6733635ae8ccbc31e53cc5faabd9912c6e44
+- sha256:ec253927cc133e641124db9628a763e53b7875c45c8fa0351b3ce41dd855d66d
+- sha256:b6b68794c2af2ca6a03ddb6639ac4a363d3e17c20b032a30f275cf988bdb7e9b
+- sha256:e7f3ce5bf5f86958dc544610277d02539ce34737dd52e30dbe0757251aa3ccce
+- sha256:99b14024b21aed747b3b017d72db73014ae6835febacb7010b21364666435696
+- sha256:66f0f9840a7150320db6e7838f5fc6b195d6c9df511fba8af94158c7738f8a3a
+- sha256:79f3cc90b42935587ae574a0ea0e4b060c798c18f646f0cf50a79abc767f43c5
+- sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+- sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+- sha256:40079d4657dd08c0e8cf26f6ddbbac82f2f3b0cc98bd748f64765952a037fdc7
+- sha256:24ca490c95362f39b1d239a944a73b64f76bd3c7eac3ca5be7ff171a9cb14aa2
+- sha256:bbb47e59a9225a80fc45d432c8ca227486187010490ce9dd4e8a8a46fd8a493c
+- sha256:1c1776c6d7c533b470707d80ae779f0c72f9ef999df23f86c609644825be61b6
+- sha256:1650d70962630c1961e0ec68689c964609af8cc2125a0d5278bcef30dcf5e378
+- sha256:c757746d7da1276116187220f0ed0087748a9bfb07cb08056a3177cc56ce5077
+history:
+- '# debian.sh --arch ''amd64'' out/ ''trixie'' ''@1779062400'''
+- ARG CERT_SOURCE=/etc/ssl/certs/ca-certificates.crt
+- ARG MAMBA_USER=mambauser
+- ARG MAMBA_USER_ID=57439
+- ARG MAMBA_USER_GID=57439
+- ENV MAMBA_USER=mambauser
+- ENV MAMBA_USER_ID=57439
+- ENV MAMBA_USER_GID=57439
+- ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+- ENV ENV_NAME=base
+- ENV MAMBA_ROOT_PREFIX=/opt/conda
+- ENV MAMBA_EXE=/bin/micromamba
+- ENV CONDA_OVERRIDE_CUDA=
+- 'COPY /bin/micromamba /bin/micromamba # buildkit'
+- 'COPY /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt # buildkit'
+- 'COPY _dockerfile_initialize_user_accounts.sh /usr/local/bin/_dockerfile_initialize_user_accounts.sh # buildkit'
+- 'COPY _dockerfile_setup_root_prefix.sh /usr/local/bin/_dockerfile_setup_root_prefix.sh # buildkit'
+- 'RUN |4 CERT_SOURCE=/etc/ssl/certs/ca-certificates.crt MAMBA_USER=mambauser MAMBA_USER_ID=57439 MAMBA_USER_GID=57439 /bin/sh -c /usr/local/bin/_dockerfile_initialize_user_accounts.sh     && /usr/local/bin/_dockerfile_setup_root_prefix.sh
+  # buildkit'
+- USER mambauser
+- WORKDIR /tmp
+- 'COPY _apptainer_shell.sh /usr/local/bin/_apptainer_shell.sh # buildkit'
+- 'COPY _entrypoint.sh /usr/local/bin/_entrypoint.sh # buildkit'
+- 'COPY _activate_current_env.sh /usr/local/bin/_activate_current_env.sh # buildkit'
+- ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
+- CMD ["/bin/bash"]
+- 'COPY _dockerfile_shell.sh /usr/local/bin/_dockerfile_shell.sh # buildkit'
+- SHELL [/usr/local/bin/_dockerfile_shell.sh]
+- 'COPY --chown=mambauser:mambauser environment.lock.yml /tmp/environment.lock.yml # buildkit'
+- 'RUN /usr/local/bin/_dockerfile_shell.sh micromamba create -y -n chembench -f /tmp/environment.lock.yml && micromamba clean --all --yes # buildkit'
+- ENV PATH=/opt/conda/envs/chembench/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- ENV MAMBA_DEFAULT_ENV=chembench
+- USER root
+- 'RUN /usr/local/bin/_dockerfile_shell.sh apt-get update && apt-get install -y --no-install-recommends bubblewrap && rm -rf /var/lib/apt/lists/* && mkdir -p /tests /task /workspace /logs/verifier && chown
+  -R $MAMBA_USER:$MAMBA_USER /tests /task /workspace /logs # buildkit'
+- USER mambauser
+- 'COPY --chown=mambauser:mambauser task_snapshot/ /task/ # buildkit'
+- 'COPY --chown=mambauser:mambauser private_suite_adapter.py /tests/private_suite_adapter.py # buildkit'
+- 'COPY --chown=mambauser:mambauser protocol_grader.py /tests/protocol_grader.py # buildkit'
+- 'COPY --chown=mambauser:mambauser test.sh /tests/test.sh # buildkit'
+- 'RUN /usr/local/bin/_dockerfile_shell.sh chmod +x /tests/test.sh # buildkit'
+- WORKDIR /workspace
+- CMD ["bash"]
+- USER root
+- 'COPY tasks/task-04-histidine-microstate-ensemble/tests/protocol_grader.py /tests/protocol_grader.py # buildkit'
+- 'COPY tasks/task-04-histidine-microstate-ensemble/tests/private_suite_adapter.py /tests/private_suite_adapter.py # buildkit'
+- 'RUN /usr/local/bin/_dockerfile_shell.sh mkdir -p /organizer_evidence && chmod 777 /organizer_evidence # buildkit'
+- USER 57439
+- 'COPY --chown=57439:57439 tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/source_package/tasks/task_04/private/grader.py /task/source_package/tasks/task_04/private/grader.py # buildkit'
+- 'COPY --chown=57439:57439 tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/public/question.md /task/public/question.md # buildkit'
+- 'COPY --chown=57439:57439 tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/public/task.yaml /task/public/task.yaml # buildkit'
+dockerfile_draft: '# reconstructed from image history — verify against the task Dockerfile
+
+  FROM <base>   # infer from history below (see base hint)
+
+  ENV ["PATH=/opt/conda/envs/chembench/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "MAMBA_USER=mambauser", "MAMBA_USER_ID=57439", "MAMBA_USER_GID=57439", "LANG=C.UTF-8", "LC_ALL=C.UTF-8",
+  "ENV_NAME=base", "MAMBA_ROOT_PREFIX=/opt/conda", "MAMBA_EXE=/bin/micromamba", "CONDA_OVERRIDE_CUDA=", "MAMBA_DEFAULT_ENV=chembench"]
+
+  WORKDIR /workspace
+
+  USER 57439
+
+  ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
+
+  CMD ["bash"]
+
+  # --- build history (created_by) ---
+
+  #   # debian.sh --arch ''amd64'' out/ ''trixie'' ''@1779062400''
+
+  #   ARG CERT_SOURCE=/etc/ssl/certs/ca-certificates.crt
+
+  #   ARG MAMBA_USER=mambauser
+
+  #   ARG MAMBA_USER_ID=57439
+
+  #   ARG MAMBA_USER_GID=57439
+
+  #   ENV MAMBA_USER=mambauser
+
+  #   ENV MAMBA_USER_ID=57439
+
+  #   ENV MAMBA_USER_GID=57439
+
+  #   ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+  #   ENV ENV_NAME=base
+
+  #   ENV MAMBA_ROOT_PREFIX=/opt/conda
+
+  #   ENV MAMBA_EXE=/bin/micromamba
+
+  #   ENV CONDA_OVERRIDE_CUDA=
+
+  #   COPY /bin/micromamba /bin/micromamba # buildkit
+
+  #   COPY /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt # buildkit
+
+  #   COPY _dockerfile_initialize_user_accounts.sh /usr/local/bin/_dockerfile_initialize_user_accounts.sh # buildkit
+
+  #   COPY _dockerfile_setup_root_prefix.sh /usr/local/bin/_dockerfile_setup_root_prefix.sh # buildkit
+
+  #   RUN |4 CERT_SOURCE=/etc/ssl/certs/ca-certificates.crt MAMBA_USER=mambauser MAMBA_USER_ID=57439 MAMBA_USER_GID=57439 /bin/sh -c /usr/local/bin/_dockerfile_initialize_user_accounts.sh     && /usr/local/bin/_dockerfile_setup_root_prefix.sh
+  # buildkit
+
+  #   USER mambauser
+
+  #   WORKDIR /tmp
+
+  #   COPY _apptainer_shell.sh /usr/local/bin/_apptainer_shell.sh # buildkit
+
+  #   COPY _entrypoint.sh /usr/local/bin/_entrypoint.sh # buildkit
+
+  #   COPY _activate_current_env.sh /usr/local/bin/_activate_current_env.sh # buildkit
+
+  #   ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
+
+  #   CMD ["/bin/bash"]
+
+  #   COPY _dockerfile_shell.sh /usr/local/bin/_dockerfile_shell.sh # buildkit
+
+  #   SHELL [/usr/local/bin/_dockerfile_shell.sh]
+
+  #   COPY --chown=mambauser:mambauser environment.lock.yml /tmp/environment.lock.yml # buildkit
+
+  #   RUN /usr/local/bin/_dockerfile_shell.sh micromamba create -y -n chembench -f /tmp/environment.lock.yml && micromamba clean --all --yes # buildkit
+
+  #   ENV PATH=/opt/conda/envs/chembench/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+  #   ENV MAMBA_DEFAULT_ENV=chembench
+
+  #   USER root
+
+  #   RUN /usr/local/bin/_dockerfile_shell.sh apt-get update && apt-get install -y --no-install-recommends bubblewrap && rm -rf /var/lib/apt/lists/* && mkdir -p /tests /task /workspace /logs/verifier &&
+  chown -R $MAMBA_USER:$MAMBA_USER /tests /task /workspace /logs # buildkit
+
+  #   USER mambauser
+
+  #   COPY --chown=mambauser:mambauser task_snapshot/ /task/ # buildkit
+
+  #   COPY --chown=mambauser:mambauser private_suite_adapter.py /tests/private_suite_adapter.py # buildkit
+
+  #   COPY --chown=mambauser:mambauser protocol_grader.py /tests/protocol_grader.py # buildkit
+
+  #   COPY --chown=mambauser:mambauser test.sh /tests/test.sh # buildkit
+
+  #   RUN /usr/local/bin/_dockerfile_shell.sh chmod +x /tests/test.sh # buildkit
+
+  #   WORKDIR /workspace
+
+  #   CMD ["bash"]
+
+  #   USER root
+
+  #   COPY tasks/task-04-histidine-microstate-ensemble/tests/protocol_grader.py /tests/protocol_grader.py # buildkit
+
+  #   COPY tasks/task-04-histidine-microstate-ensemble/tests/private_suite_adapter.py /tests/private_suite_adapter.py # buildkit
+
+  #   RUN /usr/local/bin/_dockerfile_shell.sh mkdir -p /organizer_evidence && chmod 777 /organizer_evidence # buildkit
+
+  #   USER 57439
+
+  #   COPY --chown=57439:57439 tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/source_package/tasks/task_04/private/grader.py /task/source_package/tasks/task_04/private/grader.py # buildkit
+
+  #   COPY --chown=57439:57439 tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/public/question.md /task/public/question.md # buildkit
+
+  #   COPY --chown=57439:57439 tasks/task-04-histidine-microstate-ensemble/tests/task_snapshot/public/task.yaml /task/public/task.yaml # buildkit'
+role: verifier

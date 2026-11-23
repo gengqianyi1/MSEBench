@@ -1,0 +1,55 @@
+schema_version = "1.4"
+artifacts = ["/workspace"]
+
+[task]
+name = "msebench/task-05-caffeine-water-binding-decomposition"
+version = "1.15.0"
+description = "Autonomous caffeine-water pose selection and frozen-fragment binding decomposition with xTB"
+authors = [{ name = "Wei Chengrui" }]
+keywords = ["computational_chemistry", "xtb", "noncovalent", "msebench", "harbor"]
+
+[metadata]
+source_task_id = "task_05"
+source_version = "1.15.0"
+domain = "computational_chemistry"
+legacy_execution_mode = "native_runner"
+legacy_grader_version = "1.21.0"
+migration_status = "participant-adapter-verified-harbor"
+protocol_decoupled = true
+parity_validated = true
+schema_validated = true
+leakage_validated = true
+required_artifacts = ["final_answer.json", "report.md"]
+release_eligible = true
+oracle_status = "verified_harbor"
+
+[agent]
+timeout_sec = 10800.0
+
+[verifier]
+timeout_sec = 10800.0
+environment_mode = "separate"
+
+[environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+
+[environment.healthcheck]
+command = "python -c 'import numpy, scipy, yaml, jsonschema, psutil' && xtb --version"
+interval_sec = 5.0
+timeout_sec = 60.0
+retries = 3
+
+[verifier.environment]
+network_mode = "no-network"
+build_timeout_sec = 7200.0
+os = "linux"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0

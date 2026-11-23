@@ -1,0 +1,50 @@
+schema_version: chembench-migration-map/1.0
+task_id: task-08-xtb-failure-diagnosis-restart
+source:
+  path: chembench-author-handoff/tasks/task-08-xtb-failure-diagnosis-restart
+  version: 2.1.1-chembench2
+  sha256: 41b3557bc9d5846b1fb1bccac24d317568470e78c119375ca1ca9eb7f8321b51
+files:
+  - source: MIGRATION.md
+    destination: MIGRATION.md
+    handling: copied
+    source_sha256: d0a4b6a8b0ebcdea9b17bd47e8e3406dddc4c31fe58b0d7352b3613833f2456b
+    destination_sha256: d0a4b6a8b0ebcdea9b17bd47e8e3406dddc4c31fe58b0d7352b3613833f2456b
+    reason: Preserve the organizer-authored migration statement unchanged.
+  - source: harness_contract.yaml
+    destination: harness_contract.yaml
+    handling: transformed
+    source_sha256: 546b03fb39073954a5648c0aa275394f608e6aca52d10a2ccfebefb626bbe7af
+    destination_sha256: 15bdff28dc5ff490b13d56a110fc17d942e3622e260c06e2871afbfafe3371ca
+    reason: Restore the frozen legacy tool, turn, native-attempt, provider-retry, read, and timeout budgets in author-editable fields.
+  - source: environment/public/harness_contract.yaml
+    destination: environment/public/harness_contract.yaml
+    handling: transformed
+    source_sha256: 546b03fb39073954a5648c0aa275394f608e6aca52d10a2ccfebefb626bbe7af
+    destination_sha256: 15bdff28dc5ff490b13d56a110fc17d942e3622e260c06e2871afbfafe3371ca
+    reason: Keep the public contract projection byte-identical to the task-local contract.
+  - source: tests/private_suite_adapter.py
+    destination: tests/private_suite_adapter.py
+    handling: transformed
+    source_sha256: 08a5c4bc6f053668c918741561ca5b8fba661402f9588377bfcc8b5e4b78124b
+    destination_sha256: daaf364c6d9887490252d2c9fb05d39c7eb33881e1449fe85bfd3818e68b0b61
+    reason: Remove private registry access, persist server-owned records, and bind organizer-provided requested/actual model identity.
+  - source: tests/protocol_grader.py
+    destination: tests/protocol_grader.py
+    handling: transformed
+    source_sha256: 9b96a6b092a42b06491be6a3792e8ab2aa3623d4e9fa3b0ff39cd658f429ebdf
+    destination_sha256: 027e0231799b46a44b045f6dc1ea3bd5ee41c658a69f545c14547b2c66712786
+    reason: Re-evaluate the six-case organizer evidence suite and fail closed when exact provider model identity is absent or inconsistent.
+  - source: revision5-author/tests/migration_regression.py
+    destination: tests/migration_regression.py
+    handling: transformed
+    source_sha256: 8ca75ea6ce1b05eabfae3e4578a238a46e0bb5426f0f82d136526a32ee40ec21
+    destination_sha256: 8ca75ea6ce1b05eabfae3e4578a238a46e0bb5426f0f82d136526a32ee40ec21
+    reason: Add native Oracle and organizer-evidence regression coverage with a structured fail-closed native-runtime preflight result.
+author_approval:
+  name: Liu Chengchun
+  date: 2026-08-29
+  protocol_equivalent: confirmed_harbor_replay
+  scoring_equivalent: confirmed_oracle_100_and_legal_wrong_20
+framework_blockers: []
+environment_blockers: []
